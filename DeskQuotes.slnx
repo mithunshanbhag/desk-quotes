@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/DeskQuotes/DeskQuotes.csproj" Id="c3fd3480-b5c5-427b-8e8d-627a3bfda93e" />
+  <Project Path="tests/DeskQuotes.UnitTests/DeskQuotes.UnitTests.csproj" Id="519f285e-67f0-4f23-83aa-1b1defaf7b51" />
+</Solution>
