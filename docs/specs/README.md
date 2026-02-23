@@ -4,31 +4,40 @@ This is the documentation for the DeskQuotes app, which publishes motivational q
 
 In it's first iteration, the app will be a simple Windows system tray application that fetches a random quote (from a list of quotes) and sets it as the desktop wallpaper.
 
-## Settings
+## App Settings
 
 In its first iteration, the app will be completely configured through a `config.json` file located in the same directory as the executable. The file will contain the following settings:
 
-```jsonc
+```json
 {
-  "quoteList": [
-    "The only way to do great work is to love what you do. - Steve Jobs",
-    "Success is not the key to happiness. Happiness is the key to success. - Albert Schweitzer",
-    "Don't watch the clock; do what it does. Keep going. - Sam Levenson"
+  "quotes": [
+    {
+      "quote": "The best way to predict the future is to invent it.",
+      "author": "Alan Kay"
+    },
+    {
+      "quote": "Life is 10% what happens to us and 90% how we react to it.",
+      "author": "Charles R. Swindoll"
+    },
+    {
+      "quote": "The only way to do great work is to love what you do.",
+      "author": "Unknown"
+    }
   ],
-  "updateCRON": "0 0 * * *", // Every day at midnight
-  "imageSize": {
-    "width": 1920,
-    "height": 1080
-  },
-  "font": {
-    "family": "Arial",
-    "size": 24,
-    "color": "#FFFFFF"
-  }
 }
 ```
 
-## User Interaction
+## App Behavior
+
+In its current iteration:
+
+- **Wallpaper refresh frequency**: The app will refresh the wallpaper every hour, on the hour (in local time).
+
+- **Multi-monitor support**: The app will determine the number of attached monitors, but will set the same wallpaper for all monitors.
+
+- **Automatic wallpaper sizing**: The app will automatically infer the monitors' screen resolutions and adjust the wallpaper sizes accordingly.
+
+## User Interactions
 
 The system tray application will allow the user to have the following interactions through a context menu (accessible either by right-clicking the tray icon or left-clicking it):
 
@@ -38,9 +47,26 @@ The system tray application will allow the user to have the following interactio
 
 >Note: In its first iteration, the app will not have a graphical user interface (GUI) for settings management, and all configurations will be done by manually editing the `config.json` file.
 
+## Open Questions
+
+- Does this app need to run as an elevated user/admin?
+
+- Does this app need to run on startup/login? If so, how should this be implemented? Should we just create an installer?
+
+- What should be the behavior of the app when the machine is in different states, such as:
+  - machine is sleeping
+  - machine is locked
+  - machine has hibernated
+  - user has logged off
+
 ## Future Features
 
-1. The app should automatically infer the user's screen resolution and adjust the wallpaper size accordingly.
-2. Multi-monitor support: The app should be able to set different wallpapers for each monitor.
-3. User interface: A simple UI to allow users to add/remove quotes, change settings, and manually trigger a wallpaper update.
-4. Integration with online quote APIs to fetch new quotes regularly.
+- **User interface**: A simple UI to allow users to add/remove quotes, change settings, and manually trigger a wallpaper update.
+
+- **Integration with online quote APIs**: Fetch new quotes regularly from online sources.
+
+- **Customizable wallpapers**: Allow users to choose from different wallpaper templates, styles, fonts.
+
+- **Background helper service**: A helper background service will run in the background to manage wallpaper updates and other tasks. This will ensure that the wallpaper updates happen even if the main system tray application is not running.
+
+- **Exclusion hours**: The app will have an option to exclude certain hours of the day from wallpaper updates (e.g., during work hours).
