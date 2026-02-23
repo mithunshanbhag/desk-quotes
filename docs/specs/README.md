@@ -1,8 +1,8 @@
-# DeskQuotes: A quote a day keep the boredom away
+# DeskQuotes: A quote a day keeps the boredom away
 
 This is the documentation for the DeskQuotes app, which publishes motivational quotes as rotating wallpapers on the user's desktop.
 
-In it's first iteration, the app will be a simple Windows system tray application that fetches a random quote (from a list of quotes) and sets it as the desktop wallpaper.
+In its first iteration, the app will be a simple Windows system tray application that fetches a random quote (from a list of quotes) and sets it as the desktop wallpaper.
 
 ## App Settings
 
@@ -23,7 +23,7 @@ In its first iteration, the app will be completely configured through a `config.
       "quote": "The only way to do great work is to love what you do.",
       "author": "Unknown"
     }
-  ],
+  ]
 }
 ```
 
