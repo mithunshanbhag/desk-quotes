@@ -12,15 +12,15 @@ In its first iteration, the app will be completely configured through a `config.
 {
   "quotes": [
     {
-      "quote": "The best way to predict the future is to invent it.",
+      "text": "The best way to predict the future is to invent it.",
       "author": "Alan Kay"
     },
     {
-      "quote": "Life is 10% what happens to us and 90% how we react to it.",
+      "text": "Life is 10% what happens to us and 90% how we react to it.",
       "author": "Charles R. Swindoll"
     },
     {
-      "quote": "The only way to do great work is to love what you do.",
+      "text": "The only way to do great work is to love what you do.",
       "author": "Unknown"
     }
   ]
@@ -39,13 +39,7 @@ In its current iteration:
 
 ## User Interactions
 
-The system tray application will allow the user to have the following interactions through a context menu (accessible either by right-clicking the tray icon or left-clicking it):
-
-- "Update Wallpaper Now": Manually trigger a wallpaper update.
-- "Settings": Open the `config.json` file in the default text editor for easy editing.
-- "Exit": Close the application.
-
->Note: In its first iteration, the app will not have a graphical user interface (GUI) for settings management, and all configurations will be done by manually editing the `config.json` file.
+See [ui.md](./ui.md).
 
 ## Open Questions
 
