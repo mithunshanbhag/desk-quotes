@@ -1,0 +1,30 @@
+name: desk-quotes-deploy-template
+
+on:
+  workflow_call:
+    inputs:
+      runProvisioning:
+        type: boolean
+        required: true
+        default: false
+
+env:
+  APP_NAME: desk-quotes
+  DOTNET_VERSION_10: "10.0.x"
+
+jobs:
+  build-deploy-desk-quotes-app:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 10
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4.1.1
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION_10 }}
+      - name: dotnet restore
+        run: dotnet restore
+        working-directory: ./src/DeskQuotes
+      - name: build desk-quotes app
+        run: dotnet publish ./src/DeskQuotes/DeskQuotes.csproj -c Release -o ./Publish/DeskQuotes

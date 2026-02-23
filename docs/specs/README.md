@@ -1,0 +1,72 @@
+# DeskQuotes: A quote a day keeps the boredom away
+
+This is the documentation for the DeskQuotes app, which publishes motivational quotes as rotating wallpapers on the user's desktop.
+
+In its first iteration, the app will be a simple Windows system tray application that fetches a random quote (from a list of quotes) and sets it as the desktop wallpaper.
+
+## App Settings
+
+In its first iteration, the app will be completely configured through a `config.json` file located in the same directory as the executable. The file will contain the following settings:
+
+```json
+{
+  "quotes": [
+    {
+      "quote": "The best way to predict the future is to invent it.",
+      "author": "Alan Kay"
+    },
+    {
+      "quote": "Life is 10% what happens to us and 90% how we react to it.",
+      "author": "Charles R. Swindoll"
+    },
+    {
+      "quote": "The only way to do great work is to love what you do.",
+      "author": "Unknown"
+    }
+  ]
+}
+```
+
+## App Behavior
+
+In its current iteration:
+
+- **Wallpaper refresh frequency**: The app will refresh the wallpaper every hour, on the hour (in local time).
+
+- **Multi-monitor support**: The app will determine the number of attached monitors, but will set the same wallpaper for all monitors.
+
+- **Automatic wallpaper sizing**: The app will automatically infer the monitors' screen resolutions and adjust the wallpaper sizes accordingly.
+
+## User Interactions
+
+The system tray application will allow the user to have the following interactions through a context menu (accessible either by right-clicking the tray icon or left-clicking it):
+
+- "Update Wallpaper Now": Manually trigger a wallpaper update.
+- "Settings": Open the `config.json` file in the default text editor for easy editing.
+- "Exit": Close the application.
+
+>Note: In its first iteration, the app will not have a graphical user interface (GUI) for settings management, and all configurations will be done by manually editing the `config.json` file.
+
+## Open Questions
+
+- Does this app need to run as an elevated user/admin?
+
+- Does this app need to run on startup/login? If so, how should this be implemented? Should we just create an installer?
+
+- What should be the behavior of the app when the machine is in different states, such as:
+  - machine is sleeping
+  - machine is locked
+  - machine has hibernated
+  - user has logged off
+
+## Future Features
+
+- **User interface**: A simple UI to allow users to add/remove quotes, change settings, and manually trigger a wallpaper update.
+
+- **Integration with online quote APIs**: Fetch new quotes regularly from online sources.
+
+- **Customizable wallpapers**: Allow users to choose from different wallpaper templates, styles, fonts.
+
+- **Background helper service**: A helper background service will run in the background to manage wallpaper updates and other tasks. This will ensure that the wallpaper updates happen even if the main system tray application is not running.
+
+- **Exclusion hours**: The app will have an option to exclude certain hours of the day from wallpaper updates (e.g., during work hours).
