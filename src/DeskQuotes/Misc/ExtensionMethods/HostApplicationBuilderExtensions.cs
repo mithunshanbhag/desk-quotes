@@ -26,6 +26,14 @@ public static class HostApplicationBuilderExtensions
 
             // named http clients
 
+            // services
+            builder.Services
+                .AddSingleton<QuoteSelectionService>()
+                .AddSingleton<MonitorResolutionService>()
+                .AddSingleton<WallpaperRenderService>()
+                .AddSingleton<WindowsWallpaperService>()
+                .AddSingleton<WallpaperUpdateService>()
+                .AddSingleton<WallpaperRefreshSchedulerService>();
 
             // winform components
             builder.Services
