@@ -15,7 +15,7 @@ public class QuoteSelectionService(IValidator<IEnumerable<Quote>?>? configuredQu
         if (!validationResult.IsValid) return false;
 
         var candidates = configuredQuotesArray
-            .Where(quote => !string.IsNullOrWhiteSpace(quote.Text))
+            .Where(quote => quote is not null && !string.IsNullOrWhiteSpace(quote.Text))
             .ToArray();
 
         if (candidates.Length == 0) return false;
