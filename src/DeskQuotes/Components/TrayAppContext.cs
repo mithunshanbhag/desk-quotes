@@ -109,7 +109,9 @@ public class TrayAppContext : ApplicationContext
     private void Exit(object? sender, EventArgs e)
     {
         _refreshTimer.Stop();
+        _refreshTimer.Dispose();
         _trayIcon.Visible = false;
+        _trayIcon.ContextMenuStrip?.Dispose();
         _trayIcon.Dispose();
         Application.Exit();
     }

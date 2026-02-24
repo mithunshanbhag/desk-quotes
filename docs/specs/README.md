@@ -43,10 +43,6 @@ See [ui.md](./ui.md).
 
 ## Open Questions
 
-- Does this app need to run as an elevated user/admin?
-
-- Does this app need to run on startup/login? If so, how should this be implemented? Should we just create an installer?
-
 - What should be the behavior of the app when the machine is in different states, such as:
   - machine is sleeping
   - machine is locked
@@ -64,3 +60,5 @@ See [ui.md](./ui.md).
 - **Background helper service**: A helper background service will run in the background to manage wallpaper updates and other tasks. This will ensure that the wallpaper updates happen even if the main system tray application is not running.
 
 - **Exclusion hours**: The app will have an option to exclude certain hours of the day from wallpaper updates (e.g., during work hours).
+
+- **Run on startup/login**: The app will have an option to run automatically on system startup or user login. This can be implemented through an installer or by adding a shortcut to the startup folder.
