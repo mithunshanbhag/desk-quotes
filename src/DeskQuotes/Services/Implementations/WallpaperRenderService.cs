@@ -1,6 +1,6 @@
-namespace DeskQuotes.Services;
+namespace DeskQuotes.Services.Implementations;
 
-public class WallpaperRenderService
+public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null)
 {
     private const int FallbackWidth = 1920;
     private const int FallbackHeight = 1080;
@@ -9,8 +9,15 @@ public class WallpaperRenderService
     {
         ArgumentNullException.ThrowIfNull(quote);
 
-        var width = resolution.Width > 0 ? resolution.Width : FallbackWidth;
-        var height = resolution.Height > 0 ? resolution.Height : FallbackHeight;
+        var isWidthValid = resolutionValidator?.Validate(
+            resolution,
+            options => options.IncludeProperties(size => size.Width)).IsValid ?? resolution.Width > 0;
+        var isHeightValid = resolutionValidator?.Validate(
+            resolution,
+            options => options.IncludeProperties(size => size.Height)).IsValid ?? resolution.Height > 0;
+
+        var width = isWidthValid ? resolution.Width : FallbackWidth;
+        var height = isHeightValid ? resolution.Height : FallbackHeight;
 
         var outputDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

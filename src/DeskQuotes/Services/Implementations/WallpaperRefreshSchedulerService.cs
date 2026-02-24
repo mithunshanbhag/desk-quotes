@@ -1,4 +1,4 @@
-namespace DeskQuotes.Services;
+namespace DeskQuotes.Services.Implementations;
 
 public sealed class WallpaperRefreshSchedulerService
 {

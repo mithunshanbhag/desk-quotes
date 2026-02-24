@@ -1,14 +1,16 @@
-namespace DeskQuotes.Services;
+namespace DeskQuotes.Services.Implementations;
 
-public partial class WindowsWallpaperService
+public partial class WindowsWallpaperService(IValidator<WallpaperPathInput>? wallpaperPathValidator = null)
 {
     private const uint SpiSetDeskWallpaper = 0x0014;
     private const uint SpifUpdateIniFile = 0x0001;
     private const uint SpifSendWinIniChange = 0x0002;
+    private readonly IValidator<WallpaperPathInput> _wallpaperPathValidator = wallpaperPathValidator ?? new WindowsWallpaperPathInputValidator();
 
     public virtual bool TryApplyWallpaper(string wallpaperPath)
     {
-        if (string.IsNullOrWhiteSpace(wallpaperPath) || !File.Exists(wallpaperPath)) return false;
+        var validationResult = _wallpaperPathValidator.Validate(new WallpaperPathInput(wallpaperPath));
+        if (!validationResult.IsValid) return false;
 
         return SystemParametersInfo(
             SpiSetDeskWallpaper,
