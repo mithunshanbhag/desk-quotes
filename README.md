@@ -1,93 +1,40 @@
-# @REPLACE_PROJECT_NAME@
+# DeskQuotes
 
-This GitHub project template includes the following files and directories:
+[![Build Status](https://img.shields.io/badge/build-pending-lightgrey)](#)
+[![Test Coverage](https://img.shields.io/badge/coverage-pending-lightgrey)](#)
 
-```text
-.
-├── (📁) .github
-│   ├── (📁) ISSUE_TEMPLATE
-│   │   ├── (📃) bug_report.yml
-│   │   ├── (📃) config.yml
-│   │   ├── (📃) documentation.yml
-│   │   ├── (📃) feature_request.yml
-|   |── (📁) prompts
-|   |── (📁) skills
-│   │   ├── (📁) documentation
-│   │   ├── (📁) test-automation
-│   │   ├── (📁) ui-development
-│   │   ├── (📁) ui-mockup
-|   |── (📁) workflows
-│   │   ├── (📃) close-inactive-issues.yml
-│   │   ├── (📃) deploy-template.yml
-│   │   ├── (📃) deploy.yml
-│   |── (📃) copilot-instructions.md
-│   |── (📃) PULL_REQUEST_TEMPLATE.md
-├── (📁) docs
-|   |── (📁) assets
-|   |── (📁) specs
-|   |── (📁) ui-mockups
-|   |── (📁) user-manual
-├── (📁) infra
-│   |── (📃) createExtensionResources.bicep
-│   |── (📃) createResourceGroups.bicep
-│   |── (📃) createResources.bicep
-├── (📁) samples
-├── (📁) scripts
-├── (📁) src
-├── (📁) tests
-├── (📃) .editorconfig
-├── (📃) .gitignore
-├── (📃) CODE_OF_CONDUCT.md
-├── (📃) CONTRIBUTING.md
-├── (📃) LICENSE
-├── (📃) README.md
-├── (📃) run-local.ps1
-├── (📃) SECURITY.md
+![DeskQuotes demo placeholder](https://placehold.co/960x540?text=DeskQuotes+Demo+Coming+Soon)
+
+DeskQuotes is a Windows tray app that rotates your desktop wallpaper using quotes from a local `settings.json` file.
+
+## Installation
+
+1. Install the .NET 10 SDK on Windows.
+2. Clone this repository.
+3. Restore dependencies:
+
+```powershell
+dotnet restore .\DeskQuotes.slnx
 ```
 
-@REPLACE_WITH_STATUS_BADGES@
+## Usage
 
-## How to install?
+1. Run the app (see the next section).
+2. Use the tray icon menu to:
+   - **Refresh Wallpaper**
+   - **Settings** (opens `settings.json`)
+   - **Exit**
+3. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
 
-@TODO: Add installation instructions here.
+## Build and run locally
 
-## How to use?
+```powershell
+dotnet build .\src\DeskQuotes\DeskQuotes.csproj
+dotnet run --project .\src\DeskQuotes\DeskQuotes.csproj
+```
 
-## How to build and run locally?
+## Run tests
 
-@TODO: Add instructions to build and run the project locally.
-
-## Contents
-
-- Changelog file
-- CI/CD configuration files
-- Dependency management files
-- Build scripts
-- Environment setup instructions
-- Usage instructions
-- FAQ section
-- Community guidelines
-- License badges
-- Project status badges
-- Contribution guidelines
-- Code style guidelines
-- Deployment instructions
-- Performance benchmarks
-- API documentation
-- Architecture diagrams
-
-## AI Readiness
-
-### Custom Agents
-
-
-
-### Custom Instructions
-
-### AGENTS.md
-
-### Prompts
-
-### Skills
-
-### Memory
+```powershell
+dotnet test .\tests\DeskQuotes.UnitTests\DeskQuotes.UnitTests.csproj
+```

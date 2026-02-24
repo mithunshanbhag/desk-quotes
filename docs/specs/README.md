@@ -12,15 +12,15 @@ In its first iteration, the app will be completely configured through a `config.
 {
   "quotes": [
     {
-      "quote": "The best way to predict the future is to invent it.",
+      "text": "The best way to predict the future is to invent it.",
       "author": "Alan Kay"
     },
     {
-      "quote": "Life is 10% what happens to us and 90% how we react to it.",
+      "text": "Life is 10% what happens to us and 90% how we react to it.",
       "author": "Charles R. Swindoll"
     },
     {
-      "quote": "The only way to do great work is to love what you do.",
+      "text": "The only way to do great work is to love what you do.",
       "author": "Unknown"
     }
   ]
@@ -39,19 +39,9 @@ In its current iteration:
 
 ## User Interactions
 
-The system tray application will allow the user to have the following interactions through a context menu (accessible either by right-clicking the tray icon or left-clicking it):
-
-- "Update Wallpaper Now": Manually trigger a wallpaper update.
-- "Settings": Open the `config.json` file in the default text editor for easy editing.
-- "Exit": Close the application.
-
->Note: In its first iteration, the app will not have a graphical user interface (GUI) for settings management, and all configurations will be done by manually editing the `config.json` file.
+See [ui.md](./ui.md).
 
 ## Open Questions
-
-- Does this app need to run as an elevated user/admin?
-
-- Does this app need to run on startup/login? If so, how should this be implemented? Should we just create an installer?
 
 - What should be the behavior of the app when the machine is in different states, such as:
   - machine is sleeping
@@ -70,3 +60,5 @@ The system tray application will allow the user to have the following interactio
 - **Background helper service**: A helper background service will run in the background to manage wallpaper updates and other tasks. This will ensure that the wallpaper updates happen even if the main system tray application is not running.
 
 - **Exclusion hours**: The app will have an option to exclude certain hours of the day from wallpaper updates (e.g., during work hours).
+
+- **Run on startup/login**: The app will have an option to run automatically on system startup or user login. This can be implemented through an installer or by adding a shortcut to the startup folder.
