@@ -1,3 +1,5 @@
+using WindowsWallpaperService = DeskQuotes.Services.Implementations.WindowsWallpaperService;
+
 namespace DeskQuotes.UnitTests.Services;
 
 public class WallpaperUpdateServiceTests
@@ -5,7 +7,7 @@ public class WallpaperUpdateServiceTests
     [Fact]
     public void TryUpdateWallpaper_WhenAllStepsSucceed_ReturnsTrue()
     {
-        var quoteSelectionService = new QuoteSelectionService();
+        var quoteSelectionService = new SpyQuoteSelectionService();
         var monitorResolutionService = new SpyMonitorResolutionService();
         var wallpaperRenderService = new SpyWallpaperRenderService();
         var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
@@ -19,6 +21,7 @@ public class WallpaperUpdateServiceTests
         var result = sut.TryUpdateWallpaper([quote]);
 
         result.Should().BeTrue();
+        quoteSelectionService.CallCount.Should().Be(1);
         monitorResolutionService.CallCount.Should().Be(1);
         wallpaperRenderService.CallCount.Should().Be(1);
         windowsWallpaperService.CallCount.Should().Be(1);
@@ -29,11 +32,12 @@ public class WallpaperUpdateServiceTests
     [Fact]
     public void TryUpdateWallpaper_WhenNoQuoteCanBeSelected_ReturnsFalseAndSkipsDependencies()
     {
+        var quoteSelectionService = new SpyQuoteSelectionService { ReturnValue = false };
         var monitorResolutionService = new SpyMonitorResolutionService();
         var wallpaperRenderService = new SpyWallpaperRenderService();
         var windowsWallpaperService = new SpyWindowsWallpaperService();
         var sut = new WallpaperUpdateService(
-            new QuoteSelectionService(),
+            quoteSelectionService,
             monitorResolutionService,
             wallpaperRenderService,
             windowsWallpaperService);
@@ -41,6 +45,7 @@ public class WallpaperUpdateServiceTests
         var result = sut.TryUpdateWallpaper([]);
 
         result.Should().BeFalse();
+        quoteSelectionService.CallCount.Should().Be(1);
         monitorResolutionService.CallCount.Should().Be(0);
         wallpaperRenderService.CallCount.Should().Be(0);
         windowsWallpaperService.CallCount.Should().Be(0);
@@ -49,11 +54,12 @@ public class WallpaperUpdateServiceTests
     [Fact]
     public void TryUpdateWallpaper_WhenWallpaperRenderingThrows_ReturnsFalse()
     {
+        var quoteSelectionService = new SpyQuoteSelectionService();
         var monitorResolutionService = new SpyMonitorResolutionService();
         var wallpaperRenderService = new SpyWallpaperRenderService { ThrowOnRender = true };
         var windowsWallpaperService = new SpyWindowsWallpaperService();
         var sut = new WallpaperUpdateService(
-            new QuoteSelectionService(),
+            quoteSelectionService,
             monitorResolutionService,
             wallpaperRenderService,
             windowsWallpaperService);
@@ -61,6 +67,7 @@ public class WallpaperUpdateServiceTests
         var result = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
 
         result.Should().BeFalse();
+        quoteSelectionService.CallCount.Should().Be(1);
         monitorResolutionService.CallCount.Should().Be(1);
         wallpaperRenderService.CallCount.Should().Be(1);
         windowsWallpaperService.CallCount.Should().Be(0);
@@ -69,11 +76,12 @@ public class WallpaperUpdateServiceTests
     [Fact]
     public void TryUpdateWallpaper_WhenWallpaperApplyFails_ReturnsFalse()
     {
+        var quoteSelectionService = new SpyQuoteSelectionService();
         var monitorResolutionService = new SpyMonitorResolutionService();
         var wallpaperRenderService = new SpyWallpaperRenderService();
         var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = false };
         var sut = new WallpaperUpdateService(
-            new QuoteSelectionService(),
+            quoteSelectionService,
             monitorResolutionService,
             wallpaperRenderService,
             windowsWallpaperService);
@@ -81,9 +89,27 @@ public class WallpaperUpdateServiceTests
         var result = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
 
         result.Should().BeFalse();
+        quoteSelectionService.CallCount.Should().Be(1);
         monitorResolutionService.CallCount.Should().Be(1);
         wallpaperRenderService.CallCount.Should().Be(1);
         windowsWallpaperService.CallCount.Should().Be(1);
+    }
+
+    private sealed class SpyQuoteSelectionService : QuoteSelectionService
+    {
+        public int CallCount { get; private set; }
+        public bool? ReturnValue { get; init; }
+        public Quote? SelectedQuote { get; init; }
+
+        public override bool TrySelectQuote(IEnumerable<Quote>? configuredQuotes, out Quote? selectedQuote)
+        {
+            CallCount++;
+
+            if (!ReturnValue.HasValue) return base.TrySelectQuote(configuredQuotes, out selectedQuote);
+
+            selectedQuote = SelectedQuote;
+            return ReturnValue.Value;
+        }
     }
 
     private sealed class SpyMonitorResolutionService : MonitorResolutionService

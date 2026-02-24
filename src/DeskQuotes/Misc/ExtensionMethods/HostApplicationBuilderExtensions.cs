@@ -1,4 +1,6 @@
-﻿namespace DeskQuotes.Misc.ExtensionMethods;
+﻿using WindowsWallpaperService = DeskQuotes.Services.Implementations.WindowsWallpaperService;
+
+namespace DeskQuotes.Misc.ExtensionMethods;
 
 public static class HostApplicationBuilderExtensions
 {
@@ -23,6 +25,9 @@ public static class HostApplicationBuilderExtensions
 
             // mediatr
             builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()); });
+
+            // fluent validation
+            builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);
 
             // named http clients
 
