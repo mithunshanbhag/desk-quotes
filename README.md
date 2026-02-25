@@ -1,9 +1,9 @@
 # DeskQuotes
 
-[![Build Status](https://img.shields.io/badge/build-pending-lightgrey)](#)
-[![Test Coverage](https://img.shields.io/badge/coverage-pending-lightgrey)](#)
+[![desk-quotes-deploy](https://github.com/mithunshanbhag/desk-quotes/actions/workflows/deploy.yml/badge.svg)](https://github.com/mithunshanbhag/desk-quotes/actions/workflows/deploy.yml)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-![DeskQuotes demo placeholder](https://placehold.co/960x540?text=DeskQuotes+Demo+Coming+Soon)
+![DeskQuotes Demo](./docs/assets/reference-screenshot.png)
 
 DeskQuotes is a Windows tray app that rotates your desktop wallpaper using quotes from a local `settings.json` file.
 
@@ -22,7 +22,7 @@ dotnet restore .\DeskQuotes.slnx
 1. Run the app (see the next section).
 2. Use the tray icon menu to:
    - **Refresh Wallpaper**
-   - **Settings** (opens `settings.json`)
+   - **Edit Settings** (opens `settings.json`)
    - **Exit**
 3. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
 
