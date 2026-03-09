@@ -7,6 +7,7 @@ This is my opinionated checklist for building indie-SaaS, micro-SaaS apps. It is
 My preferred framework for building apps is .NET (currently .NET 10 is the latest version):
 
 - Frontend: Blazor WebAssembly (with MudBlazor controls).
+- CommandLine: .NET Console App (with Spectre.Console for rich CLI).
 - Backend: Azure Function Apps.
 - Database: Azure Cosmos DB (NOSQL API, formerly known as Core SQL API).
 
@@ -28,7 +29,7 @@ I prefer to host my apps and related infra on Azure using serverless/PaaS. This 
 
 ## GENERAL WORKFLOW
 
-1. See if there are any prior learnings documented in `/.github/LEARNINGS.md` that can be helpful for the current task.
+1. See if there are any prior learnings documented in `/.github/LEARNINGS.md` that can be helpful for the current task. Create this file if it doesn't exist.
 
 2. Start with the specifications in the `/docs/specs` folder. This will give you a clear understanding of the requirements and features of the app.
    - Start with `/docs/specs/README.md`.
@@ -65,6 +66,7 @@ I prefer to host my apps and related infra on Azure using serverless/PaaS. This 
   /src
     /MyApp.Api
     /MyApp.Application
+    /MyApp.Core
     /MyApp.Domain
     /MyApp.Infrastructure
   ```
@@ -73,7 +75,7 @@ I prefer to host my apps and related infra on Azure using serverless/PaaS. This 
 
 - If you encounter any ambiguities or have questions about the specifications, please ask for clarification before proceeding with the implementation.
 
-- Please follow the guidelines in the `/.github/skills/ui-development/SKILL.md` file when implementing the UI.
+- Please follow the guidelines in the `/.github/skills/development/SKILL.md` file when implementing the code, creating features or fixing bugs.
 
 - Do not declare success until you've actually verified that the changes work. Verification can be done by:
   - Running the application and testing the feature visually. OR
