@@ -2,6 +2,8 @@ namespace DeskQuotes.UnitTests.Services;
 
 public class QuoteSelectionServiceValidationTests
 {
+    #region Negative cases
+
     [Fact]
     public void TrySelectRandomQuote_WhenQuotesAreNull_ReturnsFalse()
     {
@@ -27,4 +29,6 @@ public class QuoteSelectionServiceValidationTests
         QuoteSelectionService.TrySelectRandomQuote(quotes, out var selectedQuote).Should().BeFalse();
         selectedQuote.Should().BeNull();
     }
+
+    #endregion
 }

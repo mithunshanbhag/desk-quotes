@@ -4,18 +4,22 @@ namespace DeskQuotes.Components;
 
 public class TrayAppContext : ApplicationContext
 {
+    private readonly GlobalHotkeyService _globalHotkeyService;
     private readonly List<Quote> _quotes = [];
     private readonly Timer _refreshTimer = new();
     private readonly ComponentResourceManager _resources = new(typeof(TrayAppContext));
     private readonly NotifyIcon _trayIcon;
     private readonly WallpaperRefreshSchedulerService _wallpaperRefreshSchedulerService;
     private readonly WallpaperUpdateService _wallpaperUpdateService;
+    private bool _isRefreshing;
 
     public TrayAppContext(
         IConfiguration configuration,
+        GlobalHotkeyService globalHotkeyService,
         WallpaperUpdateService wallpaperUpdateService,
         WallpaperRefreshSchedulerService wallpaperRefreshSchedulerService)
     {
+        _globalHotkeyService = globalHotkeyService;
         _wallpaperUpdateService = wallpaperUpdateService;
         _wallpaperRefreshSchedulerService = wallpaperRefreshSchedulerService;
 
@@ -27,7 +31,7 @@ public class TrayAppContext : ApplicationContext
             {
                 Items =
                 {
-                    new ToolStripMenuItem("&Refresh Wallpaper", null, RefreshWallpaper),
+                    new ToolStripMenuItem(AppConstants.RefreshWallpaperMenuLabel, null, RefreshWallpaper),
                     new ToolStripMenuItem("&Settings", null, EditSettings),
                     new ToolStripMenuItem("E&xit", null, Exit)
                 }
@@ -47,16 +51,34 @@ public class TrayAppContext : ApplicationContext
         }
 
         _refreshTimer.Tick += RefreshWallpaperOnSchedule;
-        RefreshWallpaper(this, EventArgs.Empty);
+
+        if (!_globalHotkeyService.TryRegisterHotkey(RefreshWallpaperFromHotkey))
+            _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {AppConstants.RefreshWallpaperHotkeyDisplay}. The app will keep running without the hotkey.",
+                ToolTipIcon.Warning);
+
+        Application.Idle += RefreshWallpaperOnStartup;
         ScheduleNextRefresh();
     }
 
     private void RefreshWallpaper(object? sender, EventArgs e)
     {
+        if (_isRefreshing)
+            return;
+
+        _isRefreshing = true;
         _trayIcon.ShowBalloonTip(1000, "Refreshing Wallpaper", "Your wallpaper is being refreshed.", ToolTipIcon.Info);
 
-        if (!_wallpaperUpdateService.TryUpdateWallpaper(_quotes))
-            _trayIcon.ShowBalloonTip(1000, "Refresh Failed", "Unable to refresh wallpaper from settings.", ToolTipIcon.Warning);
+        try
+        {
+            var wallpaperUpdated = _wallpaperUpdateService.TryUpdateWallpaper(_quotes);
+
+            if (!wallpaperUpdated)
+                _trayIcon.ShowBalloonTip(1000, "Refresh Failed", "Unable to refresh wallpaper from settings.", ToolTipIcon.Warning);
+        }
+        finally
+        {
+            _isRefreshing = false;
+        }
     }
 
     private void RefreshWallpaperOnSchedule(object? sender, EventArgs e)
@@ -74,6 +96,17 @@ public class TrayAppContext : ApplicationContext
         _refreshTimer.Stop();
         _refreshTimer.Interval = interval;
         _refreshTimer.Start();
+    }
+
+    private void RefreshWallpaperFromHotkey()
+    {
+        RefreshWallpaper(this, EventArgs.Empty);
+    }
+
+    private void RefreshWallpaperOnStartup(object? sender, EventArgs e)
+    {
+        Application.Idle -= RefreshWallpaperOnStartup;
+        RefreshWallpaper(this, EventArgs.Empty);
     }
 
     private void EditSettings(object? sender, EventArgs e)
@@ -108,6 +141,8 @@ public class TrayAppContext : ApplicationContext
 
     private void Exit(object? sender, EventArgs e)
     {
+        Application.Idle -= RefreshWallpaperOnStartup;
+        _globalHotkeyService.Dispose();
         _refreshTimer.Stop();
         _refreshTimer.Dispose();
         _trayIcon.Visible = false;

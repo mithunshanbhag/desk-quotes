@@ -2,7 +2,7 @@
 
 The system tray application will allow the user to have the following interactions through a context menu (accessible either by right-clicking the tray icon or left-clicking it):
 
-- "Update Wallpaper Now": Manually trigger a wallpaper update.
+- "Refresh Wallpaper (Ctrl + Alt + U)": Manually trigger a wallpaper update. The same fixed global hotkey (`Ctrl + Alt + U`) will also be available for this action.
 - "Settings": Open the `settings.json` file in the default text editor for easy editing.
 - "Exit": Close the application.
 

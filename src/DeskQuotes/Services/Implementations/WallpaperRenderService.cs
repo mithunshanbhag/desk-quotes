@@ -4,6 +4,12 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
 {
     private const int FallbackWidth = 1920;
     private const int FallbackHeight = 1080;
+    private const float TextHorizontalInsetRatio = 0.1f;
+    private const float TextBlockTopInsetRatio = 0.12f;
+    private const float TextBlockBottomInsetRatio = 0.12f;
+    private const float AuthorSpacingRatio = 0.024f;
+    private const float MinimumAuthorSpacing = 12f;
+    private const float MaximumAuthorSpacing = 28f;
 
     public virtual string RenderQuoteWallpaper(Quote quote, Size resolution)
     {
@@ -49,16 +55,55 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
         format.LineAlignment = StringAlignment.Center;
         format.Trimming = StringTrimming.Word;
 
-        var quoteBounds = new RectangleF(width * 0.1f, height * 0.14f, width * 0.8f, height * 0.58f);
+        var quoteBounds = CreateQuoteBounds(graphics, quoteText, quoteFont, width, height, format, authorText, authorFont, out var authorBounds);
         graphics.DrawString(quoteText, quoteFont, quoteBrush, quoteBounds, format);
 
-        if (!string.IsNullOrEmpty(authorText))
+        if (authorBounds.HasValue)
         {
-            var authorBounds = new RectangleF(width * 0.1f, height * 0.74f, width * 0.8f, height * 0.14f);
-            graphics.DrawString(authorText, authorFont, authorBrush, authorBounds, format);
+            graphics.DrawString(authorText, authorFont, authorBrush, authorBounds.Value, format);
         }
 
         bitmap.Save(outputPath, ImageFormat.Bmp);
         return outputPath;
+    }
+
+    private static RectangleF CreateQuoteBounds(
+        Graphics graphics,
+        string quoteText,
+        Font quoteFont,
+        int width,
+        int height,
+        StringFormat format,
+        string authorText,
+        Font authorFont,
+        out RectangleF? authorBounds)
+    {
+        var textLeft = width * TextHorizontalInsetRatio;
+        var textWidth = width * (1f - (2f * TextHorizontalInsetRatio));
+        var textSize = new SizeF(textWidth, height);
+        var measuredQuoteSize = graphics.MeasureString(quoteText, quoteFont, textSize, format);
+
+        if (string.IsNullOrEmpty(authorText))
+        {
+            authorBounds = null;
+            return CreateCenteredTextBounds(textLeft, textWidth, height, measuredQuoteSize.Height, measuredQuoteSize.Height);
+        }
+
+        var measuredAuthorSize = graphics.MeasureString(authorText, authorFont, textSize, format);
+        var authorSpacing = Math.Clamp(height * AuthorSpacingRatio, MinimumAuthorSpacing, MaximumAuthorSpacing);
+        var combinedTextHeight = measuredQuoteSize.Height + authorSpacing + measuredAuthorSize.Height;
+        var quoteBounds = CreateCenteredTextBounds(textLeft, textWidth, height, combinedTextHeight, measuredQuoteSize.Height);
+        authorBounds = new RectangleF(textLeft, quoteBounds.Bottom + authorSpacing, textWidth, measuredAuthorSize.Height);
+
+        return quoteBounds;
+    }
+
+    private static RectangleF CreateCenteredTextBounds(float left, float width, int wallpaperHeight, float combinedTextHeight, float currentTextHeight)
+    {
+        var minimumTop = wallpaperHeight * TextBlockTopInsetRatio;
+        var maximumTop = wallpaperHeight - (wallpaperHeight * TextBlockBottomInsetRatio) - combinedTextHeight;
+        var top = Math.Clamp((wallpaperHeight - combinedTextHeight) / 2f, minimumTop, maximumTop);
+
+        return new RectangleF(left, top, width, currentTextHeight);
     }
 }

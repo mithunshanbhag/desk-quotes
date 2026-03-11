@@ -4,6 +4,8 @@ public class QuoteSelectionServiceTests
 {
     private readonly QuoteSelectionService _sut = new();
 
+    #region Negative cases
+
     [Fact]
     public void TrySelectRandomQuote_WhenQuotesAreNull_ReturnsFalse()
     {
@@ -28,6 +30,10 @@ public class QuoteSelectionServiceTests
         selectedQuote.Should().BeNull();
     }
 
+    #endregion
+
+    #region Positive cases
+
     [Fact]
     public void TrySelectRandomQuote_WhenOnlyOneQuoteIsValid_ReturnsThatQuote()
     {
@@ -44,4 +50,6 @@ public class QuoteSelectionServiceTests
         result.Should().BeTrue();
         selectedQuote.Should().BeSameAs(expectedQuote);
     }
+
+    #endregion
 }

@@ -41,9 +41,11 @@ I prefer to host my apps and related infra on Azure using serverless/PaaS. This 
 
 5. Write tests in the `/tests` folder to verify that the features work as expected.
 
-6. Update the documentation in the `README.md` file as needed to reflect the current state of the project.
+6. Set up the local development script (if not already set up).
 
-7. Document any new, relevant learnings and notes by updating the `/.github/LEARNINGS.md` file.
+7. Update the documentation in the `README.md` file as needed to reflect the current state of the project.
+
+8. Document any new, relevant learnings and notes by updating the `/.github/LEARNINGS.md` file.
 
 ## UI MOCKUP GUIDELINES
 
@@ -106,6 +108,12 @@ I prefer to host my apps and related infra on Azure using serverless/PaaS. This 
 - Please follow the guidelines in the `/.github/skills/test-automation/SKILL.md` file when authoring automated tests.
 
 - Always ensure that the tests are building, running, and passing before declaring success.
+
+## LOCAL DEVELOPMENT SCRIPT GUIDELINES
+
+- Please follow the guidelines in the `/.github/skills/local-dev-script/SKILL.md` file when setting up the local development script.
+
+- Always ensure that the local development script is working as expected before declaring success.
 
 ## DOCUMENTATION GUIDELINES
 

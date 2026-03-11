@@ -4,6 +4,8 @@ public class WallpaperRefreshSchedulerServiceTests
 {
     private readonly WallpaperRefreshSchedulerService _sut = new();
 
+    #region Boundary cases
+
     [Fact]
     public void GetDelayUntilNextLocalTopOfHourRefresh_WhenExactlyAtTopOfHour_ReturnsOneHour()
     {
@@ -33,4 +35,6 @@ public class WallpaperRefreshSchedulerServiceTests
 
         delay.Should().Be(TimeSpan.FromMilliseconds(100));
     }
+
+    #endregion
 }
