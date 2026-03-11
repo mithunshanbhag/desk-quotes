@@ -47,6 +47,18 @@ I prefer to host my apps and related infra on Azure using serverless/PaaS. This 
 
 8. Document any new, relevant learnings and notes by updating the `/.github/LEARNINGS.md` file.
 
+9. Along with your actual output, please also provide a brief summary of the skills utilized, hooks invoked, LSPs invoked. Use the following format:
+
+  ```
+  Skills Utilized
+  - Skill 1
+  - Skill 2
+  Hooks Invoked
+  - Hook 1
+  LSPs Invoked
+  - LSP 1
+  ```
+
 ## UI MOCKUP GUIDELINES
 
 - Each UI mockup should be in its own subfolder under `/docs/ui-mockups` with a descriptive name. For example:
