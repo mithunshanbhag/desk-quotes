@@ -37,6 +37,7 @@ public static class HostApplicationBuilderExtensions
                 .AddSingleton<MonitorResolutionService>()
                 .AddSingleton<WallpaperRenderService>()
                 .AddSingleton<WindowsWallpaperService>()
+                .AddSingleton<GlobalHotkeyService>()
                 .AddSingleton<WallpaperUpdateService>()
                 .AddSingleton<WallpaperRefreshSchedulerService>();
 

@@ -37,6 +37,8 @@ In its current iteration:
 
 - **Automatic wallpaper sizing**: The app will automatically infer the monitors' screen resolutions and adjust the wallpaper sizes accordingly.
 
+- **Refresh on demand**: The app will have an option to refresh the wallpaper on demand through the tray context menu (`Refresh Wallpaper (Ctrl + Alt + U)`) and a fixed global hotkey (`Ctrl + Alt + U`).
+
 ## User Interactions
 
 See [ui.md](./ui.md).
@@ -62,3 +64,5 @@ See [ui.md](./ui.md).
 - **Exclusion hours**: The app will have an option to exclude certain hours of the day from wallpaper updates (e.g., during work hours).
 
 - **Run on startup/login**: The app will have an option to run automatically on system startup or user login. This can be implemented through an installer or by adding a shortcut to the startup folder.
+
+- **Custom hotkeys**: Allow users to configure custom hotkeys for triggering wallpaper updates or opening the settings.

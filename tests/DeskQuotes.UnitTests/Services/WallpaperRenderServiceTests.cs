@@ -4,6 +4,8 @@ namespace DeskQuotes.UnitTests.Services;
 
 public class WallpaperRenderServiceTests
 {
+    #region Negative cases
+
     [Fact]
     public void RenderQuoteWallpaper_WhenQuoteIsNull_ThrowsArgumentNullException()
     {
@@ -13,6 +15,10 @@ public class WallpaperRenderServiceTests
 
         action.Should().Throw<ArgumentNullException>();
     }
+
+    #endregion
+
+    #region Boundary cases
 
     [Fact]
     public void RenderQuoteWallpaper_WhenResolutionIsInvalid_UsesFallbackAndCreatesWallpaper()
@@ -42,4 +48,6 @@ public class WallpaperRenderServiceTests
         renderedImage.Width.Should().Be(1920);
         renderedImage.Height.Should().Be(720);
     }
+
+    #endregion
 }

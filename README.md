@@ -21,20 +21,27 @@ dotnet restore .\DeskQuotes.slnx
 
 1. Run the app (see the next section).
 2. Use the tray icon menu to:
-   - **Refresh Wallpaper**
-   - **Edit Settings** (opens `settings.json`)
+   - **Refresh Wallpaper (Ctrl + Alt + U)**
+   - **Settings** (opens `settings.json`)
    - **Exit**
-3. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
+3. Press `Ctrl + Alt + U` from anywhere, or use the tray menu, to trigger an immediate wallpaper refresh.
+4. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
 
 ## Build and run locally
 
 ```powershell
-dotnet build .\src\DeskQuotes\DeskQuotes.csproj
-dotnet run --project .\src\DeskQuotes\DeskQuotes.csproj
+.\run-local.ps1 -target app
 ```
 
 ## Run tests
 
 ```powershell
-dotnet test .\tests\DeskQuotes.UnitTests\DeskQuotes.UnitTests.csproj
+.\run-local.ps1 -target unit-tests
+```
+
+Additional local targets:
+
+```powershell
+.\run-local.ps1 -target tests
+.\run-local.ps1 -target e2e-tests
 ```

@@ -9,6 +9,8 @@ public class WindowsWallpaperServiceTests
 {
     private readonly WindowsWallpaperService _sut = new();
 
+    #region Negative cases
+
     [Fact]
     public void TryApplyWallpaper_WhenValidatorRejectsPath_ReturnsFalse()
     {
@@ -47,6 +49,8 @@ public class WindowsWallpaperServiceTests
 
         result.Should().BeFalse();
     }
+
+    #endregion
 
     private sealed class RejectingWallpaperPathValidator : AbstractValidator<WallpaperPathInput>
     {

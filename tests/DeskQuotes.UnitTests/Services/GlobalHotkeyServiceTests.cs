@@ -1,0 +1,138 @@
+using System.Windows.Forms;
+using DeskQuotes.Constants;
+
+namespace DeskQuotes.UnitTests.Services;
+
+public class GlobalHotkeyServiceTests
+{
+    #region Boundary cases
+
+    [Fact]
+    public void Dispose_WhenHotkeyWasNeverRegistered_IsSafe()
+    {
+        var sut = new SpyGlobalHotkeyService();
+
+        sut.Dispose();
+
+        sut.RemoveMessageFilterCallCount.Should().Be(0);
+        sut.UnregisterHotkeyCallCount.Should().Be(0);
+    }
+
+    #endregion
+
+    private sealed class SpyGlobalHotkeyService : GlobalHotkeyService
+    {
+        public int AddMessageFilterCallCount { get; private set; }
+        public int RegisterHotkeyCallCount { get; private set; }
+        public int RemoveMessageFilterCallCount { get; private set; }
+        public int UnregisterHotkeyCallCount { get; private set; }
+        public bool RegisterHotkeyReturnValue { get; init; } = true;
+
+        protected override void AddMessageFilter(IMessageFilter messageFilter)
+        {
+            AddMessageFilterCallCount++;
+        }
+
+        protected override void RemoveMessageFilter(IMessageFilter messageFilter)
+        {
+            RemoveMessageFilterCallCount++;
+        }
+
+        protected override bool TryRegisterHotkeyCore(IntPtr hWnd, int id, uint modifiers, uint virtualKey)
+        {
+            RegisterHotkeyCallCount++;
+            return RegisterHotkeyReturnValue;
+        }
+
+        protected override bool TryUnregisterHotkeyCore(IntPtr hWnd, int id)
+        {
+            UnregisterHotkeyCallCount++;
+            return true;
+        }
+    }
+
+    #region Positive cases
+
+    [Fact]
+    public void TryRegisterHotkey_WhenRegistrationSucceeds_AddsMessageFilterAndReturnsTrue()
+    {
+        var sut = new SpyGlobalHotkeyService();
+
+        var result = sut.TryRegisterHotkey(() => { });
+
+        result.Should().BeTrue();
+        sut.AddMessageFilterCallCount.Should().Be(1);
+        sut.RemoveMessageFilterCallCount.Should().Be(0);
+        sut.RegisterHotkeyCallCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void PreFilterMessage_WhenRegisteredHotkeyMessageReceived_InvokesCallbackAndReturnsTrue()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        var callbackCallCount = 0;
+        sut.TryRegisterHotkey(() => callbackCallCount++);
+        var message = Message.Create(IntPtr.Zero, AppConstants.WmHotkey, AppConstants.RefreshWallpaperHotkeyId, IntPtr.Zero);
+
+        var result = sut.PreFilterMessage(ref message);
+
+        result.Should().BeTrue();
+        callbackCallCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void Dispose_WhenHotkeyIsRegistered_RemovesMessageFilterAndUnregistersHotkey()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        sut.TryRegisterHotkey(() => { });
+
+        sut.Dispose();
+
+        sut.RemoveMessageFilterCallCount.Should().Be(1);
+        sut.UnregisterHotkeyCallCount.Should().Be(1);
+    }
+
+    #endregion
+
+    #region Negative cases
+
+    [Fact]
+    public void TryRegisterHotkey_WhenRegistrationFails_RemovesMessageFilterAndReturnsFalse()
+    {
+        var sut = new SpyGlobalHotkeyService { RegisterHotkeyReturnValue = false };
+
+        var result = sut.TryRegisterHotkey(() => { });
+
+        result.Should().BeFalse();
+        sut.AddMessageFilterCallCount.Should().Be(1);
+        sut.RemoveMessageFilterCallCount.Should().Be(1);
+        sut.UnregisterHotkeyCallCount.Should().Be(0);
+    }
+
+    [Fact]
+    public void TryRegisterHotkey_WhenAlreadyRegistered_ThrowsInvalidOperationException()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        sut.TryRegisterHotkey(() => { });
+
+        var action = () => sut.TryRegisterHotkey(() => { });
+
+        action.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void PreFilterMessage_WhenMessageDoesNotMatchRegisteredHotkey_DoesNotInvokeCallback()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        var callbackCallCount = 0;
+        sut.TryRegisterHotkey(() => callbackCallCount++);
+        var message = Message.Create(IntPtr.Zero, 0x9999, AppConstants.RefreshWallpaperHotkeyId, IntPtr.Zero);
+
+        var result = sut.PreFilterMessage(ref message);
+
+        result.Should().BeFalse();
+        callbackCallCount.Should().Be(0);
+    }
+
+    #endregion
+}

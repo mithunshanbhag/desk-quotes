@@ -4,6 +4,8 @@ namespace DeskQuotes.UnitTests.Services;
 
 public class WallpaperUpdateServiceTests
 {
+    #region Positive cases
+
     [Fact]
     public void TryUpdateWallpaper_WhenAllStepsSucceed_ReturnsTrue()
     {
@@ -28,6 +30,10 @@ public class WallpaperUpdateServiceTests
         wallpaperRenderService.CapturedQuote.Should().BeSameAs(quote);
         windowsWallpaperService.CapturedPath.Should().Be(wallpaperRenderService.RenderedPath);
     }
+
+    #endregion
+
+    #region Negative cases
 
     [Fact]
     public void TryUpdateWallpaper_WhenNoQuoteCanBeSelected_ReturnsFalseAndSkipsDependencies()
@@ -94,6 +100,8 @@ public class WallpaperUpdateServiceTests
         wallpaperRenderService.CallCount.Should().Be(1);
         windowsWallpaperService.CallCount.Should().Be(1);
     }
+
+    #endregion
 
     private sealed class SpyQuoteSelectionService : QuoteSelectionService
     {

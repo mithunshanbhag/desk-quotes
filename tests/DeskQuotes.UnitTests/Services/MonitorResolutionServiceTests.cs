@@ -4,6 +4,8 @@ namespace DeskQuotes.UnitTests.Services;
 
 public class MonitorResolutionServiceTests
 {
+    #region Positive cases
+
     [Fact]
     public void InferWallpaperResolution_ReturnsPrimaryMonitorBounds()
     {
@@ -16,6 +18,10 @@ public class MonitorResolutionServiceTests
 
         resolution.Should().Be(new Size(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height));
     }
+
+    #endregion
+
+    #region Boundary cases
 
     [Fact]
     public void InferWallpaperResolution_WhenVirtualDesktopIsLargerThanPrimaryMonitor_DoesNotUseVirtualDesktopUnion()
@@ -34,4 +40,6 @@ public class MonitorResolutionServiceTests
         resolution.Should().Be(new Size(primaryBounds.Width, primaryBounds.Height));
         resolution.Should().NotBe(new Size(virtualDesktop.Width, virtualDesktop.Height));
     }
+
+    #endregion
 }
