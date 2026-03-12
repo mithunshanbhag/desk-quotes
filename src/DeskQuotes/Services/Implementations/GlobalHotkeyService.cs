@@ -3,7 +3,7 @@ namespace DeskQuotes.Services.Implementations;
 public partial class GlobalHotkeyService : IMessageFilter, IDisposable
 {
     private readonly Dictionary<int, Action> _handlers = new();
-    private readonly HashSet<int> _registeredIds = new();
+    private readonly HashSet<int> _registeredIds = [];
     private bool _isDisposed;
     private bool _messageFilterAdded;
 

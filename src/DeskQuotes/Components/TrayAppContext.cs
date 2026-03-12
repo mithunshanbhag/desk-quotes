@@ -52,11 +52,13 @@ public class TrayAppContext : ApplicationContext
 
         _refreshTimer.Tick += RefreshWallpaperOnSchedule;
 
-        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, RefreshWallpaperFromHotkey))
+        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers,
+                AppConstants.RefreshWallpaperHotkeyVirtualKey, RefreshWallpaperFromHotkey))
             _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {AppConstants.RefreshWallpaperHotkeyDisplay}. The app will keep running without the hotkey.",
                 ToolTipIcon.Warning);
 
-        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey, EditSettingsFromHotkey))
+        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey,
+                EditSettingsFromHotkey))
             _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {AppConstants.EditSettingsHotkeyDisplay}. The app will keep running without the hotkey.",
                 ToolTipIcon.Warning);
 

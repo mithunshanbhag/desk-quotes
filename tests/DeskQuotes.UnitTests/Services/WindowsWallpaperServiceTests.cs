@@ -9,6 +9,19 @@ public class WindowsWallpaperServiceTests
 {
     private readonly WindowsWallpaperService _sut = new();
 
+    private sealed class RejectingWallpaperPathValidator : AbstractValidator<WallpaperPathInput>
+    {
+        public int CallCount { get; private set; }
+        public string? CapturedPath { get; private set; }
+
+        public override ValidationResult Validate(ValidationContext<WallpaperPathInput> context)
+        {
+            CallCount++;
+            CapturedPath = context.InstanceToValidate.WallpaperPath;
+            return new ValidationResult([new ValidationFailure(nameof(WallpaperPathInput.WallpaperPath), "Invalid wallpaper path.")]);
+        }
+    }
+
     #region Negative cases
 
     [Fact]
@@ -51,17 +64,4 @@ public class WindowsWallpaperServiceTests
     }
 
     #endregion
-
-    private sealed class RejectingWallpaperPathValidator : AbstractValidator<WallpaperPathInput>
-    {
-        public int CallCount { get; private set; }
-        public string? CapturedPath { get; private set; }
-
-        public override ValidationResult Validate(ValidationContext<WallpaperPathInput> context)
-        {
-            CallCount++;
-            CapturedPath = context.InstanceToValidate.WallpaperPath;
-            return new ValidationResult([new ValidationFailure(nameof(WallpaperPathInput.WallpaperPath), "Invalid wallpaper path.")]);
-        }
-    }
 }

@@ -33,6 +33,66 @@ public class WallpaperUpdateServiceTests
 
     #endregion
 
+    private sealed class SpyQuoteSelectionService : QuoteSelectionService
+    {
+        public int CallCount { get; private set; }
+        public bool? ReturnValue { get; init; }
+        public Quote? SelectedQuote { get; init; }
+
+        public override bool TrySelectQuote(IEnumerable<Quote>? configuredQuotes, out Quote? selectedQuote)
+        {
+            CallCount++;
+
+            if (!ReturnValue.HasValue) return base.TrySelectQuote(configuredQuotes, out selectedQuote);
+
+            selectedQuote = SelectedQuote;
+            return ReturnValue.Value;
+        }
+    }
+
+    private sealed class SpyMonitorResolutionService : MonitorResolutionService
+    {
+        public int CallCount { get; private set; }
+
+        public override Size InferWallpaperResolution()
+        {
+            CallCount++;
+            return new Size(1920, 1080);
+        }
+    }
+
+    private sealed class SpyWallpaperRenderService : WallpaperRenderService
+    {
+        public int CallCount { get; private set; }
+        public bool ThrowOnRender { get; init; }
+        public Quote? CapturedQuote { get; private set; }
+        public string RenderedPath { get; } = Path.Combine(Path.GetTempPath(), "test-wallpaper.bmp");
+
+        public override string RenderQuoteWallpaper(Quote quote, Size resolution)
+        {
+            CallCount++;
+            CapturedQuote = quote;
+
+            if (ThrowOnRender) throw new InvalidOperationException("Render failed");
+
+            return RenderedPath;
+        }
+    }
+
+    private sealed class SpyWindowsWallpaperService : WindowsWallpaperService
+    {
+        public int CallCount { get; private set; }
+        public bool ReturnValue { get; init; }
+        public string? CapturedPath { get; private set; }
+
+        public override bool TryApplyWallpaper(string wallpaperPath)
+        {
+            CallCount++;
+            CapturedPath = wallpaperPath;
+            return ReturnValue;
+        }
+    }
+
     #region Negative cases
 
     [Fact]
@@ -102,64 +162,4 @@ public class WallpaperUpdateServiceTests
     }
 
     #endregion
-
-    private sealed class SpyQuoteSelectionService : QuoteSelectionService
-    {
-        public int CallCount { get; private set; }
-        public bool? ReturnValue { get; init; }
-        public Quote? SelectedQuote { get; init; }
-
-        public override bool TrySelectQuote(IEnumerable<Quote>? configuredQuotes, out Quote? selectedQuote)
-        {
-            CallCount++;
-
-            if (!ReturnValue.HasValue) return base.TrySelectQuote(configuredQuotes, out selectedQuote);
-
-            selectedQuote = SelectedQuote;
-            return ReturnValue.Value;
-        }
-    }
-
-    private sealed class SpyMonitorResolutionService : MonitorResolutionService
-    {
-        public int CallCount { get; private set; }
-
-        public override Size InferWallpaperResolution()
-        {
-            CallCount++;
-            return new Size(1920, 1080);
-        }
-    }
-
-    private sealed class SpyWallpaperRenderService : WallpaperRenderService
-    {
-        public int CallCount { get; private set; }
-        public bool ThrowOnRender { get; init; }
-        public Quote? CapturedQuote { get; private set; }
-        public string RenderedPath { get; } = Path.Combine(Path.GetTempPath(), "test-wallpaper.bmp");
-
-        public override string RenderQuoteWallpaper(Quote quote, Size resolution)
-        {
-            CallCount++;
-            CapturedQuote = quote;
-
-            if (ThrowOnRender) throw new InvalidOperationException("Render failed");
-
-            return RenderedPath;
-        }
-    }
-
-    private sealed class SpyWindowsWallpaperService : WindowsWallpaperService
-    {
-        public int CallCount { get; private set; }
-        public bool ReturnValue { get; init; }
-        public string? CapturedPath { get; private set; }
-
-        public override bool TryApplyWallpaper(string wallpaperPath)
-        {
-            CallCount++;
-            CapturedPath = wallpaperPath;
-            return ReturnValue;
-        }
-    }
 }
