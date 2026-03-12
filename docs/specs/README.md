@@ -39,6 +39,8 @@ In its current iteration:
 
 - **Refresh on demand**: The app will have an option to refresh the wallpaper on demand through the tray context menu (`Refresh Wallpaper (Ctrl + Alt + U)`) and a fixed global hotkey (`Ctrl + Alt + U`).
 
+- **Edit settings on demand**: The app will have an option to open the settings file for editing through the tray context menu (`Edit Settings (Ctrl + Alt + E)`) and a fixed global hotkey (`Ctrl + Alt + E`).
+
 ## User Interactions
 
 See [ui.md](./ui.md).

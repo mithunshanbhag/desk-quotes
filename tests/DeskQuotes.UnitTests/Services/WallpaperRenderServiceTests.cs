@@ -44,39 +44,6 @@ public class WallpaperRenderServiceTests
 
     #endregion
 
-    #region Boundary cases
-
-    [Fact]
-    public void RenderQuoteWallpaper_WhenResolutionIsInvalid_UsesFallbackAndCreatesWallpaper()
-    {
-        var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
-        var quote = new Quote { Text = "", Author = "" };
-
-        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 0));
-        using var renderedImage = Image.FromFile(outputPath);
-
-        outputPath.Should().NotBeNullOrWhiteSpace();
-        outputPath.Should().EndWith(".bmp");
-        File.Exists(outputPath).Should().BeTrue();
-        renderedImage.Width.Should().Be(1920);
-        renderedImage.Height.Should().Be(1080);
-    }
-
-    [Fact]
-    public void RenderQuoteWallpaper_WhenOnlyWidthIsInvalid_UsesFallbackWidthAndProvidedHeight()
-    {
-        var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
-        var quote = new Quote { Text = "Quote", Author = "Author" };
-
-        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 720));
-        using var renderedImage = Image.FromFile(outputPath);
-
-        renderedImage.Width.Should().Be(1920);
-        renderedImage.Height.Should().Be(720);
-    }
-
-    #endregion
-
     private static List<(int Start, int End)> GetMergedTextClusters(Bitmap renderedImage)
     {
         var rowsWithText = Enumerable
@@ -109,11 +76,42 @@ public class WallpaperRenderServiceTests
     private static bool RowContainsText(Bitmap renderedImage, int row)
     {
         for (var column = 0; column < renderedImage.Width; column++)
-        {
             if (renderedImage.GetPixel(column, row).ToArgb() != WallpaperBackgroundColor.ToArgb())
                 return true;
-        }
 
         return false;
     }
+
+    #region Boundary cases
+
+    [Fact]
+    public void RenderQuoteWallpaper_WhenResolutionIsInvalid_UsesFallbackAndCreatesWallpaper()
+    {
+        var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
+        var quote = new Quote { Text = "", Author = "" };
+
+        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 0));
+        using var renderedImage = Image.FromFile(outputPath);
+
+        outputPath.Should().NotBeNullOrWhiteSpace();
+        outputPath.Should().EndWith(".bmp");
+        File.Exists(outputPath).Should().BeTrue();
+        renderedImage.Width.Should().Be(1920);
+        renderedImage.Height.Should().Be(1080);
+    }
+
+    [Fact]
+    public void RenderQuoteWallpaper_WhenOnlyWidthIsInvalid_UsesFallbackWidthAndProvidedHeight()
+    {
+        var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
+        var quote = new Quote { Text = "Quote", Author = "Author" };
+
+        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 720));
+        using var renderedImage = Image.FromFile(outputPath);
+
+        renderedImage.Width.Should().Be(1920);
+        renderedImage.Height.Should().Be(720);
+    }
+
+    #endregion
 }

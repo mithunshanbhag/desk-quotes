@@ -32,7 +32,7 @@ public class TrayAppContext : ApplicationContext
                 Items =
                 {
                     new ToolStripMenuItem(AppConstants.RefreshWallpaperMenuLabel, null, RefreshWallpaper),
-                    new ToolStripMenuItem("&Settings", null, EditSettings),
+                    new ToolStripMenuItem(AppConstants.EditSettingsMenuLabel, null, EditSettings),
                     new ToolStripMenuItem("E&xit", null, Exit)
                 }
             },
@@ -52,8 +52,14 @@ public class TrayAppContext : ApplicationContext
 
         _refreshTimer.Tick += RefreshWallpaperOnSchedule;
 
-        if (!_globalHotkeyService.TryRegisterHotkey(RefreshWallpaperFromHotkey))
+        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers,
+                AppConstants.RefreshWallpaperHotkeyVirtualKey, RefreshWallpaperFromHotkey))
             _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {AppConstants.RefreshWallpaperHotkeyDisplay}. The app will keep running without the hotkey.",
+                ToolTipIcon.Warning);
+
+        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey,
+                EditSettingsFromHotkey))
+            _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {AppConstants.EditSettingsHotkeyDisplay}. The app will keep running without the hotkey.",
                 ToolTipIcon.Warning);
 
         Application.Idle += RefreshWallpaperOnStartup;
@@ -101,6 +107,11 @@ public class TrayAppContext : ApplicationContext
     private void RefreshWallpaperFromHotkey()
     {
         RefreshWallpaper(this, EventArgs.Empty);
+    }
+
+    private void EditSettingsFromHotkey()
+    {
+        EditSettings(this, EventArgs.Empty);
     }
 
     private void RefreshWallpaperOnStartup(object? sender, EventArgs e)

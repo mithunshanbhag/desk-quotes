@@ -2,9 +2,9 @@ namespace DeskQuotes.Services.Implementations;
 
 public partial class GlobalHotkeyService : IMessageFilter, IDisposable
 {
-    private Action? _hotkeyPressedHandler;
+    private readonly Dictionary<int, Action> _handlers = new();
+    private readonly HashSet<int> _registeredIds = [];
     private bool _isDisposed;
-    private bool _isRegistered;
     private bool _messageFilterAdded;
 
     public void Dispose()
@@ -12,11 +12,10 @@ public partial class GlobalHotkeyService : IMessageFilter, IDisposable
         if (_isDisposed)
             return;
 
-        if (_isRegistered)
-        {
-            TryUnregisterHotkeyCore(IntPtr.Zero, AppConstants.RefreshWallpaperHotkeyId);
-            _isRegistered = false;
-        }
+        foreach (var id in _registeredIds)
+            TryUnregisterHotkeyCore(IntPtr.Zero, id);
+
+        _registeredIds.Clear();
 
         if (_messageFilterAdded)
         {
@@ -24,47 +23,53 @@ public partial class GlobalHotkeyService : IMessageFilter, IDisposable
             _messageFilterAdded = false;
         }
 
-        _hotkeyPressedHandler = null;
+        _handlers.Clear();
         _isDisposed = true;
         GC.SuppressFinalize(this);
     }
 
     public bool PreFilterMessage(ref Message message)
     {
-        if (!_isRegistered)
-            return false;
-
         if (message.Msg != AppConstants.WmHotkey)
             return false;
 
-        if (message.WParam != AppConstants.RefreshWallpaperHotkeyId)
+        var hotkeyId = (int)message.WParam;
+        if (!_handlers.TryGetValue(hotkeyId, out var handler))
             return false;
 
-        _hotkeyPressedHandler?.Invoke();
+        handler.Invoke();
         return true;
     }
 
-    public virtual bool TryRegisterHotkey(Action hotkeyPressedHandler)
+    public virtual bool TryRegisterHotkey(int id, uint modifiers, uint virtualKey, Action hotkeyPressedHandler)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
         ArgumentNullException.ThrowIfNull(hotkeyPressedHandler);
 
-        if (_isRegistered)
-            throw new InvalidOperationException("The global hotkey has already been registered.");
+        if (_registeredIds.Contains(id))
+            throw new InvalidOperationException($"A global hotkey with id {id} has already been registered.");
 
-        _hotkeyPressedHandler = hotkeyPressedHandler;
-        AddMessageFilter(this);
-        _messageFilterAdded = true;
+        _handlers[id] = hotkeyPressedHandler;
 
-        if (TryRegisterHotkeyCore(IntPtr.Zero, AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey))
+        if (!_messageFilterAdded)
         {
-            _isRegistered = true;
+            AddMessageFilter(this);
+            _messageFilterAdded = true;
+        }
+
+        if (TryRegisterHotkeyCore(IntPtr.Zero, id, modifiers, virtualKey))
+        {
+            _registeredIds.Add(id);
             return true;
         }
 
-        RemoveMessageFilter(this);
-        _messageFilterAdded = false;
-        _hotkeyPressedHandler = null;
+        _handlers.Remove(id);
+
+        if (_registeredIds.Count == 0)
+        {
+            RemoveMessageFilter(this);
+            _messageFilterAdded = false;
+        }
 
         return false;
     }

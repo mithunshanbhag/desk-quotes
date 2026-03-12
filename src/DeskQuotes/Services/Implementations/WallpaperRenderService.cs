@@ -58,10 +58,7 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
         var quoteBounds = CreateQuoteBounds(graphics, quoteText, quoteFont, width, height, format, authorText, authorFont, out var authorBounds);
         graphics.DrawString(quoteText, quoteFont, quoteBrush, quoteBounds, format);
 
-        if (authorBounds.HasValue)
-        {
-            graphics.DrawString(authorText, authorFont, authorBrush, authorBounds.Value, format);
-        }
+        if (authorBounds.HasValue) graphics.DrawString(authorText, authorFont, authorBrush, authorBounds.Value, format);
 
         bitmap.Save(outputPath, ImageFormat.Bmp);
         return outputPath;
