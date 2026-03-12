@@ -58,7 +58,7 @@ public class GlobalHotkeyServiceTests
     {
         var sut = new SpyGlobalHotkeyService();
 
-        var result = sut.TryRegisterHotkey(() => { });
+        var result = sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
 
         result.Should().BeTrue();
         sut.AddMessageFilterCallCount.Should().Be(1);
@@ -67,11 +67,25 @@ public class GlobalHotkeyServiceTests
     }
 
     [Fact]
+    public void TryRegisterHotkey_WhenTwoHotkeysRegistered_AddsMessageFilterOnceAndReturnsTrueBothTimes()
+    {
+        var sut = new SpyGlobalHotkeyService();
+
+        var result1 = sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
+        var result2 = sut.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey, () => { });
+
+        result1.Should().BeTrue();
+        result2.Should().BeTrue();
+        sut.AddMessageFilterCallCount.Should().Be(1);
+        sut.RegisterHotkeyCallCount.Should().Be(2);
+    }
+
+    [Fact]
     public void PreFilterMessage_WhenRegisteredHotkeyMessageReceived_InvokesCallbackAndReturnsTrue()
     {
         var sut = new SpyGlobalHotkeyService();
         var callbackCallCount = 0;
-        sut.TryRegisterHotkey(() => callbackCallCount++);
+        sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => callbackCallCount++);
         var message = Message.Create(IntPtr.Zero, AppConstants.WmHotkey, AppConstants.RefreshWallpaperHotkeyId, IntPtr.Zero);
 
         var result = sut.PreFilterMessage(ref message);
@@ -81,15 +95,59 @@ public class GlobalHotkeyServiceTests
     }
 
     [Fact]
+    public void PreFilterMessage_WhenEditSettingsHotkeyMessageReceived_InvokesCallbackAndReturnsTrue()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        var callbackCallCount = 0;
+        sut.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey, () => callbackCallCount++);
+        var message = Message.Create(IntPtr.Zero, AppConstants.WmHotkey, AppConstants.EditSettingsHotkeyId, IntPtr.Zero);
+
+        var result = sut.PreFilterMessage(ref message);
+
+        result.Should().BeTrue();
+        callbackCallCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void PreFilterMessage_WhenBothHotkeysRegistered_DispatchesToCorrectHandler()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        var refreshCallCount = 0;
+        var editSettingsCallCount = 0;
+        sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => refreshCallCount++);
+        sut.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey, () => editSettingsCallCount++);
+        var editSettingsMessage = Message.Create(IntPtr.Zero, AppConstants.WmHotkey, AppConstants.EditSettingsHotkeyId, IntPtr.Zero);
+
+        var result = sut.PreFilterMessage(ref editSettingsMessage);
+
+        result.Should().BeTrue();
+        refreshCallCount.Should().Be(0);
+        editSettingsCallCount.Should().Be(1);
+    }
+
+    [Fact]
     public void Dispose_WhenHotkeyIsRegistered_RemovesMessageFilterAndUnregistersHotkey()
     {
         var sut = new SpyGlobalHotkeyService();
-        sut.TryRegisterHotkey(() => { });
+        sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
 
         sut.Dispose();
 
         sut.RemoveMessageFilterCallCount.Should().Be(1);
         sut.UnregisterHotkeyCallCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void Dispose_WhenBothHotkeysRegistered_UnregistersBothHotkeys()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
+        sut.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey, () => { });
+
+        sut.Dispose();
+
+        sut.RemoveMessageFilterCallCount.Should().Be(1);
+        sut.UnregisterHotkeyCallCount.Should().Be(2);
     }
 
     #endregion
@@ -101,7 +159,7 @@ public class GlobalHotkeyServiceTests
     {
         var sut = new SpyGlobalHotkeyService { RegisterHotkeyReturnValue = false };
 
-        var result = sut.TryRegisterHotkey(() => { });
+        var result = sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
 
         result.Should().BeFalse();
         sut.AddMessageFilterCallCount.Should().Be(1);
@@ -113,9 +171,9 @@ public class GlobalHotkeyServiceTests
     public void TryRegisterHotkey_WhenAlreadyRegistered_ThrowsInvalidOperationException()
     {
         var sut = new SpyGlobalHotkeyService();
-        sut.TryRegisterHotkey(() => { });
+        sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
 
-        var action = () => sut.TryRegisterHotkey(() => { });
+        var action = () => sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
 
         action.Should().Throw<InvalidOperationException>();
     }
@@ -125,7 +183,7 @@ public class GlobalHotkeyServiceTests
     {
         var sut = new SpyGlobalHotkeyService();
         var callbackCallCount = 0;
-        sut.TryRegisterHotkey(() => callbackCallCount++);
+        sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => callbackCallCount++);
         var message = Message.Create(IntPtr.Zero, 0x9999, AppConstants.RefreshWallpaperHotkeyId, IntPtr.Zero);
 
         var result = sut.PreFilterMessage(ref message);
