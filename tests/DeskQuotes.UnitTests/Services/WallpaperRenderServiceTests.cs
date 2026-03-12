@@ -4,8 +4,6 @@ namespace DeskQuotes.UnitTests.Services;
 
 public class WallpaperRenderServiceTests
 {
-    private static readonly Color WallpaperBackgroundColor = Color.FromArgb(24, 27, 36);
-
     #region Negative cases
 
     [Fact]
@@ -34,7 +32,8 @@ public class WallpaperRenderServiceTests
 
         var outputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080));
         using var renderedImage = new Bitmap(outputPath);
-        var textClusters = GetMergedTextClusters(renderedImage);
+        var backgroundColor = GetBackgroundColor(renderedImage);
+        var textClusters = GetMergedTextClusters(renderedImage, backgroundColor);
 
         textClusters.Should().HaveCount(2);
 
@@ -42,13 +41,36 @@ public class WallpaperRenderServiceTests
         gapBetweenQuoteAndAuthor.Should().BeLessThan(140);
     }
 
+    [Fact]
+    public void RenderQuoteWallpaper_WhenCalledSequentially_UsesDifferentDarkBackgroundColors()
+    {
+        var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
+        var quote = new Quote { Text = "Stay curious.", Author = "Unknown" };
+
+        var firstOutputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080));
+        Color firstBackgroundColor;
+
+        using (var firstRenderedImage = new Bitmap(firstOutputPath))
+            firstBackgroundColor = GetBackgroundColor(firstRenderedImage);
+
+        var secondOutputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080));
+        using var secondRenderedImage = new Bitmap(secondOutputPath);
+        var secondBackgroundColor = GetBackgroundColor(secondRenderedImage);
+
+        firstBackgroundColor.ToArgb().Should().NotBe(secondBackgroundColor.ToArgb());
+        firstBackgroundColor.GetBrightness().Should().BeLessThan(0.2f);
+        secondBackgroundColor.GetBrightness().Should().BeLessThan(0.2f);
+    }
+
     #endregion
 
-    private static List<(int Start, int End)> GetMergedTextClusters(Bitmap renderedImage)
+    private static Color GetBackgroundColor(Bitmap renderedImage) => renderedImage.GetPixel(0, 0);
+
+    private static List<(int Start, int End)> GetMergedTextClusters(Bitmap renderedImage, Color backgroundColor)
     {
         var rowsWithText = Enumerable
             .Range(0, renderedImage.Height)
-            .Where(row => RowContainsText(renderedImage, row))
+            .Where(row => RowContainsText(renderedImage, row, backgroundColor))
             .ToList();
 
         rowsWithText.Should().NotBeEmpty();
@@ -73,10 +95,10 @@ public class WallpaperRenderServiceTests
         return clusters;
     }
 
-    private static bool RowContainsText(Bitmap renderedImage, int row)
+    private static bool RowContainsText(Bitmap renderedImage, int row, Color backgroundColor)
     {
         for (var column = 0; column < renderedImage.Width; column++)
-            if (renderedImage.GetPixel(column, row).ToArgb() != WallpaperBackgroundColor.ToArgb())
+            if (renderedImage.GetPixel(column, row).ToArgb() != backgroundColor.ToArgb())
                 return true;
 
         return false;
