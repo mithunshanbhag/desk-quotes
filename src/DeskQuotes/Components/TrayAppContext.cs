@@ -204,10 +204,10 @@ public class TrayAppContext : ApplicationContext
     private ContextMenuStrip CreateContextMenuStrip()
     {
         var contextMenuStrip = new ContextMenuStrip();
-        contextMenuStrip.Items.Add(new ToolStripMenuItem(AppConstants.RefreshWallpaperMenuLabel, null, RefreshWallpaper));
+        contextMenuStrip.Items.Add(CreateMenuItem(AppConstants.RefreshWallpaperMenuLabel, RefreshWallpaper, AppConstants.RefreshWallpaperHotkeyDisplay));
         contextMenuStrip.Items.Add(CreateWallpaperBackgroundColorMenuItem());
         contextMenuStrip.Items.Add(CreateChangeWallpaperFontMenuItem());
-        contextMenuStrip.Items.Add(new ToolStripMenuItem(AppConstants.EditSettingsMenuLabel, null, EditSettings));
+        contextMenuStrip.Items.Add(CreateMenuItem(AppConstants.EditSettingsMenuLabel, EditSettings, AppConstants.EditSettingsHotkeyDisplay));
         contextMenuStrip.Items.Add(new ToolStripMenuItem("E&xit", null, Exit));
         return contextMenuStrip;
     }
@@ -215,17 +215,29 @@ public class TrayAppContext : ApplicationContext
     private ToolStripMenuItem CreateWallpaperBackgroundColorMenuItem()
     {
         var wallpaperBackgroundColorMenuItem = new ToolStripMenuItem(AppConstants.WallpaperBackgroundColorMenuLabel);
-        wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.DarkenWallpaperBackgroundColorMenuLabel, null, DarkenWallpaperBackgroundColor));
-        wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.LightenWallpaperBackgroundColorMenuLabel, null, LightenWallpaperBackgroundColor));
-        wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.RandomWallpaperBackgroundColorMenuLabel, null, RandomizeWallpaperBackgroundColor));
+        wallpaperBackgroundColorMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.DarkenWallpaperBackgroundColorMenuLabel, DarkenWallpaperBackgroundColor,
+            AppConstants.DarkenWallpaperBackgroundColorHotkeyDisplay));
+        wallpaperBackgroundColorMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.LightenWallpaperBackgroundColorMenuLabel, LightenWallpaperBackgroundColor,
+            AppConstants.LightenWallpaperBackgroundColorHotkeyDisplay));
+        wallpaperBackgroundColorMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.RandomWallpaperBackgroundColorMenuLabel, RandomizeWallpaperBackgroundColor,
+            AppConstants.RandomWallpaperBackgroundColorHotkeyDisplay));
         return wallpaperBackgroundColorMenuItem;
     }
 
     private ToolStripMenuItem CreateChangeWallpaperFontMenuItem()
     {
         var changeWallpaperFontMenuItem = new ToolStripMenuItem(AppConstants.ChangeWallpaperFontMenuLabel);
-        changeWallpaperFontMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.RandomWallpaperFontMenuLabel, null, RandomizeWallpaperFont));
+        changeWallpaperFontMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.RandomWallpaperFontMenuLabel, RandomizeWallpaperFont,
+            AppConstants.RandomWallpaperFontHotkeyDisplay));
         return changeWallpaperFontMenuItem;
+    }
+
+    private static ToolStripMenuItem CreateMenuItem(string text, EventHandler onClick, string? shortcutKeyDisplayString = null)
+    {
+        return new ToolStripMenuItem(text, null, onClick)
+        {
+            ShortcutKeyDisplayString = shortcutKeyDisplayString
+        };
     }
 
     private void RegisterHotkeys()
