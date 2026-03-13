@@ -8,6 +8,7 @@ public class TrayAppContext : ApplicationContext
     private readonly List<Quote> _quotes = [];
     private readonly Timer _refreshTimer = new();
     private readonly ComponentResourceManager _resources = new(typeof(TrayAppContext));
+    private readonly WallpaperBackgroundColorService _wallpaperBackgroundColorService;
     private readonly NotifyIcon _trayIcon;
     private readonly WallpaperRefreshSchedulerService _wallpaperRefreshSchedulerService;
     private readonly WallpaperUpdateService _wallpaperUpdateService;
@@ -16,10 +17,12 @@ public class TrayAppContext : ApplicationContext
     public TrayAppContext(
         IConfiguration configuration,
         GlobalHotkeyService globalHotkeyService,
+        WallpaperBackgroundColorService wallpaperBackgroundColorService,
         WallpaperUpdateService wallpaperUpdateService,
         WallpaperRefreshSchedulerService wallpaperRefreshSchedulerService)
     {
         _globalHotkeyService = globalHotkeyService;
+        _wallpaperBackgroundColorService = wallpaperBackgroundColorService;
         _wallpaperUpdateService = wallpaperUpdateService;
         _wallpaperRefreshSchedulerService = wallpaperRefreshSchedulerService;
 
@@ -27,15 +30,7 @@ public class TrayAppContext : ApplicationContext
         {
             //Icon = (Icon?)_resources.GetObject("notifyIcon.Icon"),
             Icon = SystemIcons.Application,
-            ContextMenuStrip = new ContextMenuStrip
-            {
-                Items =
-                {
-                    new ToolStripMenuItem(AppConstants.RefreshWallpaperMenuLabel, null, RefreshWallpaper),
-                    new ToolStripMenuItem(AppConstants.EditSettingsMenuLabel, null, EditSettings),
-                    new ToolStripMenuItem("E&xit", null, Exit)
-                }
-            },
+            ContextMenuStrip = CreateContextMenuStrip(),
             Visible = true,
             Text = AppConstants.AppName
         };
@@ -52,21 +47,18 @@ public class TrayAppContext : ApplicationContext
 
         _refreshTimer.Tick += RefreshWallpaperOnSchedule;
 
-        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers,
-                AppConstants.RefreshWallpaperHotkeyVirtualKey, RefreshWallpaperFromHotkey))
-            _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {AppConstants.RefreshWallpaperHotkeyDisplay}. The app will keep running without the hotkey.",
-                ToolTipIcon.Warning);
-
-        if (!_globalHotkeyService.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey,
-                EditSettingsFromHotkey))
-            _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {AppConstants.EditSettingsHotkeyDisplay}. The app will keep running without the hotkey.",
-                ToolTipIcon.Warning);
+        RegisterHotkeys();
 
         Application.Idle += RefreshWallpaperOnStartup;
         ScheduleNextRefresh();
     }
 
     private void RefreshWallpaper(object? sender, EventArgs e)
+    {
+        RefreshWallpaperCore();
+    }
+
+    private void RefreshWallpaperCore(Color? backgroundColor = null)
     {
         if (_isRefreshing)
             return;
@@ -76,7 +68,7 @@ public class TrayAppContext : ApplicationContext
 
         try
         {
-            var wallpaperUpdated = _wallpaperUpdateService.TryUpdateWallpaper(_quotes);
+            var wallpaperUpdated = _wallpaperUpdateService.TryUpdateWallpaper(_quotes, backgroundColor);
 
             if (!wallpaperUpdated)
                 _trayIcon.ShowBalloonTip(1000, "Refresh Failed", "Unable to refresh wallpaper from settings.", ToolTipIcon.Warning);
@@ -106,7 +98,7 @@ public class TrayAppContext : ApplicationContext
 
     private void RefreshWallpaperFromHotkey()
     {
-        RefreshWallpaper(this, EventArgs.Empty);
+        RefreshWallpaperCore();
     }
 
     private void EditSettingsFromHotkey()
@@ -117,7 +109,39 @@ public class TrayAppContext : ApplicationContext
     private void RefreshWallpaperOnStartup(object? sender, EventArgs e)
     {
         Application.Idle -= RefreshWallpaperOnStartup;
-        RefreshWallpaper(this, EventArgs.Empty);
+        RefreshWallpaperCore();
+    }
+
+    private void DarkenWallpaperBackgroundColor(object? sender, EventArgs e)
+    {
+        var currentBackgroundColor = _wallpaperBackgroundColorService.GetCurrentBackgroundColor();
+        RefreshWallpaperCore(_wallpaperBackgroundColorService.Darken(currentBackgroundColor));
+    }
+
+    private void LightenWallpaperBackgroundColor(object? sender, EventArgs e)
+    {
+        var currentBackgroundColor = _wallpaperBackgroundColorService.GetCurrentBackgroundColor();
+        RefreshWallpaperCore(_wallpaperBackgroundColorService.Lighten(currentBackgroundColor));
+    }
+
+    private void RandomizeWallpaperBackgroundColor(object? sender, EventArgs e)
+    {
+        RefreshWallpaperCore(_wallpaperBackgroundColorService.GetRandomDarkColor());
+    }
+
+    private void DarkenWallpaperBackgroundColorFromHotkey()
+    {
+        DarkenWallpaperBackgroundColor(this, EventArgs.Empty);
+    }
+
+    private void LightenWallpaperBackgroundColorFromHotkey()
+    {
+        LightenWallpaperBackgroundColor(this, EventArgs.Empty);
+    }
+
+    private void RandomizeWallpaperBackgroundColorFromHotkey()
+    {
+        RandomizeWallpaperBackgroundColor(this, EventArgs.Empty);
     }
 
     private void EditSettings(object? sender, EventArgs e)
@@ -160,5 +184,48 @@ public class TrayAppContext : ApplicationContext
         _trayIcon.ContextMenuStrip?.Dispose();
         _trayIcon.Dispose();
         Application.Exit();
+    }
+
+    private ContextMenuStrip CreateContextMenuStrip()
+    {
+        var contextMenuStrip = new ContextMenuStrip();
+        contextMenuStrip.Items.Add(new ToolStripMenuItem(AppConstants.RefreshWallpaperMenuLabel, null, RefreshWallpaper));
+        contextMenuStrip.Items.Add(CreateWallpaperBackgroundColorMenuItem());
+        contextMenuStrip.Items.Add(new ToolStripMenuItem(AppConstants.EditSettingsMenuLabel, null, EditSettings));
+        contextMenuStrip.Items.Add(new ToolStripMenuItem("E&xit", null, Exit));
+        return contextMenuStrip;
+    }
+
+    private ToolStripMenuItem CreateWallpaperBackgroundColorMenuItem()
+    {
+        var wallpaperBackgroundColorMenuItem = new ToolStripMenuItem(AppConstants.WallpaperBackgroundColorMenuLabel);
+        wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.DarkenWallpaperBackgroundColorMenuLabel, null, DarkenWallpaperBackgroundColor));
+        wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.LightenWallpaperBackgroundColorMenuLabel, null, LightenWallpaperBackgroundColor));
+        wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.RandomWallpaperBackgroundColorMenuLabel, null, RandomizeWallpaperBackgroundColor));
+        return wallpaperBackgroundColorMenuItem;
+    }
+
+    private void RegisterHotkeys()
+    {
+        TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey,
+            RefreshWallpaperFromHotkey, AppConstants.RefreshWallpaperHotkeyDisplay);
+        TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey,
+            EditSettingsFromHotkey, AppConstants.EditSettingsHotkeyDisplay);
+        TryRegisterHotkey(AppConstants.DarkenWallpaperBackgroundColorHotkeyId, AppConstants.DarkenWallpaperBackgroundColorHotkeyModifiers,
+            AppConstants.DarkenWallpaperBackgroundColorHotkeyVirtualKey, DarkenWallpaperBackgroundColorFromHotkey,
+            AppConstants.DarkenWallpaperBackgroundColorHotkeyDisplay);
+        TryRegisterHotkey(AppConstants.LightenWallpaperBackgroundColorHotkeyId, AppConstants.LightenWallpaperBackgroundColorHotkeyModifiers,
+            AppConstants.LightenWallpaperBackgroundColorHotkeyVirtualKey, LightenWallpaperBackgroundColorFromHotkey,
+            AppConstants.LightenWallpaperBackgroundColorHotkeyDisplay);
+        TryRegisterHotkey(AppConstants.RandomWallpaperBackgroundColorHotkeyId, AppConstants.RandomWallpaperBackgroundColorHotkeyModifiers,
+            AppConstants.RandomWallpaperBackgroundColorHotkeyVirtualKey, RandomizeWallpaperBackgroundColorFromHotkey,
+            AppConstants.RandomWallpaperBackgroundColorHotkeyDisplay);
+    }
+
+    private void TryRegisterHotkey(int id, uint modifiers, uint virtualKey, Action hotkeyPressedHandler, string hotkeyDisplay)
+    {
+        if (!_globalHotkeyService.TryRegisterHotkey(id, modifiers, virtualKey, hotkeyPressedHandler))
+            _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {hotkeyDisplay}. The app will keep running without the hotkey.",
+                ToolTipIcon.Warning);
     }
 }

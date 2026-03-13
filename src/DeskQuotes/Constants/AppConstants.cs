@@ -19,4 +19,24 @@ public static class AppConstants
     public const int EditSettingsHotkeyId = 2;
     public const uint EditSettingsHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
     public const uint EditSettingsHotkeyVirtualKey = 0x45; // 'E' key
+
+    public const string WallpaperBackgroundColorMenuLabel = "Wallpaper Background Color";
+
+    public const string DarkenWallpaperBackgroundColorHotkeyDisplay = "Ctrl + Alt + -";
+    public const string DarkenWallpaperBackgroundColorMenuLabel = "Darken Color (" + DarkenWallpaperBackgroundColorHotkeyDisplay + ")";
+    public const int DarkenWallpaperBackgroundColorHotkeyId = 3;
+    public const uint DarkenWallpaperBackgroundColorHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
+    public const uint DarkenWallpaperBackgroundColorHotkeyVirtualKey = 0xBD; // OEM Minus
+
+    public const string LightenWallpaperBackgroundColorHotkeyDisplay = "Ctrl + Alt + =";
+    public const string LightenWallpaperBackgroundColorMenuLabel = "Lighten Color (" + LightenWallpaperBackgroundColorHotkeyDisplay + ")";
+    public const int LightenWallpaperBackgroundColorHotkeyId = 4;
+    public const uint LightenWallpaperBackgroundColorHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
+    public const uint LightenWallpaperBackgroundColorHotkeyVirtualKey = 0xBB; // OEM Plus / '=' key
+
+    public const string RandomWallpaperBackgroundColorHotkeyDisplay = "Ctrl + Alt + 0";
+    public const string RandomWallpaperBackgroundColorMenuLabel = "Random Color (" + RandomWallpaperBackgroundColorHotkeyDisplay + ")";
+    public const int RandomWallpaperBackgroundColorHotkeyId = 5;
+    public const uint RandomWallpaperBackgroundColorHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
+    public const uint RandomWallpaperBackgroundColorHotkeyVirtualKey = 0x30; // '0' key
 }

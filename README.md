@@ -21,11 +21,16 @@ dotnet restore .\DeskQuotes.slnx
 
 1. Run the app (see the next section).
 2. Use the tray icon menu to:
-   - **Refresh Wallpaper (Ctrl + Alt + U)**
-   - **Settings** (opens `settings.json`)
-   - **Exit**
+    - **Refresh Wallpaper (Ctrl + Alt + U)**
+    - **Wallpaper Background Color**
+      - **Darken Color (Ctrl + Alt + -)**
+      - **Lighten Color (Ctrl + Alt + =)**
+      - **Random Color (Ctrl + Alt + 0)**
+    - **Edit Settings (Ctrl + Alt + E)** (opens `settings.json`)
+    - **Exit**
 3. Press `Ctrl + Alt + U` from anywhere, or use the tray menu, to trigger an immediate wallpaper refresh.
-4. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
+4. Use the background color submenu or its hotkeys to immediately darken, lighten, or randomize the wallpaper background color.
+5. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
 
 ## Build and run locally
 

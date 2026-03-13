@@ -11,18 +11,7 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
     private const float MinimumAuthorSpacing = 12f;
     private const float MaximumAuthorSpacing = 28f;
 
-    private static readonly Color[] BackgroundPalette =
-    [
-        Color.FromArgb(24, 27, 36),
-        Color.FromArgb(18, 33, 46),
-        Color.FromArgb(33, 27, 44),
-        Color.FromArgb(29, 38, 30),
-        Color.FromArgb(38, 28, 28)
-    ];
-
-    private int _lastBackgroundColorIndex = -1;
-
-    public virtual string RenderQuoteWallpaper(Quote quote, Size resolution)
+    public virtual string RenderQuoteWallpaper(Quote quote, Size resolution, Color backgroundColor)
     {
         ArgumentNullException.ThrowIfNull(quote);
 
@@ -49,7 +38,7 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
         graphics.SmoothingMode = SmoothingMode.AntiAlias;
         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
         graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-        graphics.Clear(GetNextBackgroundColor());
+        graphics.Clear(backgroundColor);
 
         var quoteText = string.IsNullOrWhiteSpace(quote.Text) ? AppConstants.AppName : $"“{quote.Text.Trim()}”";
         var authorText = string.IsNullOrWhiteSpace(quote.Author) ? string.Empty : $"— {quote.Author.Trim()}";
@@ -73,12 +62,6 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
 
         bitmap.Save(outputPath, ImageFormat.Bmp);
         return outputPath;
-    }
-
-    private Color GetNextBackgroundColor()
-    {
-        _lastBackgroundColorIndex = (_lastBackgroundColorIndex + 1) % BackgroundPalette.Length;
-        return BackgroundPalette[_lastBackgroundColorIndex];
     }
 
     private static RectangleF CreateQuoteBounds(

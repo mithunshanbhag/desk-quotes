@@ -83,6 +83,31 @@ public class GlobalHotkeyServiceTests
     }
 
     [Fact]
+    public void TryRegisterHotkey_WhenAllWallpaperActionsAreRegistered_AddsMessageFilterOnce()
+    {
+        var sut = new SpyGlobalHotkeyService();
+
+        var refreshRegistered = sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers,
+            AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
+        var editRegistered = sut.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers,
+            AppConstants.EditSettingsHotkeyVirtualKey, () => { });
+        var darkenRegistered = sut.TryRegisterHotkey(AppConstants.DarkenWallpaperBackgroundColorHotkeyId, AppConstants.DarkenWallpaperBackgroundColorHotkeyModifiers,
+            AppConstants.DarkenWallpaperBackgroundColorHotkeyVirtualKey, () => { });
+        var lightenRegistered = sut.TryRegisterHotkey(AppConstants.LightenWallpaperBackgroundColorHotkeyId, AppConstants.LightenWallpaperBackgroundColorHotkeyModifiers,
+            AppConstants.LightenWallpaperBackgroundColorHotkeyVirtualKey, () => { });
+        var randomRegistered = sut.TryRegisterHotkey(AppConstants.RandomWallpaperBackgroundColorHotkeyId, AppConstants.RandomWallpaperBackgroundColorHotkeyModifiers,
+            AppConstants.RandomWallpaperBackgroundColorHotkeyVirtualKey, () => { });
+
+        refreshRegistered.Should().BeTrue();
+        editRegistered.Should().BeTrue();
+        darkenRegistered.Should().BeTrue();
+        lightenRegistered.Should().BeTrue();
+        randomRegistered.Should().BeTrue();
+        sut.AddMessageFilterCallCount.Should().Be(1);
+        sut.RegisterHotkeyCallCount.Should().Be(5);
+    }
+
+    [Fact]
     public void PreFilterMessage_WhenRegisteredHotkeyMessageReceived_InvokesCallbackAndReturnsTrue()
     {
         var sut = new SpyGlobalHotkeyService();

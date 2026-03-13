@@ -11,7 +11,7 @@ public class WallpaperRenderServiceTests
     {
         var sut = new WallpaperRenderService();
 
-        var action = () => sut.RenderQuoteWallpaper(null!, new Size(1920, 1080));
+        var action = () => sut.RenderQuoteWallpaper(null!, new Size(1920, 1080), Color.Black);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -30,7 +30,7 @@ public class WallpaperRenderServiceTests
             Author = "Jack Ma"
         };
 
-        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080));
+        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080), Color.FromArgb(24, 27, 36));
         using var renderedImage = new Bitmap(outputPath);
         var backgroundColor = GetBackgroundColor(renderedImage);
         var textClusters = GetMergedTextClusters(renderedImage, backgroundColor);
@@ -42,24 +42,16 @@ public class WallpaperRenderServiceTests
     }
 
     [Fact]
-    public void RenderQuoteWallpaper_WhenCalledSequentially_UsesDifferentDarkBackgroundColors()
+    public void RenderQuoteWallpaper_WhenBackgroundColorProvided_UsesThatBackgroundColor()
     {
         var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
         var quote = new Quote { Text = "Stay curious.", Author = "Unknown" };
+        var backgroundColor = Color.FromArgb(28, 44, 60);
 
-        var firstOutputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080));
-        Color firstBackgroundColor;
+        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080), backgroundColor);
+        using var renderedImage = new Bitmap(outputPath);
 
-        using (var firstRenderedImage = new Bitmap(firstOutputPath))
-            firstBackgroundColor = GetBackgroundColor(firstRenderedImage);
-
-        var secondOutputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080));
-        using var secondRenderedImage = new Bitmap(secondOutputPath);
-        var secondBackgroundColor = GetBackgroundColor(secondRenderedImage);
-
-        firstBackgroundColor.ToArgb().Should().NotBe(secondBackgroundColor.ToArgb());
-        firstBackgroundColor.GetBrightness().Should().BeLessThan(0.2f);
-        secondBackgroundColor.GetBrightness().Should().BeLessThan(0.2f);
+        GetBackgroundColor(renderedImage).ToArgb().Should().Be(backgroundColor.ToArgb());
     }
 
     #endregion
@@ -112,7 +104,7 @@ public class WallpaperRenderServiceTests
         var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
         var quote = new Quote { Text = "", Author = "" };
 
-        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 0));
+        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 0), Color.Black);
         using var renderedImage = Image.FromFile(outputPath);
 
         outputPath.Should().NotBeNullOrWhiteSpace();
@@ -128,7 +120,7 @@ public class WallpaperRenderServiceTests
         var sut = new WallpaperRenderService(new WallpaperResolutionValidator());
         var quote = new Quote { Text = "Quote", Author = "Author" };
 
-        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 720));
+        var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 720), Color.Black);
         using var renderedImage = Image.FromFile(outputPath);
 
         renderedImage.Width.Should().Be(1920);

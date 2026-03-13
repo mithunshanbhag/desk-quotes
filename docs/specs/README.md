@@ -41,6 +41,8 @@ In its current iteration:
 
 - **Refresh on demand**: The app will have an option to refresh the wallpaper on demand through the tray context menu (`Refresh Wallpaper (Ctrl + Alt + U)`) and a fixed global hotkey (`Ctrl + Alt + U`).
 
+- **Wallpaper background controls**: The tray context menu will include a `Wallpaper Background Color` submenu with `Darken Color (Ctrl + Alt + -)`, `Lighten Color (Ctrl + Alt + =)`, and `Random Color (Ctrl + Alt + 0)`. Each action should immediately refresh the wallpaper using the selected background adjustment, while later normal refreshes continue auto-picking a dark color.
+
 - **Edit settings on demand**: The app will have an option to open the settings file for editing through the tray context menu (`Edit Settings (Ctrl + Alt + E)`) and a fixed global hotkey (`Ctrl + Alt + E`).
 
 ## User Interactions
