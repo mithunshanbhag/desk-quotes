@@ -2,11 +2,11 @@
 
 The system tray application will allow the user to have the following interactions through a context menu (accessible either by right-clicking the tray icon or left-clicking it):
 
-- "Refresh Wallpaper (Ctrl + Alt + U)": Manually trigger a wallpaper update. Each refresh will also rotate the wallpaper to a different dark background color. The same fixed global hotkey (`Ctrl + Alt + U`) will also be available for this action.
+- "Refresh Wallpaper (Ctrl + Alt + U)": Manually trigger a wallpaper update. Each standard refresh will rotate to a different dark background color and randomly pick one of the curated quote fonts. The same fixed global hotkey (`Ctrl + Alt + U`) will also be available for this action.
 - "Wallpaper Background Color": Opens a submenu that immediately refreshes the wallpaper using one of these background actions:
-  - "Darken Color (Ctrl + Alt + -)": Darkens the current wallpaper background color and refreshes immediately.
-  - "Lighten Color (Ctrl + Alt + =)": Lightens the current wallpaper background color and refreshes immediately.
-  - "Random Color (Ctrl + Alt + 0)": Picks a new dark random wallpaper background color and refreshes immediately.
+  - "Darken Color (Ctrl + Alt + -)": Darkens the current wallpaper background color and refreshes immediately without changing the current quote font.
+  - "Lighten Color (Ctrl + Alt + =)": Lightens the current wallpaper background color and refreshes immediately without changing the current quote font.
+  - "Random Color (Ctrl + Alt + 0)": Picks a new dark random wallpaper background color and refreshes immediately without changing the current quote font.
 - "Edit Settings (Ctrl + Alt + E)": Open the `settings.json` file in the default text editor for easy editing. The same fixed global hotkey (`Ctrl + Alt + E`) will also be available for this action.
 - "Exit": Close the application.
 

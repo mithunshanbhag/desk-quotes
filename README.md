@@ -5,7 +5,7 @@
 
 ![DeskQuotes Demo](./docs/assets/reference-screenshot.png)
 
-DeskQuotes is a Windows tray app that rotates your desktop wallpaper using quotes from a local `settings.json` file.
+DeskQuotes is a Windows tray app that rotates your desktop wallpaper using quotes from a local `settings.json` file and a curated set of readable quote fonts.
 
 ## Installation
 
@@ -29,8 +29,9 @@ dotnet restore .\DeskQuotes.slnx
     - **Edit Settings (Ctrl + Alt + E)** (opens `settings.json`)
     - **Exit**
 3. Press `Ctrl + Alt + U` from anywhere, or use the tray menu, to trigger an immediate wallpaper refresh.
-4. Use the background color submenu or its hotkeys to immediately darken, lighten, or randomize the wallpaper background color.
-5. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
+4. Standard wallpaper refreshes rotate the quote font among `Segoe UI`, `Georgia`, `Palatino Linotype`, `Trebuchet MS`, and `Constantia`.
+5. Use the background color submenu or its hotkeys to immediately darken, lighten, or randomize the wallpaper background color while keeping the current quote font unchanged.
+6. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
 
 ## Build and run locally
 

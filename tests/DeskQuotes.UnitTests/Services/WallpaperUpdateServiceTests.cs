@@ -4,96 +4,6 @@ namespace DeskQuotes.UnitTests.Services;
 
 public class WallpaperUpdateServiceTests
 {
-    #region Positive cases
-
-    [Fact]
-    public void TryUpdateWallpaper_WhenAllStepsSucceed_ReturnsTrue()
-    {
-        var quoteSelectionService = new SpyQuoteSelectionService();
-        var monitorResolutionService = new SpyMonitorResolutionService();
-        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
-        var wallpaperRenderService = new SpyWallpaperRenderService();
-        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
-        var sut = new WallpaperUpdateService(
-            quoteSelectionService,
-            monitorResolutionService,
-            wallpaperBackgroundColorService,
-            wallpaperRenderService,
-            windowsWallpaperService);
-        var quote = new Quote { Text = "Build things that matter.", Author = "Unknown" };
-
-        var result = sut.TryUpdateWallpaper([quote]);
-
-        result.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        monitorResolutionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CallCount.Should().Be(1);
-        windowsWallpaperService.CallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
-        wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(1);
-        wallpaperRenderService.CapturedQuote.Should().BeSameAs(quote);
-        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
-        wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
-        windowsWallpaperService.CapturedPath.Should().Be(wallpaperRenderService.RenderedPath);
-    }
-
-    [Fact]
-    public void TryUpdateWallpaper_WhenExplicitBackgroundColorProvided_UsesExplicitColorInsteadOfAutomaticColor()
-    {
-        var quoteSelectionService = new SpyQuoteSelectionService();
-        var monitorResolutionService = new SpyMonitorResolutionService();
-        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
-        var wallpaperRenderService = new SpyWallpaperRenderService();
-        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
-        var sut = new WallpaperUpdateService(
-            quoteSelectionService,
-            monitorResolutionService,
-            wallpaperBackgroundColorService,
-            wallpaperRenderService,
-            windowsWallpaperService);
-        var explicitBackgroundColor = Color.FromArgb(41, 55, 73);
-
-        var result = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }], explicitBackgroundColor);
-
-        result.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(0);
-        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
-        wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
-    }
-
-    [Fact]
-    public void TryUpdateWallpaper_WhenExplicitBackgroundColorProvidedAfterSuccessfulRefresh_ReusesCurrentQuote()
-    {
-        var initiallySelectedQuote = new Quote { Text = "First quote", Author = "Author One" };
-        var laterCandidateQuote = new Quote { Text = "Second quote", Author = "Author Two" };
-        var quoteSelectionService = new SequenceQuoteSelectionService(initiallySelectedQuote, laterCandidateQuote);
-        var monitorResolutionService = new SpyMonitorResolutionService();
-        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
-        var wallpaperRenderService = new SpyWallpaperRenderService();
-        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
-        var sut = new WallpaperUpdateService(
-            quoteSelectionService,
-            monitorResolutionService,
-            wallpaperBackgroundColorService,
-            wallpaperRenderService,
-            windowsWallpaperService);
-        var explicitBackgroundColor = Color.FromArgb(35, 48, 61);
-
-        var initialRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote]);
-        var colorOnlyRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote], explicitBackgroundColor);
-
-        initialRefreshResult.Should().BeTrue();
-        colorOnlyRefreshResult.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CapturedQuotes.Should().HaveCount(2);
-        wallpaperRenderService.CapturedQuotes[0].Should().BeSameAs(initiallySelectedQuote);
-        wallpaperRenderService.CapturedQuotes[1].Should().BeSameAs(initiallySelectedQuote);
-        wallpaperRenderService.CapturedBackgroundColors[1].ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
-    }
-
-    #endregion
-
     private sealed class SpyQuoteSelectionService : QuoteSelectionService
     {
         public int CallCount { get; private set; }
@@ -142,19 +52,23 @@ public class WallpaperUpdateServiceTests
     {
         public int CallCount { get; private set; }
         public List<Color> CapturedBackgroundColors { get; } = [];
+        public List<string> CapturedFontFamilyNames { get; } = [];
         public bool ThrowOnRender { get; init; }
         public Color CapturedBackgroundColor { get; private set; }
+        public string? CapturedFontFamilyName { get; private set; }
         public Quote? CapturedQuote { get; private set; }
         public List<Quote> CapturedQuotes { get; } = [];
         public string RenderedPath { get; } = Path.Combine(Path.GetTempPath(), "test-wallpaper.bmp");
 
-        public override string RenderQuoteWallpaper(Quote quote, Size resolution, Color backgroundColor)
+        public override string RenderQuoteWallpaper(Quote quote, Size resolution, Color backgroundColor, string fontFamilyName)
         {
             CallCount++;
             CapturedQuote = quote;
             CapturedBackgroundColor = backgroundColor;
+            CapturedFontFamilyName = fontFamilyName;
             CapturedQuotes.Add(quote);
             CapturedBackgroundColors.Add(backgroundColor);
+            CapturedFontFamilyNames.Add(fontFamilyName);
 
             if (ThrowOnRender) throw new InvalidOperationException("Render failed");
 
@@ -162,11 +76,36 @@ public class WallpaperUpdateServiceTests
         }
     }
 
+    private sealed class SpyWallpaperFontSelectionService : WallpaperFontSelectionService
+    {
+        public int CallCount { get; private set; }
+        public string NextFontFamilyName { get; } = "Georgia";
+
+        public override string GetRandomFontFamilyName()
+        {
+            CallCount++;
+            return NextFontFamilyName;
+        }
+    }
+
+    private sealed class SequenceWallpaperFontSelectionService(params string[] fontFamilyNames) : WallpaperFontSelectionService
+    {
+        private readonly Queue<string> _fontFamilyNames = new(fontFamilyNames);
+
+        public int CallCount { get; private set; }
+
+        public override string GetRandomFontFamilyName()
+        {
+            CallCount++;
+            return _fontFamilyNames.Dequeue();
+        }
+    }
+
     private sealed class SpyWallpaperBackgroundColorService : WallpaperBackgroundColorService
     {
         public Color? CapturedSetCurrentBackgroundColor { get; private set; }
         public int GetNextAutomaticBackgroundColorCallCount { get; private set; }
-        public Color NextAutomaticBackgroundColor { get; init; } = Color.FromArgb(24, 27, 36);
+        public Color NextAutomaticBackgroundColor { get; } = Color.FromArgb(24, 27, 36);
         public int SetCurrentBackgroundColorCallCount { get; private set; }
 
         public override Color GetNextAutomaticBackgroundColor()
@@ -196,6 +135,136 @@ public class WallpaperUpdateServiceTests
         }
     }
 
+    #region Positive cases
+
+    [Fact]
+    public void TryUpdateWallpaper_WhenAllStepsSucceed_ReturnsTrue()
+    {
+        var quoteSelectionService = new SpyQuoteSelectionService();
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+        var quote = new Quote { Text = "Build things that matter.", Author = "Unknown" };
+
+        var result = sut.TryUpdateWallpaper([quote]);
+
+        result.Should().BeTrue();
+        quoteSelectionService.CallCount.Should().Be(1);
+        monitorResolutionService.CallCount.Should().Be(1);
+        wallpaperRenderService.CallCount.Should().Be(1);
+        windowsWallpaperService.CallCount.Should().Be(1);
+        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
+        wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(1);
+        wallpaperFontSelectionService.CallCount.Should().Be(1);
+        wallpaperRenderService.CapturedQuote.Should().BeSameAs(quote);
+        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
+        wallpaperRenderService.CapturedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextFontFamilyName);
+        wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
+        windowsWallpaperService.CapturedPath.Should().Be(wallpaperRenderService.RenderedPath);
+    }
+
+    [Fact]
+    public void TryUpdateWallpaper_WhenExplicitBackgroundColorProvidedBeforeAnySuccessfulRefresh_SelectsInitialFont()
+    {
+        var quoteSelectionService = new SpyQuoteSelectionService();
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+        var explicitBackgroundColor = Color.FromArgb(41, 55, 73);
+
+        var result = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }], explicitBackgroundColor);
+
+        result.Should().BeTrue();
+        quoteSelectionService.CallCount.Should().Be(1);
+        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(0);
+        wallpaperFontSelectionService.CallCount.Should().Be(1);
+        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
+        wallpaperRenderService.CapturedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextFontFamilyName);
+        wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
+    }
+
+    [Fact]
+    public void TryUpdateWallpaper_WhenExplicitBackgroundColorProvidedAfterSuccessfulRefresh_ReusesCurrentQuoteAndFont()
+    {
+        var initiallySelectedQuote = new Quote { Text = "First quote", Author = "Author One" };
+        var laterCandidateQuote = new Quote { Text = "Second quote", Author = "Author Two" };
+        var quoteSelectionService = new SequenceQuoteSelectionService(initiallySelectedQuote, laterCandidateQuote);
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+        var explicitBackgroundColor = Color.FromArgb(35, 48, 61);
+
+        var initialRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote]);
+        var colorOnlyRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote], explicitBackgroundColor);
+
+        initialRefreshResult.Should().BeTrue();
+        colorOnlyRefreshResult.Should().BeTrue();
+        quoteSelectionService.CallCount.Should().Be(1);
+        wallpaperFontSelectionService.CallCount.Should().Be(1);
+        wallpaperRenderService.CapturedQuotes.Should().HaveCount(2);
+        wallpaperRenderService.CapturedQuotes[0].Should().BeSameAs(initiallySelectedQuote);
+        wallpaperRenderService.CapturedQuotes[1].Should().BeSameAs(initiallySelectedQuote);
+        wallpaperRenderService.CapturedFontFamilyNames.Should().Equal(
+            wallpaperFontSelectionService.NextFontFamilyName,
+            wallpaperFontSelectionService.NextFontFamilyName);
+        wallpaperRenderService.CapturedBackgroundColors[1].ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
+    }
+
+    [Fact]
+    public void TryUpdateWallpaper_WhenStandardRefreshRunsTwice_SelectsFontForEachRefresh()
+    {
+        var quoteSelectionService = new SpyQuoteSelectionService();
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SequenceWallpaperFontSelectionService("Georgia", "Segoe UI");
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+
+        var firstRefreshResult = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
+        var secondRefreshResult = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
+
+        firstRefreshResult.Should().BeTrue();
+        secondRefreshResult.Should().BeTrue();
+        wallpaperFontSelectionService.CallCount.Should().Be(2);
+        wallpaperRenderService.CapturedFontFamilyNames.Should().Equal("Georgia", "Segoe UI");
+    }
+
+    #endregion
+
     #region Negative cases
 
     [Fact]
@@ -204,12 +273,14 @@ public class WallpaperUpdateServiceTests
         var quoteSelectionService = new SpyQuoteSelectionService { ReturnValue = false };
         var monitorResolutionService = new SpyMonitorResolutionService();
         var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
         var wallpaperRenderService = new SpyWallpaperRenderService();
         var windowsWallpaperService = new SpyWindowsWallpaperService();
         var sut = new WallpaperUpdateService(
             quoteSelectionService,
             monitorResolutionService,
             wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
             wallpaperRenderService,
             windowsWallpaperService);
 
@@ -222,6 +293,7 @@ public class WallpaperUpdateServiceTests
         windowsWallpaperService.CallCount.Should().Be(0);
         wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(0);
         wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(0);
+        wallpaperFontSelectionService.CallCount.Should().Be(0);
     }
 
     [Fact]
@@ -230,12 +302,14 @@ public class WallpaperUpdateServiceTests
         var quoteSelectionService = new SpyQuoteSelectionService();
         var monitorResolutionService = new SpyMonitorResolutionService();
         var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
         var wallpaperRenderService = new SpyWallpaperRenderService { ThrowOnRender = true };
         var windowsWallpaperService = new SpyWindowsWallpaperService();
         var sut = new WallpaperUpdateService(
             quoteSelectionService,
             monitorResolutionService,
             wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
             wallpaperRenderService,
             windowsWallpaperService);
 
@@ -248,6 +322,7 @@ public class WallpaperUpdateServiceTests
         windowsWallpaperService.CallCount.Should().Be(0);
         wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
         wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(0);
+        wallpaperFontSelectionService.CallCount.Should().Be(1);
     }
 
     [Fact]
@@ -256,12 +331,14 @@ public class WallpaperUpdateServiceTests
         var quoteSelectionService = new SpyQuoteSelectionService();
         var monitorResolutionService = new SpyMonitorResolutionService();
         var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
         var wallpaperRenderService = new SpyWallpaperRenderService();
         var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = false };
         var sut = new WallpaperUpdateService(
             quoteSelectionService,
             monitorResolutionService,
             wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
             wallpaperRenderService,
             windowsWallpaperService);
 
@@ -274,6 +351,7 @@ public class WallpaperUpdateServiceTests
         windowsWallpaperService.CallCount.Should().Be(1);
         wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
         wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(0);
+        wallpaperFontSelectionService.CallCount.Should().Be(1);
     }
 
     #endregion

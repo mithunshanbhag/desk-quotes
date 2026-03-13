@@ -8,8 +8,8 @@ public class TrayAppContext : ApplicationContext
     private readonly List<Quote> _quotes = [];
     private readonly Timer _refreshTimer = new();
     private readonly ComponentResourceManager _resources = new(typeof(TrayAppContext));
-    private readonly WallpaperBackgroundColorService _wallpaperBackgroundColorService;
     private readonly NotifyIcon _trayIcon;
+    private readonly WallpaperBackgroundColorService _wallpaperBackgroundColorService;
     private readonly WallpaperRefreshSchedulerService _wallpaperRefreshSchedulerService;
     private readonly WallpaperUpdateService _wallpaperUpdateService;
     private bool _isRefreshing;

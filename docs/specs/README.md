@@ -39,9 +39,11 @@ In its current iteration:
 
 - **Dark wallpaper color rotation**: Each wallpaper refresh will use a different dark background color so the desktop stays low-glare while still feeling fresh across refreshes.
 
+- **Quote font rotation**: Standard wallpaper refreshes (startup, hourly refresh, tray refresh, and `Ctrl + Alt + U`) will randomly select one of five curated fonts for the quote: `Segoe UI`, `Georgia`, `Palatino Linotype`, `Trebuchet MS`, or `Constantia`.
+
 - **Refresh on demand**: The app will have an option to refresh the wallpaper on demand through the tray context menu (`Refresh Wallpaper (Ctrl + Alt + U)`) and a fixed global hotkey (`Ctrl + Alt + U`).
 
-- **Wallpaper background controls**: The tray context menu will include a `Wallpaper Background Color` submenu with `Darken Color (Ctrl + Alt + -)`, `Lighten Color (Ctrl + Alt + =)`, and `Random Color (Ctrl + Alt + 0)`. Each action should immediately refresh the wallpaper using the selected background adjustment, while later normal refreshes continue auto-picking a dark color.
+- **Wallpaper background controls**: The tray context menu will include a `Wallpaper Background Color` submenu with `Darken Color (Ctrl + Alt + -)`, `Lighten Color (Ctrl + Alt + =)`, and `Random Color (Ctrl + Alt + 0)`. Each action should immediately refresh the wallpaper using the selected background adjustment, while preserving the current quote and font. Later normal refreshes continue auto-picking a dark color and rotating the font.
 
 - **Edit settings on demand**: The app will have an option to open the settings file for editing through the tray context menu (`Edit Settings (Ctrl + Alt + E)`) and a fixed global hotkey (`Ctrl + Alt + E`).
 
@@ -63,7 +65,7 @@ See [ui.md](./ui.md).
 
 - **Integration with online quote APIs**: Fetch new quotes regularly from online sources.
 
-- **Customizable wallpapers**: Allow users to choose from different wallpaper templates, styles, fonts.
+- **Customizable wallpapers**: Allow users to choose from different wallpaper templates, styles, fonts, and font lists.
 
 - **Background helper service**: A helper background service will run in the background to manage wallpaper updates and other tasks. This will ensure that the wallpaper updates happen even if the main system tray application is not running.
 

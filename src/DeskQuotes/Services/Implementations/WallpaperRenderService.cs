@@ -11,7 +11,7 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
     private const float MinimumAuthorSpacing = 12f;
     private const float MaximumAuthorSpacing = 28f;
 
-    public virtual string RenderQuoteWallpaper(Quote quote, Size resolution, Color backgroundColor)
+    public virtual string RenderQuoteWallpaper(Quote quote, Size resolution, Color backgroundColor, string fontFamilyName)
     {
         ArgumentNullException.ThrowIfNull(quote);
 
@@ -45,8 +45,8 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
 
         var quoteFontSize = Math.Clamp(width / 36f, 26f, 72f);
         var authorFontSize = Math.Clamp(width / 64f, 18f, 40f);
-        using var quoteFont = new Font(FontFamily.GenericSansSerif, quoteFontSize, FontStyle.Bold, GraphicsUnit.Pixel);
-        using var authorFont = new Font(FontFamily.GenericSansSerif, authorFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
+        using var quoteFont = CreateFont(fontFamilyName, quoteFontSize, FontStyle.Bold);
+        using var authorFont = CreateFont(fontFamilyName, authorFontSize, FontStyle.Regular);
 
         using var quoteBrush = new SolidBrush(Color.FromArgb(240, 240, 240));
         using var authorBrush = new SolidBrush(Color.FromArgb(210, 210, 210));
@@ -62,6 +62,21 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
 
         bitmap.Save(outputPath, ImageFormat.Bmp);
         return outputPath;
+    }
+
+    private static Font CreateFont(string fontFamilyName, float size, FontStyle style)
+    {
+        if (string.IsNullOrWhiteSpace(fontFamilyName))
+            return new Font(FontFamily.GenericSansSerif, size, style, GraphicsUnit.Pixel);
+
+        try
+        {
+            return new Font(fontFamilyName, size, style, GraphicsUnit.Pixel);
+        }
+        catch (ArgumentException)
+        {
+            return new Font(FontFamily.GenericSansSerif, size, style, GraphicsUnit.Pixel);
+        }
     }
 
     private static RectangleF CreateQuoteBounds(

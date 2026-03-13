@@ -1,6 +1,6 @@
 namespace DeskQuotes.Services.Implementations;
 
-public class WallpaperBackgroundColorService
+public class WallpaperBackgroundColorService(Random random)
 {
     private const float DarkenAmount = 0.14f;
     private const float LightenAmount = 0.14f;
@@ -15,18 +15,13 @@ public class WallpaperBackgroundColorService
         Color.FromArgb(38, 28, 28)
     ];
 
-    private readonly Random _random;
+    private readonly Random _random = random ?? throw new ArgumentNullException(nameof(random));
     private Color? _currentBackgroundColor;
     private int _lastAutomaticBackgroundColorIndex = -1;
 
     public WallpaperBackgroundColorService()
         : this(Random.Shared)
     {
-    }
-
-    public WallpaperBackgroundColorService(Random random)
-    {
-        _random = random ?? throw new ArgumentNullException(nameof(random));
     }
 
     public virtual Color Darken(Color input)
