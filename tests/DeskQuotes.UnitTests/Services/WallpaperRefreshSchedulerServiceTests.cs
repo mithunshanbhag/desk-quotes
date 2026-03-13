@@ -13,7 +13,7 @@ public class WallpaperRefreshSchedulerServiceTests
 
         var delay = WallpaperRefreshSchedulerService.GetDelayUntilNextLocalTopOfHourRefresh(localNow);
 
-        delay.Should().Be(TimeSpan.FromHours(1));
+        Assert.Equal(TimeSpan.FromHours(1), delay);
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class WallpaperRefreshSchedulerServiceTests
 
         var delay = WallpaperRefreshSchedulerService.GetDelayUntilNextLocalTopOfHourRefresh(localNow);
 
-        delay.Should().Be(TimeSpan.FromMilliseconds(500));
+        Assert.Equal(TimeSpan.FromMilliseconds(500), delay);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class WallpaperRefreshSchedulerServiceTests
 
         var delay = WallpaperRefreshSchedulerService.GetDelayUntilNextLocalTopOfHourRefresh(localNow);
 
-        delay.Should().Be(TimeSpan.FromMilliseconds(100));
+        Assert.Equal(TimeSpan.FromMilliseconds(100), delay);
     }
 
     #endregion

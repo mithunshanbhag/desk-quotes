@@ -12,9 +12,9 @@ public class WallpaperBackgroundColorServiceTests
         var firstColor = sut.GetNextAutomaticBackgroundColor();
         var secondColor = sut.GetNextAutomaticBackgroundColor();
 
-        firstColor.ToArgb().Should().NotBe(secondColor.ToArgb());
-        firstColor.GetBrightness().Should().BeLessThan(0.2f);
-        secondColor.GetBrightness().Should().BeLessThan(0.2f);
+        Assert.NotEqual(secondColor.ToArgb(), firstColor.ToArgb());
+        Assert.True(firstColor.GetBrightness() < 0.2f);
+        Assert.True(secondColor.GetBrightness() < 0.2f);
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class WallpaperBackgroundColorServiceTests
 
         var randomDarkColor = sut.GetRandomDarkColor();
 
-        randomDarkColor.GetBrightness().Should().BeLessThan(0.2f);
+        Assert.True(randomDarkColor.GetBrightness() < 0.2f);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class WallpaperBackgroundColorServiceTests
 
         sut.SetCurrentBackgroundColor(selectedColor);
 
-        sut.GetCurrentBackgroundColor().ToArgb().Should().Be(selectedColor.ToArgb());
+        Assert.Equal(selectedColor.ToArgb(), sut.GetCurrentBackgroundColor().ToArgb());
     }
 
     #endregion
@@ -50,9 +50,9 @@ public class WallpaperBackgroundColorServiceTests
 
         var result = sut.Darken(input);
 
-        result.R.Should().BeInRange(0, 1);
-        result.G.Should().Be(14);
-        result.B.Should().Be(219);
+        Assert.InRange(result.R, 0, 1);
+        Assert.Equal(14, result.G);
+        Assert.Equal(219, result.B);
     }
 
     [Fact]
@@ -63,9 +63,9 @@ public class WallpaperBackgroundColorServiceTests
 
         var result = sut.Darken(input);
 
-        result.R.Should().Be(34);
-        result.G.Should().Be(10);
-        result.B.Should().Be(0);
+        Assert.Equal(34, result.R);
+        Assert.Equal(10, result.G);
+        Assert.Equal(0, result.B);
     }
 
     [Fact]
@@ -76,9 +76,9 @@ public class WallpaperBackgroundColorServiceTests
 
         var result = sut.Lighten(input);
 
-        result.R.Should().Be(46);
-        result.G.Should().Be(254);
-        result.B.Should().Be(105);
+        Assert.Equal(46, result.R);
+        Assert.Equal(254, result.G);
+        Assert.Equal(105, result.B);
     }
 
     [Fact]
@@ -89,9 +89,9 @@ public class WallpaperBackgroundColorServiceTests
 
         var result = sut.Lighten(input);
 
-        result.R.Should().Be(251);
-        result.G.Should().Be(40);
-        result.B.Should().Be(255);
+        Assert.Equal(251, result.R);
+        Assert.Equal(40, result.G);
+        Assert.Equal(255, result.B);
     }
 
     #endregion

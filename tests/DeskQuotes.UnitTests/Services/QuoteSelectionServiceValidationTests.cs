@@ -9,8 +9,8 @@ public class QuoteSelectionServiceValidationTests
     {
         var result = QuoteSelectionService.TrySelectRandomQuote(null, out var selectedQuote);
 
-        result.Should().BeFalse();
-        selectedQuote.Should().BeNull();
+        Assert.False(result);
+        Assert.Null(selectedQuote);
     }
 
     [Fact(Skip = "@TODO: Investigate later")]
@@ -23,11 +23,13 @@ public class QuoteSelectionServiceValidationTests
             new() { Text = "", Author = "Author 2" }
         };
 
-        var act = () => QuoteSelectionService.TrySelectRandomQuote(quotes, out var selectedQuote);
+        Action act = () => _ = QuoteSelectionService.TrySelectRandomQuote(quotes, out _);
 
-        act.Should().NotThrow();
-        QuoteSelectionService.TrySelectRandomQuote(quotes, out var selectedQuote).Should().BeFalse();
-        selectedQuote.Should().BeNull();
+        var exception = Record.Exception(act);
+
+        Assert.Null(exception);
+        Assert.False(QuoteSelectionService.TrySelectRandomQuote(quotes, out var selectedQuote));
+        Assert.Null(selectedQuote);
     }
 
     #endregion

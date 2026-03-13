@@ -14,8 +14,8 @@ public class GlobalHotkeyServiceTests
 
         sut.Dispose();
 
-        sut.RemoveMessageFilterCallCount.Should().Be(0);
-        sut.UnregisterHotkeyCallCount.Should().Be(0);
+        Assert.Equal(0, sut.RemoveMessageFilterCallCount);
+        Assert.Equal(0, sut.UnregisterHotkeyCallCount);
     }
 
     #endregion
@@ -61,10 +61,10 @@ public class GlobalHotkeyServiceTests
         var result = sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey,
             () => { });
 
-        result.Should().BeTrue();
-        sut.AddMessageFilterCallCount.Should().Be(1);
-        sut.RemoveMessageFilterCallCount.Should().Be(0);
-        sut.RegisterHotkeyCallCount.Should().Be(1);
+        Assert.True(result);
+        Assert.Equal(1, sut.AddMessageFilterCallCount);
+        Assert.Equal(0, sut.RemoveMessageFilterCallCount);
+        Assert.Equal(1, sut.RegisterHotkeyCallCount);
     }
 
     [Fact]
@@ -76,10 +76,10 @@ public class GlobalHotkeyServiceTests
             () => { });
         var result2 = sut.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey, () => { });
 
-        result1.Should().BeTrue();
-        result2.Should().BeTrue();
-        sut.AddMessageFilterCallCount.Should().Be(1);
-        sut.RegisterHotkeyCallCount.Should().Be(2);
+        Assert.True(result1);
+        Assert.True(result2);
+        Assert.Equal(1, sut.AddMessageFilterCallCount);
+        Assert.Equal(2, sut.RegisterHotkeyCallCount);
     }
 
     [Fact]
@@ -100,14 +100,14 @@ public class GlobalHotkeyServiceTests
         var randomFontRegistered = sut.TryRegisterHotkey(AppConstants.RandomWallpaperFontHotkeyId, AppConstants.RandomWallpaperFontHotkeyModifiers,
             AppConstants.RandomWallpaperFontHotkeyVirtualKey, () => { });
 
-        refreshRegistered.Should().BeTrue();
-        editRegistered.Should().BeTrue();
-        darkenRegistered.Should().BeTrue();
-        lightenRegistered.Should().BeTrue();
-        randomRegistered.Should().BeTrue();
-        randomFontRegistered.Should().BeTrue();
-        sut.AddMessageFilterCallCount.Should().Be(1);
-        sut.RegisterHotkeyCallCount.Should().Be(6);
+        Assert.True(refreshRegistered);
+        Assert.True(editRegistered);
+        Assert.True(darkenRegistered);
+        Assert.True(lightenRegistered);
+        Assert.True(randomRegistered);
+        Assert.True(randomFontRegistered);
+        Assert.Equal(1, sut.AddMessageFilterCallCount);
+        Assert.Equal(6, sut.RegisterHotkeyCallCount);
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class GlobalHotkeyServiceTests
 
         var result = sut.PreFilterMessage(ref message);
 
-        result.Should().BeTrue();
-        callbackCallCount.Should().Be(1);
+        Assert.True(result);
+        Assert.Equal(1, callbackCallCount);
     }
 
     [Fact]
@@ -135,8 +135,8 @@ public class GlobalHotkeyServiceTests
 
         var result = sut.PreFilterMessage(ref message);
 
-        result.Should().BeTrue();
-        callbackCallCount.Should().Be(1);
+        Assert.True(result);
+        Assert.Equal(1, callbackCallCount);
     }
 
     [Fact]
@@ -150,8 +150,8 @@ public class GlobalHotkeyServiceTests
 
         var result = sut.PreFilterMessage(ref message);
 
-        result.Should().BeTrue();
-        callbackCallCount.Should().Be(1);
+        Assert.True(result);
+        Assert.Equal(1, callbackCallCount);
     }
 
     [Fact]
@@ -168,9 +168,9 @@ public class GlobalHotkeyServiceTests
 
         var result = sut.PreFilterMessage(ref editSettingsMessage);
 
-        result.Should().BeTrue();
-        refreshCallCount.Should().Be(0);
-        editSettingsCallCount.Should().Be(1);
+        Assert.True(result);
+        Assert.Equal(0, refreshCallCount);
+        Assert.Equal(1, editSettingsCallCount);
     }
 
     [Fact]
@@ -181,8 +181,8 @@ public class GlobalHotkeyServiceTests
 
         sut.Dispose();
 
-        sut.RemoveMessageFilterCallCount.Should().Be(1);
-        sut.UnregisterHotkeyCallCount.Should().Be(1);
+        Assert.Equal(1, sut.RemoveMessageFilterCallCount);
+        Assert.Equal(1, sut.UnregisterHotkeyCallCount);
     }
 
     [Fact]
@@ -194,8 +194,8 @@ public class GlobalHotkeyServiceTests
 
         sut.Dispose();
 
-        sut.RemoveMessageFilterCallCount.Should().Be(1);
-        sut.UnregisterHotkeyCallCount.Should().Be(2);
+        Assert.Equal(1, sut.RemoveMessageFilterCallCount);
+        Assert.Equal(2, sut.UnregisterHotkeyCallCount);
     }
 
     #endregion
@@ -210,10 +210,10 @@ public class GlobalHotkeyServiceTests
         var result = sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey,
             () => { });
 
-        result.Should().BeFalse();
-        sut.AddMessageFilterCallCount.Should().Be(1);
-        sut.RemoveMessageFilterCallCount.Should().Be(1);
-        sut.UnregisterHotkeyCallCount.Should().Be(0);
+        Assert.False(result);
+        Assert.Equal(1, sut.AddMessageFilterCallCount);
+        Assert.Equal(1, sut.RemoveMessageFilterCallCount);
+        Assert.Equal(0, sut.UnregisterHotkeyCallCount);
     }
 
     [Fact]
@@ -222,10 +222,11 @@ public class GlobalHotkeyServiceTests
         var sut = new SpyGlobalHotkeyService();
         sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey, () => { });
 
-        var action = () => sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers, AppConstants.RefreshWallpaperHotkeyVirtualKey,
+        Action action = () => _ = sut.TryRegisterHotkey(AppConstants.RefreshWallpaperHotkeyId, AppConstants.RefreshWallpaperHotkeyModifiers,
+            AppConstants.RefreshWallpaperHotkeyVirtualKey,
             () => { });
 
-        action.Should().Throw<InvalidOperationException>();
+        Assert.Throws<InvalidOperationException>(action);
     }
 
     [Fact]
@@ -239,8 +240,8 @@ public class GlobalHotkeyServiceTests
 
         var result = sut.PreFilterMessage(ref message);
 
-        result.Should().BeFalse();
-        callbackCallCount.Should().Be(0);
+        Assert.False(result);
+        Assert.Equal(0, callbackCallCount);
     }
 
     #endregion

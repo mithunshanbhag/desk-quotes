@@ -32,9 +32,9 @@ public class WindowsWallpaperServiceTests
 
         var result = sut.TryApplyWallpaper(@"C:\invalid-path\wallpaper.bmp");
 
-        result.Should().BeFalse();
-        validator.CallCount.Should().Be(1);
-        validator.CapturedPath.Should().Be(@"C:\invalid-path\wallpaper.bmp");
+        Assert.False(result);
+        Assert.Equal(1, validator.CallCount);
+        Assert.Equal(@"C:\invalid-path\wallpaper.bmp", validator.CapturedPath);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class WindowsWallpaperServiceTests
     {
         var result = _sut.TryApplyWallpaper(null!);
 
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     [Theory]
@@ -52,7 +52,7 @@ public class WindowsWallpaperServiceTests
     {
         var result = _sut.TryApplyWallpaper(wallpaperPath);
 
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class WindowsWallpaperServiceTests
     {
         var result = _sut.TryApplyWallpaper(Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.bmp"));
 
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     #endregion

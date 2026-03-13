@@ -19,8 +19,8 @@ public class QuoteSelectionServiceTests
 
         var result = QuoteSelectionService.TrySelectRandomQuote(quotes, out var selectedQuote);
 
-        result.Should().BeTrue();
-        selectedQuote.Should().BeSameAs(expectedQuote);
+        Assert.True(result);
+        Assert.Same(expectedQuote, selectedQuote);
     }
 
     #endregion
@@ -32,8 +32,8 @@ public class QuoteSelectionServiceTests
     {
         var result = QuoteSelectionService.TrySelectRandomQuote(null, out var selectedQuote);
 
-        result.Should().BeFalse();
-        selectedQuote.Should().BeNull();
+        Assert.False(result);
+        Assert.Null(selectedQuote);
     }
 
     [Fact]
@@ -47,8 +47,8 @@ public class QuoteSelectionServiceTests
 
         var result = QuoteSelectionService.TrySelectRandomQuote(quotes, out var selectedQuote);
 
-        result.Should().BeFalse();
-        selectedQuote.Should().BeNull();
+        Assert.False(result);
+        Assert.Null(selectedQuote);
     }
 
     #endregion

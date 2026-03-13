@@ -13,7 +13,7 @@ public class WallpaperRenderServiceTests
 
         var action = () => sut.RenderQuoteWallpaper(null!, new Size(1920, 1080), Color.Black, "Segoe UI");
 
-        action.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(action);
     }
 
     #endregion
@@ -30,7 +30,7 @@ public class WallpaperRenderServiceTests
             .Where(row => RowContainsText(renderedImage, row, backgroundColor))
             .ToList();
 
-        rowsWithText.Should().NotBeEmpty();
+        Assert.NotEmpty(rowsWithText);
 
         var clusters = new List<(int Start, int End)>();
         var clusterStart = rowsWithText[0];
@@ -78,10 +78,10 @@ public class WallpaperRenderServiceTests
         var backgroundColor = GetBackgroundColor(renderedImage);
         var textClusters = GetMergedTextClusters(renderedImage, backgroundColor);
 
-        textClusters.Should().HaveCount(2);
+        Assert.Equal(2, textClusters.Count);
 
         var gapBetweenQuoteAndAuthor = textClusters[1].Start - textClusters[0].End - 1;
-        gapBetweenQuoteAndAuthor.Should().BeLessThan(140);
+        Assert.True(gapBetweenQuoteAndAuthor < 140);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class WallpaperRenderServiceTests
         var outputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080), backgroundColor, "Trebuchet MS");
         using var renderedImage = new Bitmap(outputPath);
 
-        GetBackgroundColor(renderedImage).ToArgb().Should().Be(backgroundColor.ToArgb());
+        Assert.Equal(backgroundColor.ToArgb(), GetBackgroundColor(renderedImage).ToArgb());
     }
 
     [Fact]
@@ -106,9 +106,9 @@ public class WallpaperRenderServiceTests
         var outputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080), Color.FromArgb(24, 27, 36), "Constantia");
         using var renderedImage = new Bitmap(outputPath);
 
-        File.Exists(outputPath).Should().BeTrue();
-        renderedImage.Width.Should().Be(1920);
-        renderedImage.Height.Should().Be(1080);
+        Assert.True(File.Exists(outputPath));
+        Assert.Equal(1920, renderedImage.Width);
+        Assert.Equal(1080, renderedImage.Height);
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class WallpaperRenderServiceTests
         var outputPath = sut.RenderQuoteWallpaper(quote, new Size(1920, 1080), backgroundColor, "Definitely Missing Font");
         using var renderedImage = new Bitmap(outputPath);
 
-        File.Exists(outputPath).Should().BeTrue();
-        GetBackgroundColor(renderedImage).ToArgb().Should().Be(backgroundColor.ToArgb());
+        Assert.True(File.Exists(outputPath));
+        Assert.Equal(backgroundColor.ToArgb(), GetBackgroundColor(renderedImage).ToArgb());
     }
 
     #endregion
@@ -138,11 +138,11 @@ public class WallpaperRenderServiceTests
         var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 0), Color.Black, "Segoe UI");
         using var renderedImage = Image.FromFile(outputPath);
 
-        outputPath.Should().NotBeNullOrWhiteSpace();
-        outputPath.Should().EndWith(".bmp");
-        File.Exists(outputPath).Should().BeTrue();
-        renderedImage.Width.Should().Be(1920);
-        renderedImage.Height.Should().Be(1080);
+        Assert.False(string.IsNullOrWhiteSpace(outputPath));
+        Assert.EndsWith(".bmp", outputPath);
+        Assert.True(File.Exists(outputPath));
+        Assert.Equal(1920, renderedImage.Width);
+        Assert.Equal(1080, renderedImage.Height);
     }
 
     [Fact]
@@ -154,8 +154,8 @@ public class WallpaperRenderServiceTests
         var outputPath = sut.RenderQuoteWallpaper(quote, new Size(0, 720), Color.Black, "Segoe UI");
         using var renderedImage = Image.FromFile(outputPath);
 
-        renderedImage.Width.Should().Be(1920);
-        renderedImage.Height.Should().Be(720);
+        Assert.Equal(1920, renderedImage.Width);
+        Assert.Equal(720, renderedImage.Height);
     }
 
     #endregion

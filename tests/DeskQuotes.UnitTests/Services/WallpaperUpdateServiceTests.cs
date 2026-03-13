@@ -176,19 +176,19 @@ public class WallpaperUpdateServiceTests
 
         var result = sut.TryUpdateWallpaper([quote]);
 
-        result.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        monitorResolutionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CallCount.Should().Be(1);
-        windowsWallpaperService.CallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
-        wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(1);
-        wallpaperFontSelectionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CapturedQuote.Should().BeSameAs(quote);
-        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
-        wallpaperRenderService.CapturedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextFontFamilyName);
-        wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
-        windowsWallpaperService.CapturedPath.Should().Be(wallpaperRenderService.RenderedPath);
+        Assert.True(result);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(1, monitorResolutionService.CallCount);
+        Assert.Equal(1, wallpaperRenderService.CallCount);
+        Assert.Equal(1, windowsWallpaperService.CallCount);
+        Assert.Equal(1, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(1, wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.CallCount);
+        Assert.Same(quote, wallpaperRenderService.CapturedQuote);
+        Assert.Equal(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColor.ToArgb());
+        Assert.Equal(wallpaperFontSelectionService.NextFontFamilyName, wallpaperRenderService.CapturedFontFamilyName);
+        Assert.Equal(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb(), wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb());
+        Assert.Equal(wallpaperRenderService.RenderedPath, windowsWallpaperService.CapturedPath);
     }
 
     [Fact]
@@ -211,13 +211,13 @@ public class WallpaperUpdateServiceTests
 
         var result = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }], explicitBackgroundColor);
 
-        result.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(0);
-        wallpaperFontSelectionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
-        wallpaperRenderService.CapturedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextFontFamilyName);
-        wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
+        Assert.True(result);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.CallCount);
+        Assert.Equal(explicitBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColor.ToArgb());
+        Assert.Equal(wallpaperFontSelectionService.NextFontFamilyName, wallpaperRenderService.CapturedFontFamilyName);
+        Assert.Equal(explicitBackgroundColor.ToArgb(), wallpaperBackgroundColorService.CapturedSetCurrentBackgroundColor?.ToArgb());
     }
 
     [Fact]
@@ -243,17 +243,17 @@ public class WallpaperUpdateServiceTests
         var initialRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote]);
         var colorOnlyRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote], explicitBackgroundColor);
 
-        initialRefreshResult.Should().BeTrue();
-        colorOnlyRefreshResult.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        wallpaperFontSelectionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CapturedQuotes.Should().HaveCount(2);
-        wallpaperRenderService.CapturedQuotes[0].Should().BeSameAs(initiallySelectedQuote);
-        wallpaperRenderService.CapturedQuotes[1].Should().BeSameAs(initiallySelectedQuote);
-        wallpaperRenderService.CapturedFontFamilyNames.Should().Equal(
-            wallpaperFontSelectionService.NextFontFamilyName,
-            wallpaperFontSelectionService.NextFontFamilyName);
-        wallpaperRenderService.CapturedBackgroundColors[1].ToArgb().Should().Be(explicitBackgroundColor.ToArgb());
+        Assert.True(initialRefreshResult);
+        Assert.True(colorOnlyRefreshResult);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.CallCount);
+        Assert.Equal(2, wallpaperRenderService.CapturedQuotes.Count);
+        Assert.Same(initiallySelectedQuote, wallpaperRenderService.CapturedQuotes[0]);
+        Assert.Same(initiallySelectedQuote, wallpaperRenderService.CapturedQuotes[1]);
+        Assert.Equal(
+            [wallpaperFontSelectionService.NextFontFamilyName, wallpaperFontSelectionService.NextFontFamilyName],
+            wallpaperRenderService.CapturedFontFamilyNames);
+        Assert.Equal(explicitBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColors[1].ToArgb());
     }
 
     [Fact]
@@ -276,10 +276,10 @@ public class WallpaperUpdateServiceTests
         var firstRefreshResult = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
         var secondRefreshResult = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
 
-        firstRefreshResult.Should().BeTrue();
-        secondRefreshResult.Should().BeTrue();
-        wallpaperFontSelectionService.CallCount.Should().Be(2);
-        wallpaperRenderService.CapturedFontFamilyNames.Should().Equal("Georgia", "Segoe UI");
+        Assert.True(firstRefreshResult);
+        Assert.True(secondRefreshResult);
+        Assert.Equal(2, wallpaperFontSelectionService.CallCount);
+        Assert.Equal(["Georgia", "Segoe UI"], wallpaperRenderService.CapturedFontFamilyNames);
     }
 
     [Fact]
@@ -304,23 +304,23 @@ public class WallpaperUpdateServiceTests
         var initialRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote]);
         var randomFontRefreshResult = sut.TryUpdateWallpaperWithRandomFont([initiallySelectedQuote, laterCandidateQuote]);
 
-        initialRefreshResult.Should().BeTrue();
-        randomFontRefreshResult.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetCurrentBackgroundColorCallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
-        wallpaperFontSelectionService.CallCount.Should().Be(1);
-        wallpaperFontSelectionService.ExcludingCurrentFontCallCount.Should().Be(1);
-        wallpaperFontSelectionService.ExcludedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextFontFamilyName);
-        wallpaperRenderService.CapturedQuotes.Should().HaveCount(2);
-        wallpaperRenderService.CapturedQuotes[0].Should().BeSameAs(initiallySelectedQuote);
-        wallpaperRenderService.CapturedQuotes[1].Should().BeSameAs(initiallySelectedQuote);
-        wallpaperRenderService.CapturedBackgroundColors.Should().HaveCount(2);
-        wallpaperRenderService.CapturedBackgroundColors[0].ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
-        wallpaperRenderService.CapturedBackgroundColors[1].ToArgb().Should().Be(wallpaperBackgroundColorService.CurrentBackgroundColor.ToArgb());
-        wallpaperRenderService.CapturedFontFamilyNames.Should().Equal(
-            wallpaperFontSelectionService.NextFontFamilyName,
-            wallpaperFontSelectionService.NextDifferentFontFamilyName);
+        Assert.True(initialRefreshResult);
+        Assert.True(randomFontRefreshResult);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(1, wallpaperBackgroundColorService.GetCurrentBackgroundColorCallCount);
+        Assert.Equal(1, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.CallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.ExcludingCurrentFontCallCount);
+        Assert.Equal(wallpaperFontSelectionService.NextFontFamilyName, wallpaperFontSelectionService.ExcludedFontFamilyName);
+        Assert.Equal(2, wallpaperRenderService.CapturedQuotes.Count);
+        Assert.Same(initiallySelectedQuote, wallpaperRenderService.CapturedQuotes[0]);
+        Assert.Same(initiallySelectedQuote, wallpaperRenderService.CapturedQuotes[1]);
+        Assert.Equal(2, wallpaperRenderService.CapturedBackgroundColors.Count);
+        Assert.Equal(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColors[0].ToArgb());
+        Assert.Equal(wallpaperBackgroundColorService.CurrentBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColors[1].ToArgb());
+        Assert.Equal(
+            [wallpaperFontSelectionService.NextFontFamilyName, wallpaperFontSelectionService.NextDifferentFontFamilyName],
+            wallpaperRenderService.CapturedFontFamilyNames);
     }
 
     [Fact]
@@ -343,16 +343,16 @@ public class WallpaperUpdateServiceTests
 
         var result = sut.TryUpdateWallpaperWithRandomFont([quote]);
 
-        result.Should().BeTrue();
-        quoteSelectionService.CallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetCurrentBackgroundColorCallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(0);
-        wallpaperFontSelectionService.CallCount.Should().Be(0);
-        wallpaperFontSelectionService.ExcludingCurrentFontCallCount.Should().Be(1);
-        wallpaperFontSelectionService.ExcludedFontFamilyName.Should().BeNull();
-        wallpaperRenderService.CapturedQuote.Should().BeSameAs(quote);
-        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(wallpaperBackgroundColorService.CurrentBackgroundColor.ToArgb());
-        wallpaperRenderService.CapturedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextDifferentFontFamilyName);
+        Assert.True(result);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(1, wallpaperBackgroundColorService.GetCurrentBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperFontSelectionService.CallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.ExcludingCurrentFontCallCount);
+        Assert.Null(wallpaperFontSelectionService.ExcludedFontFamilyName);
+        Assert.Same(quote, wallpaperRenderService.CapturedQuote);
+        Assert.Equal(wallpaperBackgroundColorService.CurrentBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColor.ToArgb());
+        Assert.Equal(wallpaperFontSelectionService.NextDifferentFontFamilyName, wallpaperRenderService.CapturedFontFamilyName);
     }
 
     #endregion
@@ -378,14 +378,14 @@ public class WallpaperUpdateServiceTests
 
         var result = sut.TryUpdateWallpaper([]);
 
-        result.Should().BeFalse();
-        quoteSelectionService.CallCount.Should().Be(1);
-        monitorResolutionService.CallCount.Should().Be(0);
-        wallpaperRenderService.CallCount.Should().Be(0);
-        windowsWallpaperService.CallCount.Should().Be(0);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(0);
-        wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(0);
-        wallpaperFontSelectionService.CallCount.Should().Be(0);
+        Assert.False(result);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(0, monitorResolutionService.CallCount);
+        Assert.Equal(0, wallpaperRenderService.CallCount);
+        Assert.Equal(0, windowsWallpaperService.CallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperFontSelectionService.CallCount);
     }
 
     [Fact]
@@ -407,14 +407,14 @@ public class WallpaperUpdateServiceTests
 
         var result = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
 
-        result.Should().BeFalse();
-        quoteSelectionService.CallCount.Should().Be(1);
-        monitorResolutionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CallCount.Should().Be(1);
-        windowsWallpaperService.CallCount.Should().Be(0);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
-        wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(0);
-        wallpaperFontSelectionService.CallCount.Should().Be(1);
+        Assert.False(result);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(1, monitorResolutionService.CallCount);
+        Assert.Equal(1, wallpaperRenderService.CallCount);
+        Assert.Equal(0, windowsWallpaperService.CallCount);
+        Assert.Equal(1, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.CallCount);
     }
 
     [Fact]
@@ -436,14 +436,14 @@ public class WallpaperUpdateServiceTests
 
         var result = sut.TryUpdateWallpaper([new Quote { Text = "Quote", Author = "Author" }]);
 
-        result.Should().BeFalse();
-        quoteSelectionService.CallCount.Should().Be(1);
-        monitorResolutionService.CallCount.Should().Be(1);
-        wallpaperRenderService.CallCount.Should().Be(1);
-        windowsWallpaperService.CallCount.Should().Be(1);
-        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
-        wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount.Should().Be(0);
-        wallpaperFontSelectionService.CallCount.Should().Be(1);
+        Assert.False(result);
+        Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(1, monitorResolutionService.CallCount);
+        Assert.Equal(1, wallpaperRenderService.CallCount);
+        Assert.Equal(1, windowsWallpaperService.CallCount);
+        Assert.Equal(1, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount);
+        Assert.Equal(1, wallpaperFontSelectionService.CallCount);
     }
 
     #endregion

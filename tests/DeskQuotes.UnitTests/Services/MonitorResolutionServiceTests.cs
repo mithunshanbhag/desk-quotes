@@ -16,7 +16,7 @@ public class MonitorResolutionServiceTests
 
         var resolution = sut.InferWallpaperResolution();
 
-        resolution.Should().Be(new Size(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height));
+        Assert.Equal(new Size(primaryScreen.Bounds.Width, primaryScreen.Bounds.Height), resolution);
     }
 
     #endregion
@@ -37,8 +37,8 @@ public class MonitorResolutionServiceTests
 
         var resolution = sut.InferWallpaperResolution();
 
-        resolution.Should().Be(new Size(primaryBounds.Width, primaryBounds.Height));
-        resolution.Should().NotBe(new Size(virtualDesktop.Width, virtualDesktop.Height));
+        Assert.Equal(new Size(primaryBounds.Width, primaryBounds.Height), resolution);
+        Assert.NotEqual(new Size(virtualDesktop.Width, virtualDesktop.Height), resolution);
     }
 
     #endregion
