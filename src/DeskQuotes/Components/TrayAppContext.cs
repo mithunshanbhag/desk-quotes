@@ -60,6 +60,11 @@ public class TrayAppContext : ApplicationContext
 
     private void RefreshWallpaperCore(Color? backgroundColor = null)
     {
+        RefreshWallpaperCore(() => _wallpaperUpdateService.TryUpdateWallpaper(_quotes, backgroundColor));
+    }
+
+    private void RefreshWallpaperCore(Func<bool> refreshWallpaper)
+    {
         if (_isRefreshing)
             return;
 
@@ -68,7 +73,7 @@ public class TrayAppContext : ApplicationContext
 
         try
         {
-            var wallpaperUpdated = _wallpaperUpdateService.TryUpdateWallpaper(_quotes, backgroundColor);
+            var wallpaperUpdated = refreshWallpaper();
 
             if (!wallpaperUpdated)
                 _trayIcon.ShowBalloonTip(1000, "Refresh Failed", "Unable to refresh wallpaper from settings.", ToolTipIcon.Warning);
@@ -144,6 +149,16 @@ public class TrayAppContext : ApplicationContext
         RandomizeWallpaperBackgroundColor(this, EventArgs.Empty);
     }
 
+    private void RandomizeWallpaperFont(object? sender, EventArgs e)
+    {
+        RefreshWallpaperCore(() => _wallpaperUpdateService.TryUpdateWallpaperWithRandomFont(_quotes));
+    }
+
+    private void RandomizeWallpaperFontFromHotkey()
+    {
+        RandomizeWallpaperFont(this, EventArgs.Empty);
+    }
+
     private void EditSettings(object? sender, EventArgs e)
     {
         _trayIcon.ShowBalloonTip(1000, "Opening Settings", "The settings window is opening.", ToolTipIcon.Info);
@@ -191,6 +206,7 @@ public class TrayAppContext : ApplicationContext
         var contextMenuStrip = new ContextMenuStrip();
         contextMenuStrip.Items.Add(new ToolStripMenuItem(AppConstants.RefreshWallpaperMenuLabel, null, RefreshWallpaper));
         contextMenuStrip.Items.Add(CreateWallpaperBackgroundColorMenuItem());
+        contextMenuStrip.Items.Add(CreateChangeWallpaperFontMenuItem());
         contextMenuStrip.Items.Add(new ToolStripMenuItem(AppConstants.EditSettingsMenuLabel, null, EditSettings));
         contextMenuStrip.Items.Add(new ToolStripMenuItem("E&xit", null, Exit));
         return contextMenuStrip;
@@ -203,6 +219,13 @@ public class TrayAppContext : ApplicationContext
         wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.LightenWallpaperBackgroundColorMenuLabel, null, LightenWallpaperBackgroundColor));
         wallpaperBackgroundColorMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.RandomWallpaperBackgroundColorMenuLabel, null, RandomizeWallpaperBackgroundColor));
         return wallpaperBackgroundColorMenuItem;
+    }
+
+    private ToolStripMenuItem CreateChangeWallpaperFontMenuItem()
+    {
+        var changeWallpaperFontMenuItem = new ToolStripMenuItem(AppConstants.ChangeWallpaperFontMenuLabel);
+        changeWallpaperFontMenuItem.DropDownItems.Add(new ToolStripMenuItem(AppConstants.RandomWallpaperFontMenuLabel, null, RandomizeWallpaperFont));
+        return changeWallpaperFontMenuItem;
     }
 
     private void RegisterHotkeys()
@@ -220,6 +243,9 @@ public class TrayAppContext : ApplicationContext
         TryRegisterHotkey(AppConstants.RandomWallpaperBackgroundColorHotkeyId, AppConstants.RandomWallpaperBackgroundColorHotkeyModifiers,
             AppConstants.RandomWallpaperBackgroundColorHotkeyVirtualKey, RandomizeWallpaperBackgroundColorFromHotkey,
             AppConstants.RandomWallpaperBackgroundColorHotkeyDisplay);
+        TryRegisterHotkey(AppConstants.RandomWallpaperFontHotkeyId, AppConstants.RandomWallpaperFontHotkeyModifiers,
+            AppConstants.RandomWallpaperFontHotkeyVirtualKey, RandomizeWallpaperFontFromHotkey,
+            AppConstants.RandomWallpaperFontHotkeyDisplay);
     }
 
     private void TryRegisterHotkey(int id, uint modifiers, uint virtualKey, Action hotkeyPressedHandler, string hotkeyDisplay)

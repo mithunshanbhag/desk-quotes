@@ -39,4 +39,12 @@ public static class AppConstants
     public const int RandomWallpaperBackgroundColorHotkeyId = 5;
     public const uint RandomWallpaperBackgroundColorHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
     public const uint RandomWallpaperBackgroundColorHotkeyVirtualKey = 0x30; // '0' key
+
+    public const string ChangeWallpaperFontMenuLabel = "Change Wallpaper Font";
+
+    public const string RandomWallpaperFontHotkeyDisplay = "Ctrl + Alt + F";
+    public const string RandomWallpaperFontMenuLabel = "Random Font (" + RandomWallpaperFontHotkeyDisplay + ")";
+    public const int RandomWallpaperFontHotkeyId = 6;
+    public const uint RandomWallpaperFontHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
+    public const uint RandomWallpaperFontHotkeyVirtualKey = 0x46; // 'F' key
 }

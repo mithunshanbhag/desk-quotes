@@ -45,6 +45,8 @@ In its current iteration:
 
 - **Wallpaper background controls**: The tray context menu will include a `Wallpaper Background Color` submenu with `Darken Color (Ctrl + Alt + -)`, `Lighten Color (Ctrl + Alt + =)`, and `Random Color (Ctrl + Alt + 0)`. Each action should immediately refresh the wallpaper using the selected background adjustment, while preserving the current quote and font. Later normal refreshes continue auto-picking a dark color and rotating the font.
 
+- **Wallpaper font controls**: The tray context menu will include a `Change Wallpaper Font` submenu with `Random Font (Ctrl + Alt + F)`. This action should immediately refresh the wallpaper using the current quote and current background color while switching to a different curated font from the one currently displayed.
+
 - **Edit settings on demand**: The app will have an option to open the settings file for editing through the tray context menu (`Edit Settings (Ctrl + Alt + E)`) and a fixed global hotkey (`Ctrl + Alt + E`).
 
 ## User Interactions

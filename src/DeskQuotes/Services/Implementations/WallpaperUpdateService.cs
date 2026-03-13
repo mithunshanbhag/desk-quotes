@@ -24,13 +24,37 @@ public class WallpaperUpdateService(
 
     public bool TryUpdateWallpaper(IEnumerable<Quote>? configuredQuotes, Color? backgroundColor = null)
     {
-        var isBackgroundColorOnlyRefresh = backgroundColor.HasValue;
-        var selectedQuote = isBackgroundColorOnlyRefresh
+        return TryUpdateWallpaperCore(
+            configuredQuotes,
+            backgroundColor,
+            null,
+            backgroundColor.HasValue,
+            backgroundColor.HasValue);
+    }
+
+    public bool TryUpdateWallpaperWithRandomFont(IEnumerable<Quote>? configuredQuotes)
+    {
+        return TryUpdateWallpaperCore(
+            configuredQuotes,
+            _wallpaperBackgroundColorService.GetCurrentBackgroundColor(),
+            _wallpaperFontSelectionService.GetRandomFontFamilyName(_currentFontFamilyName),
+            true,
+            false);
+    }
+
+    private bool TryUpdateWallpaperCore(
+        IEnumerable<Quote>? configuredQuotes,
+        Color? backgroundColor,
+        string? fontFamilyName,
+        bool reuseCurrentQuote,
+        bool reuseCurrentFont)
+    {
+        var selectedQuote = reuseCurrentQuote
             ? _currentQuote
             : null;
-        var selectedFontFamilyName = isBackgroundColorOnlyRefresh
+        var selectedFontFamilyName = reuseCurrentFont
             ? _currentFontFamilyName
-            : null;
+            : fontFamilyName;
 
         if (selectedQuote is null &&
             (!_quoteSelectionService.TrySelectQuote(configuredQuotes, out selectedQuote) || selectedQuote is null))

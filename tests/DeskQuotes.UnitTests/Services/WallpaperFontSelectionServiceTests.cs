@@ -21,7 +21,7 @@ public class WallpaperFontSelectionServiceTests
             .Select(_ => sut.GetRandomFontFamilyName())
             .ToArray();
 
-        selectedFonts.Should().OnlyContain(font => ExpectedFonts.Contains(font));
+        selectedFonts.Should().OnlyContain(font => ((IEnumerable<string>)ExpectedFonts).Contains(font));
     }
 
     [Fact]
@@ -40,5 +40,18 @@ public class WallpaperFontSelectionServiceTests
             .ToArray();
 
         firstSequence.Should().Equal(secondSequence);
+    }
+
+    [Fact]
+    public void GetRandomFontFamilyName_WhenExcludedFontProvided_NeverReturnsThatFont()
+    {
+        var sut = new WallpaperFontSelectionService(new Random(1234));
+
+        var selectedFonts = Enumerable
+            .Range(0, 25)
+            .Select(_ => sut.GetRandomFontFamilyName("Georgia"))
+            .ToArray();
+
+        selectedFonts.Should().OnlyContain(font => ((IEnumerable<string>)ExpectedFonts).Contains(font) && font != "Georgia");
     }
 }

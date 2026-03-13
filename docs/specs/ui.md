@@ -7,6 +7,8 @@ The system tray application will allow the user to have the following interactio
   - "Darken Color (Ctrl + Alt + -)": Darkens the current wallpaper background color and refreshes immediately without changing the current quote font.
   - "Lighten Color (Ctrl + Alt + =)": Lightens the current wallpaper background color and refreshes immediately without changing the current quote font.
   - "Random Color (Ctrl + Alt + 0)": Picks a new dark random wallpaper background color and refreshes immediately without changing the current quote font.
+- "Change Wallpaper Font": Opens a submenu that immediately refreshes the wallpaper using the current quote and current background color:
+  - "Random Font (Ctrl + Alt + F)": Switches to a different font from the curated list of five Windows-safe fonts already used by the app.
 - "Edit Settings (Ctrl + Alt + E)": Open the `settings.json` file in the default text editor for easy editing. The same fixed global hotkey (`Ctrl + Alt + E`) will also be available for this action.
 - "Exit": Close the application.
 

@@ -91,7 +91,7 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
         out RectangleF? authorBounds)
     {
         var textLeft = width * TextHorizontalInsetRatio;
-        var textWidth = width * (1f - (2f * TextHorizontalInsetRatio));
+        var textWidth = width * (1f - 2f * TextHorizontalInsetRatio);
         var textSize = new SizeF(textWidth, height);
         var measuredQuoteSize = graphics.MeasureString(quoteText, quoteFont, textSize, format);
 
@@ -113,7 +113,7 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
     private static RectangleF CreateCenteredTextBounds(float left, float width, int wallpaperHeight, float combinedTextHeight, float currentTextHeight)
     {
         var minimumTop = wallpaperHeight * TextBlockTopInsetRatio;
-        var maximumTop = wallpaperHeight - (wallpaperHeight * TextBlockBottomInsetRatio) - combinedTextHeight;
+        var maximumTop = wallpaperHeight - wallpaperHeight * TextBlockBottomInsetRatio - combinedTextHeight;
         var top = Math.Clamp((wallpaperHeight - combinedTextHeight) / 2f, minimumTop, maximumTop);
 
         return new RectangleF(left, top, width, currentTextHeight);

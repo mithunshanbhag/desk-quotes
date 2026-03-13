@@ -79,12 +79,22 @@ public class WallpaperUpdateServiceTests
     private sealed class SpyWallpaperFontSelectionService : WallpaperFontSelectionService
     {
         public int CallCount { get; private set; }
+        public int ExcludingCurrentFontCallCount { get; private set; }
+        public string? ExcludedFontFamilyName { get; private set; }
+        public string NextDifferentFontFamilyName { get; } = "Segoe UI";
         public string NextFontFamilyName { get; } = "Georgia";
 
         public override string GetRandomFontFamilyName()
         {
             CallCount++;
             return NextFontFamilyName;
+        }
+
+        public override string GetRandomFontFamilyName(string? excludedFontFamilyName)
+        {
+            ExcludingCurrentFontCallCount++;
+            ExcludedFontFamilyName = excludedFontFamilyName;
+            return NextDifferentFontFamilyName;
         }
     }
 
@@ -104,9 +114,17 @@ public class WallpaperUpdateServiceTests
     private sealed class SpyWallpaperBackgroundColorService : WallpaperBackgroundColorService
     {
         public Color? CapturedSetCurrentBackgroundColor { get; private set; }
+        public Color CurrentBackgroundColor { get; private set; } = Color.FromArgb(24, 27, 36);
+        public int GetCurrentBackgroundColorCallCount { get; private set; }
         public int GetNextAutomaticBackgroundColorCallCount { get; private set; }
         public Color NextAutomaticBackgroundColor { get; } = Color.FromArgb(24, 27, 36);
         public int SetCurrentBackgroundColorCallCount { get; private set; }
+
+        public override Color GetCurrentBackgroundColor()
+        {
+            GetCurrentBackgroundColorCallCount++;
+            return CurrentBackgroundColor;
+        }
 
         public override Color GetNextAutomaticBackgroundColor()
         {
@@ -118,6 +136,7 @@ public class WallpaperUpdateServiceTests
         {
             SetCurrentBackgroundColorCallCount++;
             CapturedSetCurrentBackgroundColor = backgroundColor;
+            CurrentBackgroundColor = backgroundColor;
         }
     }
 
@@ -261,6 +280,79 @@ public class WallpaperUpdateServiceTests
         secondRefreshResult.Should().BeTrue();
         wallpaperFontSelectionService.CallCount.Should().Be(2);
         wallpaperRenderService.CapturedFontFamilyNames.Should().Equal("Georgia", "Segoe UI");
+    }
+
+    [Fact]
+    public void TryUpdateWallpaperWithRandomFont_WhenSuccessfulRefreshExists_ReusesCurrentQuoteAndBackgroundAndChangesFont()
+    {
+        var initiallySelectedQuote = new Quote { Text = "First quote", Author = "Author One" };
+        var laterCandidateQuote = new Quote { Text = "Second quote", Author = "Author Two" };
+        var quoteSelectionService = new SequenceQuoteSelectionService(initiallySelectedQuote, laterCandidateQuote);
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+
+        var initialRefreshResult = sut.TryUpdateWallpaper([initiallySelectedQuote, laterCandidateQuote]);
+        var randomFontRefreshResult = sut.TryUpdateWallpaperWithRandomFont([initiallySelectedQuote, laterCandidateQuote]);
+
+        initialRefreshResult.Should().BeTrue();
+        randomFontRefreshResult.Should().BeTrue();
+        quoteSelectionService.CallCount.Should().Be(1);
+        wallpaperBackgroundColorService.GetCurrentBackgroundColorCallCount.Should().Be(1);
+        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(1);
+        wallpaperFontSelectionService.CallCount.Should().Be(1);
+        wallpaperFontSelectionService.ExcludingCurrentFontCallCount.Should().Be(1);
+        wallpaperFontSelectionService.ExcludedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextFontFamilyName);
+        wallpaperRenderService.CapturedQuotes.Should().HaveCount(2);
+        wallpaperRenderService.CapturedQuotes[0].Should().BeSameAs(initiallySelectedQuote);
+        wallpaperRenderService.CapturedQuotes[1].Should().BeSameAs(initiallySelectedQuote);
+        wallpaperRenderService.CapturedBackgroundColors.Should().HaveCount(2);
+        wallpaperRenderService.CapturedBackgroundColors[0].ToArgb().Should().Be(wallpaperBackgroundColorService.NextAutomaticBackgroundColor.ToArgb());
+        wallpaperRenderService.CapturedBackgroundColors[1].ToArgb().Should().Be(wallpaperBackgroundColorService.CurrentBackgroundColor.ToArgb());
+        wallpaperRenderService.CapturedFontFamilyNames.Should().Equal(
+            wallpaperFontSelectionService.NextFontFamilyName,
+            wallpaperFontSelectionService.NextDifferentFontFamilyName);
+    }
+
+    [Fact]
+    public void TryUpdateWallpaperWithRandomFont_WhenNoSuccessfulRefreshExists_UsesCurrentBackgroundFallbackAndSelectsQuote()
+    {
+        var quoteSelectionService = new SpyQuoteSelectionService();
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+        var quote = new Quote { Text = "Quote", Author = "Author" };
+
+        var result = sut.TryUpdateWallpaperWithRandomFont([quote]);
+
+        result.Should().BeTrue();
+        quoteSelectionService.CallCount.Should().Be(1);
+        wallpaperBackgroundColorService.GetCurrentBackgroundColorCallCount.Should().Be(1);
+        wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount.Should().Be(0);
+        wallpaperFontSelectionService.CallCount.Should().Be(0);
+        wallpaperFontSelectionService.ExcludingCurrentFontCallCount.Should().Be(1);
+        wallpaperFontSelectionService.ExcludedFontFamilyName.Should().BeNull();
+        wallpaperRenderService.CapturedQuote.Should().BeSameAs(quote);
+        wallpaperRenderService.CapturedBackgroundColor.ToArgb().Should().Be(wallpaperBackgroundColorService.CurrentBackgroundColor.ToArgb());
+        wallpaperRenderService.CapturedFontFamilyName.Should().Be(wallpaperFontSelectionService.NextDifferentFontFamilyName);
     }
 
     #endregion

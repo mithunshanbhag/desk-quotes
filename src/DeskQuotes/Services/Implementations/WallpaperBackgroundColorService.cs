@@ -80,6 +80,6 @@ public class WallpaperBackgroundColorService(Random random)
 
     private static int LightenChannel(int channel)
     {
-        return Math.Clamp((int)Math.Round(channel + ((255 - channel) * LightenAmount), MidpointRounding.AwayFromZero), 0, 255);
+        return Math.Clamp((int)Math.Round(channel + (255 - channel) * LightenAmount, MidpointRounding.AwayFromZero), 0, 255);
     }
 }

@@ -97,14 +97,17 @@ public class GlobalHotkeyServiceTests
             AppConstants.LightenWallpaperBackgroundColorHotkeyVirtualKey, () => { });
         var randomRegistered = sut.TryRegisterHotkey(AppConstants.RandomWallpaperBackgroundColorHotkeyId, AppConstants.RandomWallpaperBackgroundColorHotkeyModifiers,
             AppConstants.RandomWallpaperBackgroundColorHotkeyVirtualKey, () => { });
+        var randomFontRegistered = sut.TryRegisterHotkey(AppConstants.RandomWallpaperFontHotkeyId, AppConstants.RandomWallpaperFontHotkeyModifiers,
+            AppConstants.RandomWallpaperFontHotkeyVirtualKey, () => { });
 
         refreshRegistered.Should().BeTrue();
         editRegistered.Should().BeTrue();
         darkenRegistered.Should().BeTrue();
         lightenRegistered.Should().BeTrue();
         randomRegistered.Should().BeTrue();
+        randomFontRegistered.Should().BeTrue();
         sut.AddMessageFilterCallCount.Should().Be(1);
-        sut.RegisterHotkeyCallCount.Should().Be(5);
+        sut.RegisterHotkeyCallCount.Should().Be(6);
     }
 
     [Fact]
@@ -129,6 +132,21 @@ public class GlobalHotkeyServiceTests
         var callbackCallCount = 0;
         sut.TryRegisterHotkey(AppConstants.EditSettingsHotkeyId, AppConstants.EditSettingsHotkeyModifiers, AppConstants.EditSettingsHotkeyVirtualKey, () => callbackCallCount++);
         var message = Message.Create(IntPtr.Zero, AppConstants.WmHotkey, AppConstants.EditSettingsHotkeyId, IntPtr.Zero);
+
+        var result = sut.PreFilterMessage(ref message);
+
+        result.Should().BeTrue();
+        callbackCallCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void PreFilterMessage_WhenRandomWallpaperFontHotkeyMessageReceived_InvokesCallbackAndReturnsTrue()
+    {
+        var sut = new SpyGlobalHotkeyService();
+        var callbackCallCount = 0;
+        sut.TryRegisterHotkey(AppConstants.RandomWallpaperFontHotkeyId, AppConstants.RandomWallpaperFontHotkeyModifiers,
+            AppConstants.RandomWallpaperFontHotkeyVirtualKey, () => callbackCallCount++);
+        var message = Message.Create(IntPtr.Zero, AppConstants.WmHotkey, AppConstants.RandomWallpaperFontHotkeyId, IntPtr.Zero);
 
         var result = sut.PreFilterMessage(ref message);
 
