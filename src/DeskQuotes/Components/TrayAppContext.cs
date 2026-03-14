@@ -6,6 +6,9 @@ public class TrayAppContext : ApplicationContext
 {
     private readonly GlobalHotkeyService _globalHotkeyService;
     private readonly List<Quote> _quotes = [];
+    private readonly SelectedMoodService _selectedMoodService;
+    private readonly List<string> _tagCatalog = [];
+    private readonly List<ToolStripMenuItem> _setMoodMenuItems = [];
     private readonly Timer _refreshTimer = new();
     private readonly ComponentResourceManager _resources = new(typeof(TrayAppContext));
     private readonly NotifyIcon _trayIcon;
@@ -17,14 +20,19 @@ public class TrayAppContext : ApplicationContext
     public TrayAppContext(
         IConfiguration configuration,
         GlobalHotkeyService globalHotkeyService,
+        SelectedMoodService selectedMoodService,
         WallpaperBackgroundColorService wallpaperBackgroundColorService,
         WallpaperUpdateService wallpaperUpdateService,
         WallpaperRefreshSchedulerService wallpaperRefreshSchedulerService)
     {
         _globalHotkeyService = globalHotkeyService;
+        _selectedMoodService = selectedMoodService;
         _wallpaperBackgroundColorService = wallpaperBackgroundColorService;
         _wallpaperUpdateService = wallpaperUpdateService;
         _wallpaperRefreshSchedulerService = wallpaperRefreshSchedulerService;
+
+        BindConfiguration(configuration);
+        NormalizeSelectedMood();
 
         _trayIcon = new NotifyIcon
         {
@@ -34,16 +42,7 @@ public class TrayAppContext : ApplicationContext
             Visible = true,
             Text = AppConstants.AppName
         };
-
-        // Read the settings.json file (via configuration), and extract the quotes
-        try
-        {
-            configuration.GetSection("quotes").Bind(_quotes);
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Failed to read quotes from configuration. Ensure that the settings.json file is properly formatted and contains a 'quotes' section.", e);
-        }
+        ShowSelectedMoodStartupWarningIfNeeded();
 
         _refreshTimer.Tick += RefreshWallpaperOnSchedule;
 
@@ -60,10 +59,11 @@ public class TrayAppContext : ApplicationContext
 
     private void RefreshWallpaperCore(Color? backgroundColor = null)
     {
-        RefreshWallpaperCore(() => _wallpaperUpdateService.TryUpdateWallpaper(_quotes, backgroundColor));
+        var selectedMood = _selectedMoodService.GetSelectedMood();
+        RefreshWallpaperCore(() => _wallpaperUpdateService.UpdateWallpaper(_quotes, selectedMood, backgroundColor), selectedMood);
     }
 
-    private void RefreshWallpaperCore(Func<bool> refreshWallpaper)
+    private void RefreshWallpaperCore(Func<WallpaperUpdateResult> refreshWallpaper, string? selectedMood = null)
     {
         if (_isRefreshing)
             return;
@@ -73,10 +73,21 @@ public class TrayAppContext : ApplicationContext
 
         try
         {
-            var wallpaperUpdated = refreshWallpaper();
+            var wallpaperUpdateResult = refreshWallpaper();
 
-            if (!wallpaperUpdated)
+            if (wallpaperUpdateResult == WallpaperUpdateResult.NoMatchingQuotesForSelectedMood)
+            {
+                var selectedMoodLabel = selectedMood ?? "the selected mood";
+                _trayIcon.ShowBalloonTip(
+                    1000,
+                    "No Quotes For Mood",
+                    $"No quotes are tagged with \"{selectedMoodLabel}\". Keeping the current wallpaper.",
+                    ToolTipIcon.Warning);
+            }
+            else if (wallpaperUpdateResult != WallpaperUpdateResult.Success)
+            {
                 _trayIcon.ShowBalloonTip(1000, "Refresh Failed", "Unable to refresh wallpaper from settings.", ToolTipIcon.Warning);
+            }
         }
         finally
         {
@@ -151,7 +162,8 @@ public class TrayAppContext : ApplicationContext
 
     private void RandomizeWallpaperFont(object? sender, EventArgs e)
     {
-        RefreshWallpaperCore(() => _wallpaperUpdateService.TryUpdateWallpaperWithRandomFont(_quotes));
+        var selectedMood = _selectedMoodService.GetSelectedMood();
+        RefreshWallpaperCore(() => _wallpaperUpdateService.UpdateWallpaperWithRandomFont(_quotes, selectedMood), selectedMood);
     }
 
     private void RandomizeWallpaperFontFromHotkey()
@@ -205,11 +217,61 @@ public class TrayAppContext : ApplicationContext
     {
         var contextMenuStrip = new ContextMenuStrip();
         contextMenuStrip.Items.Add(CreateMenuItem(AppConstants.RefreshWallpaperMenuLabel, RefreshWallpaper, AppConstants.RefreshWallpaperHotkeyDisplay));
+        contextMenuStrip.Items.Add(CreateSetMoodMenuItem());
         contextMenuStrip.Items.Add(CreateWallpaperBackgroundColorMenuItem());
         contextMenuStrip.Items.Add(CreateChangeWallpaperFontMenuItem());
         contextMenuStrip.Items.Add(CreateMenuItem(AppConstants.EditSettingsMenuLabel, EditSettings, AppConstants.EditSettingsHotkeyDisplay));
         contextMenuStrip.Items.Add(new ToolStripMenuItem("E&xit", null, Exit));
         return contextMenuStrip;
+    }
+
+    private void BindConfiguration(IConfiguration configuration)
+    {
+        try
+        {
+            configuration.GetSection("quotes").Bind(_quotes);
+            configuration.GetSection("tagCatalog").Bind(_tagCatalog);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(
+                "Failed to read quotes and tagCatalog from configuration. Ensure that the settings.json file is properly formatted.",
+                e);
+        }
+
+        var configuredMoods = _tagCatalog
+            .Where(tag => !string.IsNullOrWhiteSpace(tag))
+            .Select(tag => tag.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        _tagCatalog.Clear();
+        _tagCatalog.AddRange(configuredMoods);
+    }
+
+    private ToolStripMenuItem CreateSetMoodMenuItem()
+    {
+        var selectedMood = _selectedMoodService.GetSelectedMood();
+        var setMoodMenuItem = new ToolStripMenuItem(AppConstants.SetMoodMenuLabel);
+        setMoodMenuItem.DropDownItems.Add(CreateSetMoodMenuItem(AppConstants.AllQuotesMoodMenuLabel, null, selectedMood));
+
+        if (_tagCatalog.Count > 0)
+            setMoodMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+        foreach (var mood in _tagCatalog)
+            setMoodMenuItem.DropDownItems.Add(CreateSetMoodMenuItem(mood, mood, selectedMood));
+
+        return setMoodMenuItem;
+    }
+
+    private ToolStripMenuItem CreateSetMoodMenuItem(string text, string? mood, string? selectedMood)
+    {
+        var setMoodMenuItem = new ToolStripMenuItem(text, null, SetMood)
+        {
+            Checked = IsSameMood(mood, selectedMood)
+        };
+        setMoodMenuItem.Tag = mood;
+        _setMoodMenuItems.Add(setMoodMenuItem);
+        return setMoodMenuItem;
     }
 
     private ToolStripMenuItem CreateWallpaperBackgroundColorMenuItem()
@@ -238,6 +300,62 @@ public class TrayAppContext : ApplicationContext
         {
             ShortcutKeyDisplayString = shortcutKeyDisplayString
         };
+    }
+
+    private static bool IsSameMood(string? left, string? right)
+    {
+        return string.IsNullOrWhiteSpace(left)
+            ? string.IsNullOrWhiteSpace(right)
+            : string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void NormalizeSelectedMood()
+    {
+        var selectedMood = _selectedMoodService.GetSelectedMood();
+        if (selectedMood is null || _tagCatalog.Any(mood => IsSameMood(mood, selectedMood)))
+            return;
+
+        _selectedMoodService.SetSelectedMood(null);
+    }
+
+    private void SetMood(object? sender, EventArgs e)
+    {
+        if (sender is not ToolStripMenuItem setMoodMenuItem)
+            return;
+
+        var selectedMood = setMoodMenuItem.Tag as string;
+        try
+        {
+            _selectedMoodService.SetSelectedMood(selectedMood);
+        }
+        catch (IOException)
+        {
+            _trayIcon.ShowBalloonTip(1000, "Set Mood Failed", "Unable to save the selected mood.", ToolTipIcon.Warning);
+            return;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _trayIcon.ShowBalloonTip(1000, "Set Mood Failed", "Unable to save the selected mood.", ToolTipIcon.Warning);
+            return;
+        }
+
+        UpdateSetMoodChecks(selectedMood);
+        RefreshWallpaperCore();
+    }
+
+    private void UpdateSetMoodChecks(string? selectedMood)
+    {
+        foreach (var setMoodMenuItem in _setMoodMenuItems)
+            setMoodMenuItem.Checked = IsSameMood(setMoodMenuItem.Tag as string, selectedMood);
+    }
+
+    private void ShowSelectedMoodStartupWarningIfNeeded()
+    {
+        var startupWarningMessage = _selectedMoodService.GetStartupWarningMessage();
+        if (string.IsNullOrWhiteSpace(startupWarningMessage))
+            return;
+
+        _trayIcon.ShowBalloonTip(1000, "Mood State Unavailable", startupWarningMessage, ToolTipIcon.Warning);
     }
 
     private void RegisterHotkeys()

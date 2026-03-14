@@ -35,6 +35,7 @@ public static class HostApplicationBuilderExtensions
             builder.Services
                 .AddSingleton<QuoteSelectionService>()
                 .AddSingleton<MonitorResolutionService>()
+                .AddSingleton<SelectedMoodService>()
                 .AddSingleton<WallpaperBackgroundColorService>()
                 .AddSingleton<WallpaperFontSelectionService>()
                 .AddSingleton<WallpaperRenderService>()

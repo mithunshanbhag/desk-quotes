@@ -22,6 +22,9 @@ dotnet restore .\DeskQuotes.slnx
 1. Run the app (see the next section).
 2. Use the tray icon menu to:
     - **Refresh Wallpaper (Ctrl + Alt + U)**
+    - **Set Mood**
+      - **All Quotes**
+      - **Any configured mood from `tagCatalog`**
     - **Wallpaper Background Color**
       - **Darken Color (Ctrl + Alt + -)**
       - **Lighten Color (Ctrl + Alt + =)**
@@ -31,7 +34,8 @@ dotnet restore .\DeskQuotes.slnx
 3. Press `Ctrl + Alt + U` from anywhere, or use the tray menu, to trigger an immediate wallpaper refresh.
 4. Standard wallpaper refreshes rotate the quote font among `Segoe UI`, `Georgia`, `Palatino Linotype`, `Trebuchet MS`, and `Constantia`.
 5. Use the background color submenu or its hotkeys to immediately darken, lighten, or randomize the wallpaper background color while keeping the current quote font unchanged.
-6. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
+6. Use **Set Mood** to persist a mood selection across restarts. With **All Quotes** selected, every configured quote remains eligible. When a mood is selected, only quotes whose `tags` contain that mood are eligible for refreshes, background-color changes, and random-font updates. If no configured quote matches the selected mood, DeskQuotes keeps the current wallpaper and shows a warning instead of falling back to all quotes.
+7. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
 
 ## Build and run locally
 

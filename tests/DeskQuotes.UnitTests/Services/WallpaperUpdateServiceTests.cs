@@ -6,6 +6,7 @@ public class WallpaperUpdateServiceTests
 {
     private sealed class SpyQuoteSelectionService : QuoteSelectionService
     {
+        public List<IReadOnlyList<Quote>> CapturedConfiguredQuoteArguments { get; } = [];
         public int CallCount { get; private set; }
         public bool? ReturnValue { get; init; }
         public Quote? SelectedQuote { get; init; }
@@ -13,6 +14,7 @@ public class WallpaperUpdateServiceTests
         public override bool TrySelectQuote(IEnumerable<Quote>? configuredQuotes, out Quote? selectedQuote)
         {
             CallCount++;
+            CapturedConfiguredQuoteArguments.Add(configuredQuotes?.ToArray() ?? []);
 
             if (!ReturnValue.HasValue) return base.TrySelectQuote(configuredQuotes, out selectedQuote);
 
@@ -25,11 +27,13 @@ public class WallpaperUpdateServiceTests
     {
         private readonly Queue<Quote> _selectedQuotes = new(selectedQuotes);
 
+        public List<IReadOnlyList<Quote>> CapturedConfiguredQuoteArguments { get; } = [];
         public int CallCount { get; private set; }
 
         public override bool TrySelectQuote(IEnumerable<Quote>? configuredQuotes, out Quote? selectedQuote)
         {
             CallCount++;
+            CapturedConfiguredQuoteArguments.Add(configuredQuotes?.ToArray() ?? []);
             selectedQuote = _selectedQuotes.Count > 0
                 ? _selectedQuotes.Dequeue()
                 : null;
@@ -192,6 +196,36 @@ public class WallpaperUpdateServiceTests
     }
 
     [Fact]
+    public void UpdateWallpaper_WhenSelectedMoodProvided_SelectsOnlyMoodMatchingQuotes()
+    {
+        var quoteSelectionService = new SpyQuoteSelectionService();
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+        var actionQuote = new Quote { Text = "Take the first step.", Author = "Unknown", Tags = ["action"] };
+        var secondActionQuote = new Quote { Text = "Courage grows with action.", Author = "Unknown", Tags = ["courage", "action"] };
+        var focusQuote = new Quote { Text = "Focus on what matters.", Author = "Unknown", Tags = ["focus"] };
+
+        var result = sut.UpdateWallpaper([focusQuote, actionQuote, secondActionQuote], " action ");
+
+        Assert.Equal(WallpaperUpdateResult.Success, result);
+        var filteredQuotes = Assert.Single(quoteSelectionService.CapturedConfiguredQuoteArguments);
+        Assert.Equal([actionQuote, secondActionQuote], filteredQuotes);
+        Assert.DoesNotContain(focusQuote, filteredQuotes);
+        Assert.Equal(1, wallpaperRenderService.CallCount);
+        Assert.Equal(1, windowsWallpaperService.CallCount);
+    }
+
+    [Fact]
     public void TryUpdateWallpaper_WhenExplicitBackgroundColorProvidedBeforeAnySuccessfulRefresh_SelectsInitialFont()
     {
         var quoteSelectionService = new SpyQuoteSelectionService();
@@ -253,6 +287,42 @@ public class WallpaperUpdateServiceTests
         Assert.Equal(
             [wallpaperFontSelectionService.NextFontFamilyName, wallpaperFontSelectionService.NextFontFamilyName],
             wallpaperRenderService.CapturedFontFamilyNames);
+        Assert.Equal(explicitBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColors[1].ToArgb());
+    }
+
+    [Fact]
+    public void UpdateWallpaper_WhenSelectedMoodDoesNotMatchCurrentQuote_SelectsNewMatchingQuoteEvenForBackgroundOnlyRefresh()
+    {
+        var focusQuote = new Quote { Text = "First quote", Author = "Author One", Tags = ["focus"] };
+        var actionQuote = new Quote { Text = "Second quote", Author = "Author Two", Tags = ["action"] };
+        var quoteSelectionService = new SequenceQuoteSelectionService(focusQuote, actionQuote);
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService { ReturnValue = true };
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+        var explicitBackgroundColor = Color.FromArgb(35, 48, 61);
+
+        var initialRefreshResult = sut.UpdateWallpaper([focusQuote, actionQuote]);
+        var moodRefreshResult = sut.UpdateWallpaper([focusQuote, actionQuote], "action", explicitBackgroundColor);
+
+        Assert.Equal(WallpaperUpdateResult.Success, initialRefreshResult);
+        Assert.Equal(WallpaperUpdateResult.Success, moodRefreshResult);
+        Assert.Equal(2, quoteSelectionService.CallCount);
+        Assert.Equal(
+            [
+                new[] { focusQuote, actionQuote },
+                new[] { actionQuote }
+            ],
+            quoteSelectionService.CapturedConfiguredQuoteArguments.Select(quotes => quotes.ToArray()).ToArray());
+        Assert.Equal([focusQuote, actionQuote], wallpaperRenderService.CapturedQuotes);
         Assert.Equal(explicitBackgroundColor.ToArgb(), wallpaperRenderService.CapturedBackgroundColors[1].ToArgb());
     }
 
@@ -380,6 +450,40 @@ public class WallpaperUpdateServiceTests
 
         Assert.False(result);
         Assert.Equal(1, quoteSelectionService.CallCount);
+        Assert.Equal(0, monitorResolutionService.CallCount);
+        Assert.Equal(0, wallpaperRenderService.CallCount);
+        Assert.Equal(0, windowsWallpaperService.CallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.GetNextAutomaticBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperBackgroundColorService.SetCurrentBackgroundColorCallCount);
+        Assert.Equal(0, wallpaperFontSelectionService.CallCount);
+    }
+
+    [Fact]
+    public void UpdateWallpaper_WhenSelectedMoodHasNoMatchingQuotes_ReturnsNoMatchingQuotesAndSkipsDependencies()
+    {
+        var quoteSelectionService = new SpyQuoteSelectionService();
+        var monitorResolutionService = new SpyMonitorResolutionService();
+        var wallpaperBackgroundColorService = new SpyWallpaperBackgroundColorService();
+        var wallpaperFontSelectionService = new SpyWallpaperFontSelectionService();
+        var wallpaperRenderService = new SpyWallpaperRenderService();
+        var windowsWallpaperService = new SpyWindowsWallpaperService();
+        var sut = new WallpaperUpdateService(
+            quoteSelectionService,
+            monitorResolutionService,
+            wallpaperBackgroundColorService,
+            wallpaperFontSelectionService,
+            wallpaperRenderService,
+            windowsWallpaperService);
+        var quotes = new[]
+        {
+            new Quote { Text = "Stay focused.", Author = "Unknown", Tags = ["focus"] },
+            new Quote { Text = "Build steadily.", Author = "Unknown", Tags = ["discipline"] }
+        };
+
+        var result = sut.UpdateWallpaper(quotes, "action");
+
+        Assert.Equal(WallpaperUpdateResult.NoMatchingQuotesForSelectedMood, result);
+        Assert.Equal(0, quoteSelectionService.CallCount);
         Assert.Equal(0, monitorResolutionService.CallCount);
         Assert.Equal(0, wallpaperRenderService.CallCount);
         Assert.Equal(0, windowsWallpaperService.CallCount);

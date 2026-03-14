@@ -24,8 +24,14 @@ public class WallpaperUpdateService(
 
     public bool TryUpdateWallpaper(IEnumerable<Quote>? configuredQuotes, Color? backgroundColor = null)
     {
+        return UpdateWallpaper(configuredQuotes, null, backgroundColor) == WallpaperUpdateResult.Success;
+    }
+
+    public WallpaperUpdateResult UpdateWallpaper(IEnumerable<Quote>? configuredQuotes, string? selectedMood = null, Color? backgroundColor = null)
+    {
         return TryUpdateWallpaperCore(
             configuredQuotes,
+            selectedMood,
             backgroundColor,
             null,
             backgroundColor.HasValue,
@@ -34,31 +40,45 @@ public class WallpaperUpdateService(
 
     public bool TryUpdateWallpaperWithRandomFont(IEnumerable<Quote>? configuredQuotes)
     {
+        return UpdateWallpaperWithRandomFont(configuredQuotes) == WallpaperUpdateResult.Success;
+    }
+
+    public WallpaperUpdateResult UpdateWallpaperWithRandomFont(IEnumerable<Quote>? configuredQuotes, string? selectedMood = null)
+    {
         return TryUpdateWallpaperCore(
             configuredQuotes,
+            selectedMood,
             _wallpaperBackgroundColorService.GetCurrentBackgroundColor(),
             _wallpaperFontSelectionService.GetRandomFontFamilyName(_currentFontFamilyName),
             true,
             false);
     }
 
-    private bool TryUpdateWallpaperCore(
+    private WallpaperUpdateResult TryUpdateWallpaperCore(
         IEnumerable<Quote>? configuredQuotes,
+        string? selectedMood,
         Color? backgroundColor,
         string? fontFamilyName,
         bool reuseCurrentQuote,
         bool reuseCurrentFont)
     {
-        var selectedQuote = reuseCurrentQuote
+        var normalizedSelectedMood = NormalizeMood(selectedMood);
+        var filteredQuotes = FilterQuotesByMood(configuredQuotes, normalizedSelectedMood);
+        var selectedQuote = reuseCurrentQuote && QuoteMatchesMood(_currentQuote, normalizedSelectedMood)
             ? _currentQuote
             : null;
         var selectedFontFamilyName = reuseCurrentFont
             ? _currentFontFamilyName
             : fontFamilyName;
 
-        if (selectedQuote is null &&
-            (!_quoteSelectionService.TrySelectQuote(configuredQuotes, out selectedQuote) || selectedQuote is null))
-            return false;
+        if (selectedQuote is null)
+        {
+            if (normalizedSelectedMood is not null && filteredQuotes.Length == 0)
+                return WallpaperUpdateResult.NoMatchingQuotesForSelectedMood;
+
+            if (!_quoteSelectionService.TrySelectQuote(filteredQuotes, out selectedQuote) || selectedQuote is null)
+                return WallpaperUpdateResult.Failed;
+        }
 
         selectedFontFamilyName ??= _wallpaperFontSelectionService.GetRandomFontFamilyName();
 
@@ -76,27 +96,61 @@ public class WallpaperUpdateService(
                 _wallpaperBackgroundColorService.SetCurrentBackgroundColor(selectedBackgroundColor);
             }
 
-            return wallpaperApplied;
+            return wallpaperApplied
+                ? WallpaperUpdateResult.Success
+                : WallpaperUpdateResult.Failed;
         }
         catch (ArgumentException)
         {
-            return false;
+            return WallpaperUpdateResult.Failed;
         }
         catch (IOException)
         {
-            return false;
+            return WallpaperUpdateResult.Failed;
         }
         catch (UnauthorizedAccessException)
         {
-            return false;
+            return WallpaperUpdateResult.Failed;
         }
         catch (ExternalException)
         {
-            return false;
+            return WallpaperUpdateResult.Failed;
         }
         catch (InvalidOperationException)
         {
-            return false;
+            return WallpaperUpdateResult.Failed;
         }
+    }
+
+    private static Quote[] FilterQuotesByMood(IEnumerable<Quote>? configuredQuotes, string? selectedMood)
+    {
+        var configuredQuotesArray = configuredQuotes?.ToArray() ?? [];
+        if (selectedMood is null)
+            return configuredQuotesArray;
+
+        return configuredQuotesArray
+            .Where(quote => QuoteMatchesMood(quote, selectedMood))
+            .ToArray();
+    }
+
+    private static bool QuoteMatchesMood(Quote? quote, string? selectedMood)
+    {
+        if (quote is null)
+            return false;
+
+        if (selectedMood is null)
+            return true;
+
+        return quote.Tags?.Any(tag =>
+                   !string.IsNullOrWhiteSpace(tag) &&
+                   string.Equals(tag.Trim(), selectedMood, StringComparison.OrdinalIgnoreCase))
+               == true;
+    }
+
+    private static string? NormalizeMood(string? selectedMood)
+    {
+        return string.IsNullOrWhiteSpace(selectedMood)
+            ? null
+            : selectedMood.Trim();
     }
 }

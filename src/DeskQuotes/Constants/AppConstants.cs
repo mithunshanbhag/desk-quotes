@@ -13,6 +13,9 @@ public static class AppConstants
     public const int RefreshWallpaperHotkeyId = 1;
     public const uint RefreshWallpaperHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
     public const uint RefreshWallpaperHotkeyVirtualKey = 0x55; // 'U' key
+    public const string SetMoodMenuLabel = "Set Mood";
+    public const string AllQuotesMoodMenuLabel = "All Quotes";
+    public const string SelectedMoodStateFileName = "selected-mood.txt";
 
     public const string EditSettingsHotkeyDisplay = "(Ctrl + Alt + E)";
     public const string EditSettingsMenuLabel = "Edit Settings";

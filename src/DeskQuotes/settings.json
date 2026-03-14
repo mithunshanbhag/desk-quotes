@@ -501,6 +501,506 @@
       "text": "Stress comes from not taking action over something you have control over",
       "author": "Jeff Bezos",
       "tags": ["action", "wellbeing"]
+    },
+    {
+      "text": "You could leave life right now. Let that determine what you do and say and think.",
+      "author": "Marcus Aurelius",
+      "tags": ["purpose", "focus"]
+    },
+    {
+      "text": "Give yourself time to learn something new and good, and cease to be whirled around.",
+      "author": "Marcus Aurelius",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "A man should be upright, not kept upright.",
+      "author": "Marcus Aurelius",
+      "tags": ["discipline", "leadership"]
+    },
+    {
+      "text": "Remember that all is opinion.",
+      "author": "Marcus Aurelius",
+      "tags": ["wellbeing", "focus"]
+    },
+    {
+      "text": "Concentrate every minute on doing what is in front of you with precise and genuine seriousness.",
+      "author": "Marcus Aurelius",
+      "tags": ["focus", "discipline"]
+    },
+    {
+      "text": "We are all made for mutual assistance, as the feet, the hands, and the eyelids.",
+      "author": "Marcus Aurelius",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "There is a limit to the time assigned you, and if you do not use it, it will be gone and never return.",
+      "author": "Marcus Aurelius",
+      "tags": ["purpose", "action"]
+    },
+    {
+      "text": "Do everything as if it were the last thing you were doing in your life.",
+      "author": "Marcus Aurelius",
+      "tags": ["discipline", "action"]
+    },
+    {
+      "text": "To different minds, the same world is a hell, and a heaven.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["wellbeing", "growth"]
+    },
+    {
+      "text": "The purpose of life seems to be to acquaint a man with himself.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["purpose", "growth"]
+    },
+    {
+      "text": "We are always getting ready to live, but never living.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["action", "purpose"]
+    },
+    {
+      "text": "Sometimes a scream is better than a thesis.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["courage", "action"]
+    },
+    {
+      "text": "Let me never fall into the vulgar mistake of dreaming that I am persecuted whenever I am contradicted.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["relationships", "focus"]
+    },
+    {
+      "text": "Only the great generalizations survive.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["focus", "growth"]
+    },
+    {
+      "text": "Poetry teaches the enormous force of a few words, and, in proportion to the inspiration, checks loquacity.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["focus", "discipline"]
+    },
+    {
+      "text": "The best effect of fine persons is felt after we have left their presence.",
+      "author": "Ralph Waldo Emerson",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "Do what you feel in your heart to be right, for you will be criticized anyway.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["courage", "action"]
+    },
+    {
+      "text": "Understanding is a two-way street.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "It is not enough to talk about peace. One must believe in it. And it is not enough to believe in it. One must work at it.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["action", "leadership"]
+    },
+    {
+      "text": "Life was meant to be lived, and curiosity must be kept alive.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["growth", "purpose"]
+    },
+    {
+      "text": "One's philosophy is not best expressed in words; it is expressed in the choices one makes.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["discipline", "purpose"]
+    },
+    {
+      "text": "In the long run, we shape our lives, and we shape ourselves.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["growth", "purpose"]
+    },
+    {
+      "text": "You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["courage", "resilience"]
+    },
+    {
+      "text": "You must do the thing you think you cannot do.",
+      "author": "Eleanor Roosevelt",
+      "tags": ["courage", "action"]
+    },
+    {
+      "text": "The best and most beautiful things in the world cannot be seen nor even touched but just felt in the heart.",
+      "author": "Helen Keller",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "One can never consent to creep when one feels an impulse to soar.",
+      "author": "Helen Keller",
+      "tags": ["courage", "growth"]
+    },
+    {
+      "text": "Although the world is full of suffering, it is full also of the overcoming of it.",
+      "author": "Helen Keller",
+      "tags": ["resilience", "wellbeing"]
+    },
+    {
+      "text": "We differ, blind and seeing, one from another, not in our senses, but in the use we make of them, in the imagination and courage with which we seek wisdom beyond the senses.",
+      "author": "Helen Keller",
+      "tags": ["growth", "courage"]
+    },
+    {
+      "text": "Life is either a daring adventure or nothing at all.",
+      "author": "Helen Keller",
+      "tags": ["courage", "purpose"]
+    },
+    {
+      "text": "Alone we can do so little; together we can do so much.",
+      "author": "Helen Keller",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "Optimism is the faith that leads to achievement. Nothing can be done without hope and confidence.",
+      "author": "Helen Keller",
+      "tags": ["resilience", "action"]
+    },
+    {
+      "text": "Walking with a friend in the dark is better than walking alone in the light.",
+      "author": "Helen Keller",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "If you see what is right and fail to act on it, you lack courage.",
+      "author": "Confucius",
+      "tags": ["courage", "action"]
+    },
+    {
+      "text": "At fifteen my heart was set on learning; at thirty I stood firm; at forty I had no more doubts.",
+      "author": "Confucius",
+      "tags": ["growth", "purpose"]
+    },
+    {
+      "text": "Reviewing what you have learned and learning anew, you are fit to be a teacher.",
+      "author": "Confucius",
+      "tags": ["growth", "leadership"]
+    },
+    {
+      "text": "To study and not think is a waste. To think and not study is dangerous.",
+      "author": "Confucius",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "What you know, you know; what you do not know, you do not know. This is true knowledge.",
+      "author": "Confucius",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "Be loyal and trustworthy. When making a mistake, do not be afraid to correct it.",
+      "author": "Confucius",
+      "tags": ["discipline", "leadership"]
+    },
+    {
+      "text": "The superior man is all-embracing and not partial.",
+      "author": "Confucius",
+      "tags": ["leadership", "relationships"]
+    },
+    {
+      "text": "When the superior man is diligent in his work and careful in speech, you can say he loves learning.",
+      "author": "Confucius",
+      "tags": ["discipline", "focus"]
+    },
+    {
+      "text": "The more he does for others, the happier he is. The more he gives to others, the wealthier he is.",
+      "author": "Laozi",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "A leader is best when people barely know that he exists.",
+      "author": "Laozi",
+      "tags": ["leadership", "relationships"]
+    },
+    {
+      "text": "The more you talk of it, the less you understand.",
+      "author": "Laozi",
+      "tags": ["focus", "discipline"]
+    },
+    {
+      "text": "It is the empty space which makes the wheel useful.",
+      "author": "Laozi",
+      "tags": ["focus", "growth"]
+    },
+    {
+      "text": "Nature does not hurry, yet everything is accomplished.",
+      "author": "Laozi",
+      "tags": ["wellbeing", "discipline"]
+    },
+    {
+      "text": "The journey of a thousand miles begins with a single step.",
+      "author": "Laozi",
+      "tags": ["action", "courage"]
+    },
+    {
+      "text": "Mastering others is strength; mastering yourself is true power.",
+      "author": "Laozi",
+      "tags": ["discipline", "growth"]
+    },
+    {
+      "text": "Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.",
+      "author": "Laozi",
+      "tags": ["relationships", "courage"]
+    },
+    {
+      "text": "Without courage we cannot practice any other virtue with consistency.",
+      "author": "Maya Angelou",
+      "tags": ["courage", "discipline"]
+    },
+    {
+      "text": "Develop enough courage so that you can stand up for yourself and then stand up for somebody else.",
+      "author": "Maya Angelou",
+      "tags": ["courage", "leadership"]
+    },
+    {
+      "text": "Perhaps travel cannot prevent bigotry, but if we try and understand each other, we may even become friends.",
+      "author": "Maya Angelou",
+      "tags": ["relationships", "growth"]
+    },
+    {
+      "text": "When people show you who they are, believe them the first time.",
+      "author": "Maya Angelou",
+      "tags": ["relationships", "focus"]
+    },
+    {
+      "text": "Nothing can dim the light that shines from within.",
+      "author": "Maya Angelou",
+      "tags": ["resilience", "wellbeing"]
+    },
+    {
+      "text": "My mission in life is not merely to survive, but to thrive.",
+      "author": "Maya Angelou",
+      "tags": ["purpose", "wellbeing"]
+    },
+    {
+      "text": "We may encounter many defeats but we must not be defeated.",
+      "author": "Maya Angelou",
+      "tags": ["resilience", "courage"]
+    },
+    {
+      "text": "Do what you can, with what you have, where you are.",
+      "author": "Theodore Roosevelt",
+      "tags": ["action", "resilience"]
+    },
+    {
+      "text": "Believe you can and you are halfway there.",
+      "author": "Theodore Roosevelt",
+      "tags": ["courage", "action"]
+    },
+    {
+      "text": "Far and away the best prize that life has to offer is the chance to work hard at work worth doing.",
+      "author": "Theodore Roosevelt",
+      "tags": ["purpose", "discipline"]
+    },
+    {
+      "text": "It is hard to fail, but it is worse never to have tried to succeed.",
+      "author": "Theodore Roosevelt",
+      "tags": ["courage", "resilience"]
+    },
+    {
+      "text": "Keep your eyes on the stars, and your feet on the ground.",
+      "author": "Theodore Roosevelt",
+      "tags": ["focus", "purpose"]
+    },
+    {
+      "text": "The only man who never makes a mistake is the man who never does anything.",
+      "author": "Theodore Roosevelt",
+      "tags": ["growth", "action"]
+    },
+    {
+      "text": "To sit home, read, and scoff at the misdeeds of the men who do things is easy, but it is markedly ineffective.",
+      "author": "Theodore Roosevelt",
+      "tags": ["action", "leadership"]
+    },
+    {
+      "text": "It is not the critic who counts; the credit belongs to the man who is actually in the arena.",
+      "author": "Theodore Roosevelt",
+      "tags": ["courage", "resilience"]
+    },
+    {
+      "text": "Thou, O God, dost sell us all good things at the price of labour.",
+      "author": "Leonardo da Vinci",
+      "tags": ["discipline", "action"]
+    },
+    {
+      "text": "Poor is the pupil that does not surpass his master.",
+      "author": "Leonardo da Vinci",
+      "tags": ["growth", "discipline"]
+    },
+    {
+      "text": "Whoever in discussion adduces authority uses not intellect but rather memory.",
+      "author": "Leonardo da Vinci",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "Iron rusts from disuse; stagnant water loses its purity; even so does inaction sap the vigor of the mind.",
+      "author": "Leonardo da Vinci",
+      "tags": ["discipline", "growth"]
+    },
+    {
+      "text": "It is easier to resist at the beginning than at the end.",
+      "author": "Leonardo da Vinci",
+      "tags": ["discipline", "resilience"]
+    },
+    {
+      "text": "As a well-spent day brings happy sleep, so life well used brings happy death.",
+      "author": "Leonardo da Vinci",
+      "tags": ["purpose", "wellbeing"]
+    },
+    {
+      "text": "Shun those studies in which the work that results dies with the worker.",
+      "author": "Leonardo da Vinci",
+      "tags": ["purpose", "growth"]
+    },
+    {
+      "text": "There is nothing in the world that would so effectively help one to survive even the worst conditions as the knowledge that there is a meaning in one's life.",
+      "author": "Viktor Frankl",
+      "tags": ["resilience", "purpose"]
+    },
+    {
+      "text": "What man actually needs is not a tensionless state but rather the striving and struggling for some goal worthy of him.",
+      "author": "Viktor Frankl",
+      "tags": ["purpose", "discipline"]
+    },
+    {
+      "text": "Ultimately, man should not ask what the meaning of his life is, but rather must recognize that it is he who is asked.",
+      "author": "Viktor Frankl",
+      "tags": ["purpose", "growth"]
+    },
+    {
+      "text": "The way in which a man accepts his fate and all the suffering it entails gives him ample opportunity to add a deeper meaning to his life.",
+      "author": "Viktor Frankl",
+      "tags": ["resilience", "purpose"]
+    },
+    {
+      "text": "The salvation of man is through love and in love.",
+      "author": "Viktor Frankl",
+      "tags": ["relationships", "purpose"]
+    },
+    {
+      "text": "If there is a meaning in life at all, then there must be a meaning in suffering.",
+      "author": "Viktor Frankl",
+      "tags": ["resilience", "purpose"]
+    },
+    {
+      "text": "Everything can be taken from a man but one thing: the last of the human freedoms, to choose one's attitude in any given set of circumstances.",
+      "author": "Viktor Frankl",
+      "tags": ["resilience", "courage"]
+    },
+    {
+      "text": "A hundred times every day I remind myself that my inner and outer life are based on the labors of other men, living and dead.",
+      "author": "Albert Einstein",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "Blind obedience to authority is the greatest enemy of truth.",
+      "author": "Albert Einstein",
+      "tags": ["leadership", "focus"]
+    },
+    {
+      "text": "A happy man is too satisfied with the present to dwell too much on the future.",
+      "author": "Albert Einstein",
+      "tags": ["wellbeing", "focus"]
+    },
+    {
+      "text": "Few people are capable of expressing with equanimity opinions that differ from the prejudices of their social environment.",
+      "author": "Albert Einstein",
+      "tags": ["courage", "focus"]
+    },
+    {
+      "text": "Be not afraid of life. Believe that life is worth living, and your belief will help create the fact.",
+      "author": "William James",
+      "tags": ["wellbeing", "resilience"]
+    },
+    {
+      "text": "Every way of classifying a thing is but a way of handling it for some particular purpose.",
+      "author": "William James",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "The most any one can do is to confess as candidly as he can the grounds for the faith that is in him.",
+      "author": "William James",
+      "tags": ["courage", "leadership"]
+    },
+    {
+      "text": "Pretend what we may, the whole man within us is at work when we form our philosophical opinions.",
+      "author": "William James",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "We are all ready to be savage in some cause. The difference between a good man and a bad one is the choice of the cause.",
+      "author": "William James",
+      "tags": ["purpose", "leadership"]
+    },
+    {
+      "text": "Freedom is only necessity understood.",
+      "author": "William James",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "Think of all the beauty still left around you and be happy.",
+      "author": "Anne Frank",
+      "tags": ["wellbeing", "resilience"]
+    },
+    {
+      "text": "The best remedy for those who are afraid, lonely or unhappy is to go outside.",
+      "author": "Anne Frank",
+      "tags": ["wellbeing", "resilience"]
+    },
+    {
+      "text": "People can tell you to keep your mouth shut, but it does not stop you having your own opinions.",
+      "author": "Anne Frank",
+      "tags": ["courage", "growth"]
+    },
+    {
+      "text": "I have found that there is always some beauty left in nature, sunshine, freedom, and in yourself.",
+      "author": "Anne Frank",
+      "tags": ["wellbeing", "resilience"]
+    },
+    {
+      "text": "A person who is happy will make others happy.",
+      "author": "Anne Frank",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "We are all in the gutter, but some of us are looking at the stars.",
+      "author": "Oscar Wilde",
+      "tags": ["resilience", "wellbeing"]
+    },
+    {
+      "text": "Consistency is the last refuge of the unimaginative.",
+      "author": "Oscar Wilde",
+      "tags": ["growth", "courage"]
+    },
+    {
+      "text": "The true perfection of man lies, not in what man has, but in what man is.",
+      "author": "Oscar Wilde",
+      "tags": ["purpose", "growth"]
+    },
+    {
+      "text": "A thing is not necessarily true because a man dies for it.",
+      "author": "Oscar Wilde",
+      "tags": ["focus", "growth"]
+    },
+    {
+      "text": "Let us have faith that right makes might, and in that faith let us to the end dare to do our duty as we understand it.",
+      "author": "Abraham Lincoln",
+      "tags": ["courage", "leadership"]
+    },
+    {
+      "text": "Every man is said to have his peculiar ambition, and I have no other so great as that of being truly esteemed by my fellow-men, by rendering myself worthy of their esteem.",
+      "author": "Abraham Lincoln",
+      "tags": ["leadership", "purpose"]
+    },
+    {
+      "text": "The probability that we may fall in the struggle ought not to deter us from the support of a cause we believe to be just.",
+      "author": "Abraham Lincoln",
+      "tags": ["resilience", "courage"]
+    },
+    {
+      "text": "Upon the subject of education, I can only say that I view it as the most important subject which we as a people can be engaged in.",
+      "author": "Abraham Lincoln",
+      "tags": ["growth", "leadership"]
     }
   ]
 }
