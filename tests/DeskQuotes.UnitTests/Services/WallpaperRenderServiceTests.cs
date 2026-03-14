@@ -1,5 +1,3 @@
-using DeskQuotes.Services.Validators;
-
 namespace DeskQuotes.UnitTests.Services;
 
 public class WallpaperRenderServiceTests

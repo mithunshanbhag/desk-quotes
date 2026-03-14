@@ -1,5 +1,3 @@
-using System.Windows.Forms;
-
 namespace DeskQuotes.UnitTests.Services;
 
 public class MonitorResolutionServiceTests

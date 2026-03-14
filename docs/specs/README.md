@@ -6,26 +6,48 @@ In its first iteration, the app will be a simple Windows system tray application
 
 ## App Settings
 
-In its first iteration, the app will be completely configured through a `config.json` file located in the same directory as the executable. The file will contain the following settings:
+In its first iteration, the app will be completely configured through a `settings.json` file located in the same directory as the executable. The file will contain the following settings:
 
 ```json
 {
+  "tagCatalog": [
+    "focus",
+    "action",
+    "discipline",
+    "resilience",
+    "courage",
+    "growth",
+    "relationships",
+    "leadership",
+    "wellbeing",
+    "purpose"
+  ],
   "quotes": [
     {
       "text": "The best way to predict the future is to invent it.",
-      "author": "Alan Kay"
+      "author": "Alan Kay",
+      "tags": ["action", "purpose"]
     },
     {
       "text": "Life is 10% what happens to us and 90% how we react to it.",
-      "author": "Charles R. Swindoll"
+      "author": "Charles R. Swindoll",
+      "tags": ["resilience", "wellbeing"]
     },
     {
       "text": "The only way to do great work is to love what you do.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["purpose", "discipline"]
     }
   ]
 }
 ```
+
+Notes on tags:
+
+- `tags` are placeholder metadata only for now. The app does not currently use them when selecting or rendering quotes.
+- Tags should describe mood/scenario applicability rather than broad subject matter.
+- Use only values from `tagCatalog`.
+- Each quote should typically have 1-3 tags.
 
 ## App Behavior
 

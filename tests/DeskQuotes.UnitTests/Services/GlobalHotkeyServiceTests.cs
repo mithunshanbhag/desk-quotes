@@ -1,6 +1,3 @@
-using System.Windows.Forms;
-using DeskQuotes.Constants;
-
 namespace DeskQuotes.UnitTests.Services;
 
 public class GlobalHotkeyServiceTests

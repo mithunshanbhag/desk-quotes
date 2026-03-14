@@ -1,396 +1,506 @@
 {
+  "tagCatalog": [
+    "focus",
+    "action",
+    "discipline",
+    "resilience",
+    "courage",
+    "growth",
+    "relationships",
+    "leadership",
+    "wellbeing",
+    "purpose"
+  ],
   "quotes": [
     {
       "text": "The key is to keep asking yourself the same question, again and again and again: this is your life—what do you want to pay attention to?",
-      "author": "Catherine Price"
+      "author": "Catherine Price",
+      "tags": ["focus", "purpose"]
     },
     {
       "text": "Always laugh when you can. It is cheap medicine.",
-      "author": "Lord Byron"
+      "author": "Lord Byron",
+      "tags": ["wellbeing", "resilience"]
     },
     {
       "text": "We suffer more in imagination than in reality",
-      "author": "Seneca"
+      "author": "Seneca",
+      "tags": ["resilience", "wellbeing"]
     },
     {
       "text": "The customs and practices of life in society sweep us along.",
-      "author": "Michel De Montaigne"
+      "author": "Michel De Montaigne",
+      "tags": ["focus", "purpose"]
     },
     {
       "text": "I am an old man and have known a great many troubles, but most of them never happened.",
-      "author": "Mark Twain"
+      "author": "Mark Twain",
+      "tags": ["resilience", "wellbeing"]
     },
     {
       "text": "It is impossible for a man to learn anything that he thinks he already knows.",
-      "author": "Epictetus"
+      "author": "Epictetus",
+      "tags": ["growth", "focus"]
     },
     {
       "text": "Anger is a hot coal you hold in your hands while waiting to throw it at someone",
-      "author": "Buddha"
+      "author": "Buddha",
+      "tags": ["wellbeing", "resilience"]
     },
     {
       "text": "Sometimes I can hear my bones straining under the weight of all the lives I'm not living",
-      "author": "Jonathan Safran Foer"
+      "author": "Jonathan Safran Foer",
+      "tags": ["purpose", "courage"]
     },
     {
       "text": "Go where you're celebrated, not where you're tolerated",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "wellbeing"]
     },
     {
       "text": "The first principle is that you must not fool yourself and you are the easiest person to fool.",
-      "author": "Richard Feynman"
+      "author": "Richard Feynman",
+      "tags": ["focus", "growth"]
     },
     {
       "text": "Your mind is a more precious resource than your time. One good decision per year will yield more than the time you spend on your activities.",
-      "author": "Naval Ravikant"
+      "author": "Naval Ravikant",
+      "tags": ["focus", "purpose"]
     },
     {
       "text": "Physical pain is weakness leaving the body. Mental pain is knowledge rushing in to fill the void.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["resilience", "growth"]
     },
     {
       "text": "You have two lives and your second one begins when you realize that you only have one life.",
-      "author": "Confucius"
+      "author": "Confucius",
+      "tags": ["purpose", "courage"]
     },
     {
       "text": "When the student is ready, the master appears. Hence, focus on self-improvement.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["growth", "discipline"]
     },
     {
       "text": "The ultimate meta-skill is learning how to learn anything",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["growth", "focus"]
     },
     {
       "text": "The candle that burns twice as bright burns half as long. Slow & steady wins race over the longer term",
-      "author": "Dr. Eldon Tyrell (Blade Runner)"
+      "author": "Dr. Eldon Tyrell (Blade Runner)",
+      "tags": ["discipline", "wellbeing"]
     },
     {
       "text": "Live life as if it's the second time around and you got it wrong the first time",
-      "author": "Victor Frankl"
+      "author": "Victor Frankl",
+      "tags": ["purpose", "growth"]
     },
     {
       "text": "If you have a poor father, that's bad luck. If you have a poor father in law, that's bad planning",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "purpose"]
     },
     {
       "text": "You are who you know",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships"]
     },
     {
       "text": "Show me your friends, and I'll show you your future",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "purpose"]
     },
     {
       "text": "You become the average of the environment you're in. So put yourself in the best possible environment.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "growth"]
     },
     {
       "text": "All the returns in life, whether in wealth, relationships, or knowledge, come from compound interest.",
-      "author": "Naval Ravikant"
+      "author": "Naval Ravikant",
+      "tags": ["discipline", "growth"]
     },
     {
       "text": "Your network is your net-worth",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships"]
     },
     {
       "text": "Your chances of success are much greater if you are mediocre at multiple skills than master of one.",
-      "author": "Scott Adams"
+      "author": "Scott Adams",
+      "tags": ["growth", "purpose"]
     },
     {
       "text": "Figure out how to maximize your energy levels. The rest of your stuff is really dependent on this.",
-      "author": "Scott Adams"
+      "author": "Scott Adams",
+      "tags": ["wellbeing", "discipline"]
     },
     {
       "text": "Personal standards are the guardrails that prevent your life from falling off a cliff into a valley",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "purpose"]
     },
     {
       "text": "You attract what you are",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["growth", "relationships"]
     },
     {
       "text": "If you want to go fast, go alone. If you want to go far, go together",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "leadership"]
     },
     {
       "text": "The pain of inaction stings longer than the pain of an incorrect action.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "courage"]
     },
     {
       "text": "Money buys you time. It does not buy you the ability to execute",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "discipline"]
     },
     {
       "text": "Systems are for people who care about winning repeatedly. Goals are for people who care about winning once.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "action"]
     },
     {
       "text": "To argue with a person who has renounced the use of reason is like administering medicine to the dead.",
-      "author": "Thomas Paine"
+      "author": "Thomas Paine",
+      "tags": ["relationships", "focus"]
     },
     {
       "text": "The worst possible feeling is when the person you are meets the person you could have been.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["purpose", "growth"]
     },
     {
       "text": "If you chase two rabbits, you will not catch either one",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["focus", "action"]
     },
     {
       "text": "Engineering teaches you to look for patterns and create generalized solutions. Attorneying teaches you to look for differences and provide specific answers. Both are valuable. They are better together.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["growth", "relationships"]
     },
     {
       "text": "Throw your hat over the wall",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["courage", "action"]
     },
     {
       "text": "If you look at the people in your circle and don't get inspired, then you don't have a circle. You have a cage.",
-      "author": "Nipsey Hussle"
+      "author": "Nipsey Hussle",
+      "tags": ["relationships", "growth"]
     },
     {
       "text": "He who has a why to live for can bear almost any how",
-      "author": "Friedrich Nietzsche"
+      "author": "Friedrich Nietzsche",
+      "tags": ["purpose", "resilience"]
     },
     {
       "text": "The quality of your life is where you live emotionally (and not physically)",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["wellbeing", "purpose"]
     },
     {
       "text": "Be in a business where products are bought, not sold (i.e has product market fit)",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["leadership", "purpose"]
     },
     {
       "text": "You should only hire people that you're willing to work for",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["leadership", "relationships"]
     },
     {
       "text": "Success doesn't come from what you do occasionally, but from what you do consistently",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "action"]
     },
     {
       "text": "You can't become a billionaire by playing in a million dollar market. To be a billionaire, you have to be in a billion dollar market.",
-      "author": "Mark Cuban"
+      "author": "Mark Cuban",
+      "tags": ["purpose", "leadership"]
     },
     {
       "text": "Your brand is what other people say about you when you're not in the room",
-      "author": "Jeff Bezos"
+      "author": "Jeff Bezos",
+      "tags": ["leadership", "relationships"]
     },
     {
       "text": "The more you sweat in practice, the less you bleed in battle.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "resilience"]
     },
     {
       "text": "People will follow you based on the way you live and act...not on what you say.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["leadership", "discipline"]
     },
     {
       "text": "If it's important to you, you'll find a way. If not, you'll find an excuse.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "discipline"]
     },
     {
       "text": "If I don't fight for myself, then I can't live with myself",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["courage", "action"]
     },
     {
       "text": "Never give up. Today is hard, tomorrow will be worse, but the day after tomorrow will be sunshine",
-      "author": "Jack Ma"
+      "author": "Jack Ma",
+      "tags": ["resilience", "courage"]
     },
     {
       "text": "If you want to live a life you've never lived, then you have to do things you've never done.",
-      "author": "Jen Sincero"
+      "author": "Jen Sincero",
+      "tags": ["courage", "action"]
     },
     {
       "text": "Never get comfortable",
-      "author": "American Giant Sweatshirts"
+      "author": "American Giant Sweatshirts",
+      "tags": ["courage", "growth"]
     },
     {
       "text": "people will forget what you said, people will forget what you did, but people will never forget how you made them feel",
-      "author": "Maya Angelou"
+      "author": "Maya Angelou",
+      "tags": ["relationships", "leadership"]
     },
     {
       "text": "Winners never quit, quitters never win",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["resilience", "discipline"]
     },
     {
       "text": "Never make fun of someone if they mispronounce a word. It means they learned it by reading.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "growth"]
     },
     {
       "text": "You won't reach your destination if you stop to throw stones at every dog that barks",
-      "author": "Winston Churchill"
+      "author": "Winston Churchill",
+      "tags": ["focus", "discipline"]
     },
     {
       "text": "The cowards never started, the weak died along the way. That leaves just us.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["courage", "resilience"]
     },
     {
       "text": "Screw it, Just do it!",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "courage"]
     },
     {
       "text": "Motivation gets you started. Habit keeps you going.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "action"]
     },
     {
       "text": "Ideas are worth $20, execution is worth $1 million.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "discipline"]
     },
     {
       "text": "Judge a person (or team) not by what they say, but by what (behaviors) they reward?",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["leadership", "focus"]
     },
     {
       "text": "Your life is a result of your choices. Don't like your life? Start making better choices.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "purpose"]
     },
     {
       "text": "If I had more time, I would have written a shorter letter.",
-      "author": "Blaise Pascal"
+      "author": "Blaise Pascal",
+      "tags": ["focus", "discipline"]
     },
     {
       "text": "Can't climb the ladder of success with your hands in your pockets",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "discipline"]
     },
     {
       "text": "Skate to where the puck is (or will be) and not where it has been.",
-      "author": "Wayne Gretzky"
+      "author": "Wayne Gretzky",
+      "tags": ["focus", "purpose"]
     },
     {
       "text": "Overnight success takes years.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "resilience"]
     },
     {
       "text": "Put your oxygen mask on first before worrying about others",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["wellbeing", "relationships"]
     },
     {
       "text": "Wishing vs deciding? If you \"decide\" to do something, figure out the \"price to pay\" and pay it up front!",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "discipline"]
     },
     {
       "text": "Everyone is a basket case deep inside. Only some people are better at hiding this than others",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["wellbeing", "relationships"]
     },
     {
       "text": "If a fish is judged by its ability to climb a tree, it will spend its entire life believing it is stupid",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["growth", "wellbeing"]
     },
     {
       "text": "You can't plant a sapling just when you need the shade.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "purpose"]
     },
     {
       "text": "How you do anything is how you do everything",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "focus"]
     },
     {
       "text": "What is produced is a reflection/story of the person who produced it.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "purpose"]
     },
     {
       "text": "Work smarter, not harder",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["focus", "wellbeing"]
     },
     {
       "text": "Don't make someone a priority in your life when you're just an option in theirs.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "wellbeing"]
     },
     {
       "text": "What a man can be, he must be.",
-      "author": "Abraham Maslow"
+      "author": "Abraham Maslow",
+      "tags": ["purpose", "growth"]
     },
     {
       "text": "Fill your life with experiences, not excuses.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["action", "purpose"]
     },
     {
       "text": "A win-win situation is one where you'd feel comfortable trading places with the other party.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "leadership"]
     },
     {
       "text": "Fitting in is changing who you are in order to be accepted. Belonging is accepting who you are.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "wellbeing"]
     },
     {
       "text": "Compassion is not a relationship between the healer and the wounded. It is a relationship between equals.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "leadership"]
     },
     {
       "text": "The ability to observe without evaluating is the highest form of intelligence.",
-      "author": "Jiddu Krishnamurti"
+      "author": "Jiddu Krishnamurti",
+      "tags": ["focus", "growth"]
     },
     {
       "text": "You miss 100% of the shots you don't take.",
-      "author": "Wayne Gretzky"
+      "author": "Wayne Gretzky",
+      "tags": ["action", "courage"]
     },
     {
       "text": "You are the average of the five people you spend the most time with.",
-      "author": "Jim Rohn"
+      "author": "Jim Rohn",
+      "tags": ["relationships", "growth"]
     },
     {
       "text": "Life shrinks or expands in proportion to one's courage.",
-      "author": "Anaïs Nin"
+      "author": "Anaïs Nin",
+      "tags": ["courage", "purpose"]
     },
     {
       "text": "Easier to invent the future than predict it.",
-      "author": "Alan Kay"
+      "author": "Alan Kay",
+      "tags": ["action", "purpose"]
     },
     {
       "text": "This is like reading a book on swimming",
-      "author": "Amit"
+      "author": "Amit",
+      "tags": ["action", "growth"]
     },
     {
       "text": "Greatness is not a function of circumstance. It is a function of conscious choice and discipline.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "purpose"]
     },
     {
       "text": "The tragedy of life doesn't lie in failing to reach your goal. The tragedy lies in having no goal to reach.",
-      "author": "Benjamin E. Mays"
+      "author": "Benjamin E. Mays",
+      "tags": ["purpose", "action"]
     },
     {
       "text": "He who is not courageous enough to take risks will accomplish nothing in life.",
-      "author": "Muhammad Ali"
+      "author": "Muhammad Ali",
+      "tags": ["courage", "action"]
     },
     {
       "text": "Life isn't about finding yourself. Life is about creating yourself",
-      "author": "George Bernard Shaw"
+      "author": "George Bernard Shaw",
+      "tags": ["purpose", "growth"]
     },
     {
       "text": "Hearing is not listening, seeing is not observing",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["focus", "relationships"]
     },
     {
       "text": "Luck is what happens when preparation meets opportunity",
-      "author": "Seneca"
+      "author": "Seneca",
+      "tags": ["discipline", "action"]
     },
     {
       "text": "Train your employees well enough that they can leave, but treat them well enough that they wouldn't want to",
-      "author": "Richard Branson"
+      "author": "Richard Branson",
+      "tags": ["leadership", "relationships"]
     },
     {
       "text": "Culture eats strategy for breakfast",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["leadership", "discipline"]
     },
     {
       "text": "We judge ourselves by our intent, but judge others by their actions/results",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["relationships", "focus"]
     },
     {
       "text": "When dealing with people, they are not creatures of logic, but creatures of emotion, creatures bustling with prejudices and motivated by pride and vanity.",
-      "author": "Dale Carnegie"
+      "author": "Dale Carnegie",
+      "tags": ["relationships", "leadership"]
     },
     {
       "text": "We don't rise to the level of our expectations, we fall to the level of our training.",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["discipline", "resilience"]
     },
     {
       "text": "Don't take advice from someone who doesn't have to live with the consequences",
-      "author": "Unknown"
+      "author": "Unknown",
+      "tags": ["focus", "leadership"]
     },
     {
       "text": "Stress comes from not taking action over something you have control over",
-      "author": "Jeff Bezos"
+      "author": "Jeff Bezos",
+      "tags": ["action", "wellbeing"]
     }
   ]
 }

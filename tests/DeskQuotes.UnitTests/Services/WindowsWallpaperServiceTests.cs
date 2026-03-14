@@ -1,6 +1,3 @@
-using DeskQuotes.Services.Validators;
-using FluentValidation;
-using FluentValidation.Results;
 using WindowsWallpaperService = DeskQuotes.Services.Implementations.WindowsWallpaperService;
 
 namespace DeskQuotes.UnitTests.Services;
