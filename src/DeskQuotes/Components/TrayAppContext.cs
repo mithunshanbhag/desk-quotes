@@ -215,14 +215,23 @@ public class TrayAppContext : ApplicationContext
 
     private ContextMenuStrip CreateContextMenuStrip()
     {
-        var contextMenuStrip = new ContextMenuStrip();
-        contextMenuStrip.Items.Add(CreateMenuItem(AppConstants.RefreshWallpaperMenuLabel, RefreshWallpaper, AppConstants.RefreshWallpaperHotkeyDisplay));
-        contextMenuStrip.Items.Add(CreateSetMoodMenuItem());
-        contextMenuStrip.Items.Add(CreateWallpaperBackgroundColorMenuItem());
-        contextMenuStrip.Items.Add(CreateChangeWallpaperFontMenuItem());
-        contextMenuStrip.Items.Add(CreateMenuItem(AppConstants.EditSettingsMenuLabel, EditSettings, AppConstants.EditSettingsHotkeyDisplay));
-        contextMenuStrip.Items.Add(new ToolStripMenuItem("E&xit", null, Exit));
-        return contextMenuStrip;
+        _setMoodMenuItems.Clear();
+
+        return new TrayContextMenuFactory(
+            _tagCatalog,
+            _selectedMoodService.GetSelectedMood(),
+            _setMoodMenuItems,
+            new TrayContextMenuActions
+            {
+                RefreshWallpaper = RefreshWallpaper,
+                SetMood = SetMood,
+                DarkenWallpaperBackgroundColor = DarkenWallpaperBackgroundColor,
+                LightenWallpaperBackgroundColor = LightenWallpaperBackgroundColor,
+                RandomizeWallpaperBackgroundColor = RandomizeWallpaperBackgroundColor,
+                RandomizeWallpaperFont = RandomizeWallpaperFont,
+                EditSettings = EditSettings,
+                Exit = Exit
+            }).Build();
     }
 
     private void BindConfiguration(IConfiguration configuration)
@@ -246,60 +255,6 @@ public class TrayAppContext : ApplicationContext
             .ToArray();
         _tagCatalog.Clear();
         _tagCatalog.AddRange(configuredMoods);
-    }
-
-    private ToolStripMenuItem CreateSetMoodMenuItem()
-    {
-        var selectedMood = _selectedMoodService.GetSelectedMood();
-        var setMoodMenuItem = new ToolStripMenuItem(AppConstants.SetMoodMenuLabel);
-        setMoodMenuItem.DropDownItems.Add(CreateSetMoodMenuItem(AppConstants.AllQuotesMoodMenuLabel, null, selectedMood));
-
-        if (_tagCatalog.Count > 0)
-            setMoodMenuItem.DropDownItems.Add(new ToolStripSeparator());
-
-        foreach (var mood in _tagCatalog)
-            setMoodMenuItem.DropDownItems.Add(CreateSetMoodMenuItem(mood, mood, selectedMood));
-
-        return setMoodMenuItem;
-    }
-
-    private ToolStripMenuItem CreateSetMoodMenuItem(string text, string? mood, string? selectedMood)
-    {
-        var setMoodMenuItem = new ToolStripMenuItem(text, null, SetMood)
-        {
-            Checked = IsSameMood(mood, selectedMood)
-        };
-        setMoodMenuItem.Tag = mood;
-        _setMoodMenuItems.Add(setMoodMenuItem);
-        return setMoodMenuItem;
-    }
-
-    private ToolStripMenuItem CreateWallpaperBackgroundColorMenuItem()
-    {
-        var wallpaperBackgroundColorMenuItem = new ToolStripMenuItem(AppConstants.WallpaperBackgroundColorMenuLabel);
-        wallpaperBackgroundColorMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.DarkenWallpaperBackgroundColorMenuLabel, DarkenWallpaperBackgroundColor,
-            AppConstants.DarkenWallpaperBackgroundColorHotkeyDisplay));
-        wallpaperBackgroundColorMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.LightenWallpaperBackgroundColorMenuLabel, LightenWallpaperBackgroundColor,
-            AppConstants.LightenWallpaperBackgroundColorHotkeyDisplay));
-        wallpaperBackgroundColorMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.RandomWallpaperBackgroundColorMenuLabel, RandomizeWallpaperBackgroundColor,
-            AppConstants.RandomWallpaperBackgroundColorHotkeyDisplay));
-        return wallpaperBackgroundColorMenuItem;
-    }
-
-    private ToolStripMenuItem CreateChangeWallpaperFontMenuItem()
-    {
-        var changeWallpaperFontMenuItem = new ToolStripMenuItem(AppConstants.ChangeWallpaperFontMenuLabel);
-        changeWallpaperFontMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.RandomWallpaperFontMenuLabel, RandomizeWallpaperFont,
-            AppConstants.RandomWallpaperFontHotkeyDisplay));
-        return changeWallpaperFontMenuItem;
-    }
-
-    private static ToolStripMenuItem CreateMenuItem(string text, EventHandler onClick, string? shortcutKeyDisplayString = null)
-    {
-        return new ToolStripMenuItem(text, null, onClick)
-        {
-            ShortcutKeyDisplayString = shortcutKeyDisplayString
-        };
     }
 
     private static bool IsSameMood(string? left, string? right)

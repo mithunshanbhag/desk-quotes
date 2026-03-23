@@ -44,7 +44,7 @@ In its first iteration, the app will be completely configured through a `setting
 
 Notes on tags:
 
-- `tags` are placeholder metadata only for now. The app does not currently use them when selecting or rendering quotes.
+- `tags` drive the `Set Mood` tray submenu. When a mood is selected, only quotes whose `tags` contain that value remain eligible for refreshes, background-color changes, and random-font updates.
 - Tags should describe mood/scenario applicability rather than broad subject matter.
 - Use only values from `tagCatalog`.
 - Each quote should typically have 1-3 tags.
@@ -70,6 +70,8 @@ In its current iteration:
 - **Wallpaper font controls**: The tray context menu will include a `Change Wallpaper Font` submenu with `Random Font (Ctrl + Alt + F)`. This action should immediately refresh the wallpaper using the current quote and current background color while switching to a different curated font from the one currently displayed.
 
 - **Edit settings on demand**: The app will have an option to open the settings file for editing through the tray context menu (`Edit Settings (Ctrl + Alt + E)`) and a fixed global hotkey (`Ctrl + Alt + E`).
+
+- **Tray context menu presentation**: The menu should keep a native Windows look while using slightly larger `Segoe UI` typography, roomier item spacing, and horizontal separators above and below `Edit Settings` so the settings action is visually grouped apart from wallpaper actions and `Exit`.
 
 ## User Interactions
 

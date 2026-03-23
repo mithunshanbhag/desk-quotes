@@ -19,6 +19,7 @@ public static class AppConstants
 
     public const string EditSettingsHotkeyDisplay = "(Ctrl + Alt + E)";
     public const string EditSettingsMenuLabel = "Edit Settings";
+    public const string ExitMenuLabel = "E&xit";
     public const int EditSettingsHotkeyId = 2;
     public const uint EditSettingsHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
     public const uint EditSettingsHotkeyVirtualKey = 0x45; // 'E' key

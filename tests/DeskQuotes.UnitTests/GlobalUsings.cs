@@ -2,6 +2,7 @@
 
 global using System.Drawing;
 global using System.Windows.Forms;
+global using DeskQuotes.Components;
 global using DeskQuotes.Constants;
 global using DeskQuotes.Models;
 global using DeskQuotes.Services.Implementations;
