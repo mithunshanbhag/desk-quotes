@@ -10,10 +10,10 @@
     <DefineConstants>$(DefineConstants);ProductName=DeskQuotes;DeskQuotesPublishDir=$(DeskQuotesPublishDir)</DefineConstants>
   </PropertyGroup>
 
-  <Target Name="PublishDeskQuotes" BeforeTargets="Build">
+  <Target Name="PublishDeskQuotes" BeforeTargets="CoreCompile">
     <MSBuild
       Projects="$(DeskQuotesProjectPath)"
-      Targets="Publish"
+      Targets="Restore;Publish"
       Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier);SelfContained=$(SelfContained);PublishDir=$(DeskQuotesPublishDir);EnableWindowsTargeting=true" />
   </Target>
 
