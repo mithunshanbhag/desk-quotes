@@ -1,0 +1,64 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Id="MithunShanbhag.DeskQuotes"
+    Name="$(var.ProductName)"
+    Manufacturer="Mithun Shanbhag"
+    Version="!(bind.fileVersion.DeskQuotesExecutable)"
+    UpgradeCode="4081ba5a-45c2-4ff5-a3f5-d8b2c44aee86"
+    Scope="perUser"
+    InstallerVersion="500">
+
+    <SummaryInformation Description="Installs the DeskQuotes Windows tray app." />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" />
+
+    <Feature Id="MainFeature" Title="$(var.ProductName)" Level="1">
+      <ComponentGroupRef Id="ApplicationFiles" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="DeskQuotes" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="DeskQuotesProgramMenuFolder" Name="DeskQuotes" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
+      <Component Guid="5d041d5c-47db-44c0-ac16-42ce7c8f389b">
+        <File Id="DeskQuotesExecutable" Source="$(var.DeskQuotesPublishDir)DeskQuotes.exe" KeyPath="yes">
+          <Shortcut
+            Id="DeskQuotesStartMenuShortcut"
+            Directory="DeskQuotesProgramMenuFolder"
+            Name="$(var.ProductName)"
+            WorkingDirectory="INSTALLFOLDER" />
+          <Shortcut
+            Id="DeskQuotesDesktopShortcut"
+            Directory="DesktopFolder"
+            Name="$(var.ProductName)"
+            WorkingDirectory="INSTALLFOLDER" />
+        </File>
+        <RemoveFolder Id="RemoveDeskQuotesProgramMenuFolder" Directory="DeskQuotesProgramMenuFolder" On="uninstall" />
+      </Component>
+
+      <!-- Preserve user-edited settings.json across upgrades by leaving the file in place. -->
+      <Component Guid="d07cdb02-9146-4209-bd0f-f6bf828f087d" Permanent="yes" NeverOverwrite="yes">
+        <File Id="DeskQuotesSettingsFile" Source="$(var.DeskQuotesPublishDir)settings.json" KeyPath="yes" />
+      </Component>
+
+      <Files Include="$(var.DeskQuotesPublishDir)**">
+        <Exclude Files="$(var.DeskQuotesPublishDir)DeskQuotes.exe" />
+        <Exclude Files="$(var.DeskQuotesPublishDir)settings.json" />
+        <Exclude Files="$(var.DeskQuotesPublishDir)**\*.pdb" />
+      </Files>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

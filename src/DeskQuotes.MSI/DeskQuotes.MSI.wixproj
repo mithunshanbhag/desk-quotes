@@ -1,0 +1,22 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <OutputName>DeskQuotes</OutputName>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
+    <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
+    <SuppressIces>$(SuppressIces);ICE38;ICE43;ICE64;ICE91</SuppressIces>
+    <DeskQuotesProjectPath>..\DeskQuotes\DeskQuotes.csproj</DeskQuotesProjectPath>
+    <DeskQuotesPublishDir>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', 'obj', '$(Configuration)', 'publish'))</DeskQuotesPublishDir>
+    <DefineConstants>$(DefineConstants);ProductName=DeskQuotes;DeskQuotesPublishDir=$(DeskQuotesPublishDir)</DefineConstants>
+  </PropertyGroup>
+
+  <Target Name="PublishDeskQuotes" BeforeTargets="CoreCompile">
+    <MSBuild
+      Projects="$(DeskQuotesProjectPath)"
+      Targets="Restore;Publish"
+      Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier);SelfContained=$(SelfContained);PublishDir=$(DeskQuotesPublishDir);EnableWindowsTargeting=true" />
+  </Target>
+
+</Project>

@@ -43,6 +43,22 @@ dotnet restore .\DeskQuotes.slnx
 .\run-local.ps1 -target app
 ```
 
+## Build the MSI installer
+
+Build the installer on Windows with the .NET CLI:
+
+```powershell
+dotnet build .\src\DeskQuotes.MSI\DeskQuotes.MSI.wixproj -c Release
+```
+
+The generated MSI will be written under:
+
+```text
+src\DeskQuotes.MSI\bin\Release\
+```
+
+The installer performs a per-user install under `%LocalAppData%\DeskQuotes` so the bundled `settings.json` remains editable without requiring administrator rights.
+
 ## Run tests
 
 ```powershell
