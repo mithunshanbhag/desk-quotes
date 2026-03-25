@@ -22,13 +22,13 @@
 
   <Fragment>
     <StandardDirectory Id="LocalAppDataFolder">
-      <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+      <Directory Id="INSTALLFOLDER" Name="DeskQuotes" />
     </StandardDirectory>
   </Fragment>
 
   <Fragment>
     <StandardDirectory Id="ProgramMenuFolder">
-      <Directory Id="DeskQuotesProgramMenuFolder" Name="$(var.ProductName)" />
+      <Directory Id="DeskQuotesProgramMenuFolder" Name="DeskQuotes" />
     </StandardDirectory>
   </Fragment>
 
