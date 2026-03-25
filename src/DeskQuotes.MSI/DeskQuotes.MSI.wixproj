@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Package</OutputType>
+    <OutputName>DeskQuotes</OutputName>
     <InstallerPlatform>x64</InstallerPlatform>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
     <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
+    <SuppressIces>$(SuppressIces);ICE38;ICE43;ICE64;ICE91</SuppressIces>
     <DeskQuotesProjectPath>..\DeskQuotes\DeskQuotes.csproj</DeskQuotesProjectPath>
     <DeskQuotesPublishDir>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', 'obj', '$(Configuration)', 'publish'))</DeskQuotesPublishDir>
     <DefineConstants>$(DefineConstants);ProductName=DeskQuotes;DeskQuotesPublishDir=$(DeskQuotesPublishDir)</DefineConstants>

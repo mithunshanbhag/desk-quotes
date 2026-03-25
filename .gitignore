@@ -568,6 +568,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+!src/DeskQuotes.MSI/
+!src/DeskQuotes.MSI/*.wixproj
+!src/DeskQuotes.MSI/*.wxs
 
 # JetBrains Rider
 

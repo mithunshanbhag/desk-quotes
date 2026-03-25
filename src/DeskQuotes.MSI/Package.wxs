@@ -16,7 +16,6 @@
 
     <Feature Id="MainFeature" Title="$(var.ProductName)" Level="1">
       <ComponentGroupRef Id="ApplicationFiles" />
-      <ComponentGroupRef Id="StartMenuShortcuts" />
     </Feature>
   </Package>
 
@@ -35,33 +34,31 @@
   <Fragment>
     <ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
       <Component Guid="5d041d5c-47db-44c0-ac16-42ce7c8f389b">
-        <File Id="DeskQuotesExecutable" Source="$(var.DeskQuotesPublishDir)DeskQuotes.exe" KeyPath="yes" />
+        <File Id="DeskQuotesExecutable" Source="$(var.DeskQuotesPublishDir)DeskQuotes.exe" KeyPath="yes">
+          <Shortcut
+            Id="DeskQuotesStartMenuShortcut"
+            Directory="DeskQuotesProgramMenuFolder"
+            Name="$(var.ProductName)"
+            WorkingDirectory="INSTALLFOLDER" />
+          <Shortcut
+            Id="DeskQuotesDesktopShortcut"
+            Directory="DesktopFolder"
+            Name="$(var.ProductName)"
+            WorkingDirectory="INSTALLFOLDER" />
+        </File>
+        <RemoveFolder Id="RemoveDeskQuotesProgramMenuFolder" Directory="DeskQuotesProgramMenuFolder" On="uninstall" />
+      </Component>
+
+      <!-- Preserve user-edited settings.json across upgrades by leaving the file in place. -->
+      <Component Guid="d07cdb02-9146-4209-bd0f-f6bf828f087d" Permanent="yes" NeverOverwrite="yes">
+        <File Id="DeskQuotesSettingsFile" Source="$(var.DeskQuotesPublishDir)settings.json" KeyPath="yes" />
       </Component>
 
       <Files Include="$(var.DeskQuotesPublishDir)**">
         <Exclude Files="$(var.DeskQuotesPublishDir)DeskQuotes.exe" />
+        <Exclude Files="$(var.DeskQuotesPublishDir)settings.json" />
         <Exclude Files="$(var.DeskQuotesPublishDir)**\*.pdb" />
       </Files>
-    </ComponentGroup>
-  </Fragment>
-
-  <Fragment>
-    <ComponentGroup Id="StartMenuShortcuts" Directory="DeskQuotesProgramMenuFolder">
-      <Component Guid="c142edcc-c308-450d-a56d-05c9a4808314">
-        <Shortcut
-          Id="DeskQuotesStartMenuShortcut"
-          Name="$(var.ProductName)"
-          Target="[INSTALLFOLDER]DeskQuotes.exe"
-          WorkingDirectory="INSTALLFOLDER" />
-        <RemoveFolder Id="RemoveDeskQuotesProgramMenuFolder" On="uninstall" />
-        <RegistryValue
-          Root="HKCU"
-          Key="Software\MithunShanbhag\DeskQuotes"
-          Name="Installed"
-          Type="integer"
-          Value="1"
-          KeyPath="yes" />
-      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>

@@ -8,7 +8,14 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
-        var host = Host
+        using var singleInstanceGate = SingleInstanceGate.TryAcquire(AppConstants.SingleInstanceMutexName);
+
+        if (singleInstanceGate is null)
+        {
+            return;
+        }
+
+        using var host = Host
             .CreateApplicationBuilder()
             .ConfigureApp()
             .ConfigureServices()
