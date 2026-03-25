@@ -7,13 +7,8 @@
     <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
     <DeskQuotesProjectPath>..\DeskQuotes\DeskQuotes.csproj</DeskQuotesProjectPath>
     <DeskQuotesPublishDir>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', 'obj', '$(Configuration)', 'publish'))</DeskQuotesPublishDir>
+    <DefineConstants>$(DefineConstants);ProductName=DeskQuotes;DeskQuotesPublishDir=$(DeskQuotesPublishDir)</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <BindPath Include="$(DeskQuotesPublishDir)">
-      <Name>DeskQuotesPublishDir</Name>
-    </BindPath>
-  </ItemGroup>
 
   <Target Name="PublishDeskQuotes" BeforeTargets="Build">
     <MSBuild

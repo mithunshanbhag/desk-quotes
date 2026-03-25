@@ -1,7 +1,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package
     Id="MithunShanbhag.DeskQuotes"
-    Name="DeskQuotes"
+    Name="$(var.ProductName)"
     Manufacturer="Mithun Shanbhag"
     Version="!(bind.fileVersion.DeskQuotesExecutable)"
     UpgradeCode="4081ba5a-45c2-4ff5-a3f5-d8b2c44aee86"
@@ -12,10 +12,9 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
-    <Property Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" />
     <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" />
 
-    <Feature Id="MainFeature" Title="DeskQuotes" Level="1">
+    <Feature Id="MainFeature" Title="$(var.ProductName)" Level="1">
       <ComponentGroupRef Id="ApplicationFiles" />
       <ComponentGroupRef Id="StartMenuShortcuts" />
     </Feature>
@@ -23,25 +22,25 @@
 
   <Fragment>
     <StandardDirectory Id="LocalAppDataFolder">
-      <Directory Id="INSTALLFOLDER" Name="DeskQuotes" />
+      <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
     </StandardDirectory>
   </Fragment>
 
   <Fragment>
     <StandardDirectory Id="ProgramMenuFolder">
-      <Directory Id="DeskQuotesProgramMenuFolder" Name="DeskQuotes" />
+      <Directory Id="DeskQuotesProgramMenuFolder" Name="$(var.ProductName)" />
     </StandardDirectory>
   </Fragment>
 
   <Fragment>
     <ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
       <Component Guid="5d041d5c-47db-44c0-ac16-42ce7c8f389b">
-        <File Id="DeskQuotesExecutable" Source="!(bindpath.DeskQuotesPublishDir)\DeskQuotes.exe" KeyPath="yes" />
+        <File Id="DeskQuotesExecutable" Source="$(var.DeskQuotesPublishDir)DeskQuotes.exe" KeyPath="yes" />
       </Component>
 
-      <Files Include="!(bindpath.DeskQuotesPublishDir)\**">
-        <Exclude Files="!(bindpath.DeskQuotesPublishDir)\DeskQuotes.exe" />
-        <Exclude Files="!(bindpath.DeskQuotesPublishDir)\**\*.pdb" />
+      <Files Include="$(var.DeskQuotesPublishDir)**">
+        <Exclude Files="$(var.DeskQuotesPublishDir)DeskQuotes.exe" />
+        <Exclude Files="$(var.DeskQuotesPublishDir)**\*.pdb" />
       </Files>
     </ComponentGroup>
   </Fragment>
@@ -51,7 +50,7 @@
       <Component Guid="c142edcc-c308-450d-a56d-05c9a4808314">
         <Shortcut
           Id="DeskQuotesStartMenuShortcut"
-          Name="DeskQuotes"
+          Name="$(var.ProductName)"
           Target="[INSTALLFOLDER]DeskQuotes.exe"
           WorkingDirectory="INSTALLFOLDER" />
         <RemoveFolder Id="RemoveDeskQuotesProgramMenuFolder" On="uninstall" />
