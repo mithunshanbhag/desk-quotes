@@ -1,0 +1,68 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Id="MithunShanbhag.DeskQuotes"
+    Name="DeskQuotes"
+    Manufacturer="Mithun Shanbhag"
+    Version="!(bind.fileVersion.DeskQuotesExecutable)"
+    UpgradeCode="4081ba5a-45c2-4ff5-a3f5-d8b2c44aee86"
+    Scope="perUser"
+    InstallerVersion="500">
+
+    <SummaryInformation Description="Installs the DeskQuotes Windows tray app." />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" />
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" />
+
+    <Feature Id="MainFeature" Title="DeskQuotes" Level="1">
+      <ComponentGroupRef Id="ApplicationFiles" />
+      <ComponentGroupRef Id="StartMenuShortcuts" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="DeskQuotes" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="DeskQuotesProgramMenuFolder" Name="DeskQuotes" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
+      <Component Guid="5d041d5c-47db-44c0-ac16-42ce7c8f389b">
+        <File Id="DeskQuotesExecutable" Source="!(bindpath.DeskQuotesPublishDir)\DeskQuotes.exe" KeyPath="yes" />
+      </Component>
+
+      <Files Include="!(bindpath.DeskQuotesPublishDir)\**">
+        <Exclude Files="!(bindpath.DeskQuotesPublishDir)\DeskQuotes.exe" />
+        <Exclude Files="!(bindpath.DeskQuotesPublishDir)\**\*.pdb" />
+      </Files>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="StartMenuShortcuts" Directory="DeskQuotesProgramMenuFolder">
+      <Component Guid="c142edcc-c308-450d-a56d-05c9a4808314">
+        <Shortcut
+          Id="DeskQuotesStartMenuShortcut"
+          Name="DeskQuotes"
+          Target="[INSTALLFOLDER]DeskQuotes.exe"
+          WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDeskQuotesProgramMenuFolder" On="uninstall" />
+        <RegistryValue
+          Root="HKCU"
+          Key="Software\MithunShanbhag\DeskQuotes"
+          Name="Installed"
+          Type="integer"
+          Value="1"
+          KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
