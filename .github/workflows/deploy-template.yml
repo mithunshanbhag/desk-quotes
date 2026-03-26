@@ -26,5 +26,14 @@ jobs:
       - name: dotnet restore
         run: dotnet restore
         working-directory: ./src/DeskQuotes
+      - name: run unit tests
+        run: dotnet test ./tests/DeskQuotes.UnitTests/DeskQuotes.UnitTests.csproj --logger trx --results-directory ./tests/DeskQuotes.UnitTests/TestResults-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: publish unit test results
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: DeskQuotes.UnitTests
+          path: ./tests/DeskQuotes.UnitTests/TestResults-${{ github.run_id }}-${{ github.run_attempt }}
       - name: build desk-quotes app
         run: dotnet publish ./src/DeskQuotes/DeskQuotes.csproj -c Release -o ./Publish/DeskQuotes
+      - name: build desk-quotes MSI installer
+        run: dotnet publish ./src/DeskQuotes.MSI/DeskQuotes.MSI.wixproj -c Release -o ./Publish/DeskQuotes.MSI

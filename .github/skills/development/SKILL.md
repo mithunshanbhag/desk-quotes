@@ -9,6 +9,14 @@ description: Guidelines and best practices for development with .NET.
 - The various components are organized by feature area, with a general pattern of having sub-folders for `Pages`, `Shared`, and `Layout` components:
 - The various UI components will inject services to perform any necessary business logic or data fetching, but should not contain any complex logic themselves. They should be thin and focused on rendering the UI and handling user interactions.
 - To the greatest extent possible, try to use built-in the defined themes, styles, typography, color palettes, and components from MudBlazor when implementing the UI in Blazor. This will help maintain a consistent look and feel across the app and also speed up development. Try to avoid custom CSS and styles unless absolutely necessary.
+- The @code block in the Razor components should include the following \#region, \#endregion blocks (more blocks can be added as needed):
+  - `#region Parameters` for any [Parameter] properties.
+  - `#region Private Fields, Properties` for any private fields & properties.
+  - `#region Event Handlers` for any event handler methods (for example, button click handlers).
+  - `#region Lifecycle Methods` for any Blazor lifecycle methods (for example, OnInitializedAsync).
+  - `#region Private Helper Methods` for any other private helper methods.
+  - `#region CSS Style Properties` for any CSS 'style' attribute properties (for example, `private string _buttonColor = "red";`).
+  - `#region Text, Label Properties ` for any text/label properties (for example, `private string _buttonText = "Click Me";`). This include ARIA labels and accessibility text. Prefer const strings over properties here, if possible.
 
 ## Controllers
 
@@ -22,6 +30,7 @@ description: Guidelines and best practices for development with .NET.
 - Services are centralized under: `src\{AppName}\Services\` or `src\{AppName}.Core\Services\`.
 - Define three sub-folders:
   - `Interfaces` for service interfaces.
+    - All methods, properties and events on service interfaces should be documented with XML comments to describe their purpose, expected inputs and outputs, and any exceptions they might throw.
   - `Implementations` for concrete service implementations. 
     - To the greatest extent possible, try to use the service base classes defined in the Nucleus nuget package (see details below).
     - Else if necessary, create new service base classes.
@@ -44,6 +53,7 @@ description: Guidelines and best practices for development with .NET.
 - Define two sub-folders:
   - `Interfaces` for repository interfaces.
     - To the greatest extent possible, try to use the generic repository interfaces defined in the Nucleus nuget package. Else create a new generic repository interface, operating on a `TEntity` type (basically a storage/entity/persistence model).
+    - All methods, properties and events on repository interfaces should be documented with XML comments to describe their purpose, expected inputs and outputs, and any exceptions they might throw.
   - `Implementations` for concrete repository implementations.
     - To the greatest extent possible, try to use the repository base classes defined in the Nucleus nuget package (see details below).
     - When using EFCore, the DBContext class should be defined in the `Implementations` folder, and repository implementations can depend on it for data access.
@@ -57,6 +67,10 @@ description: Guidelines and best practices for development with .NET.
 
 - Models are centralized under: `src\{AppName}\Models\` or `src\{AppName}.Core\Models\`.
 - For UI: Create a `ViewModels` sub-folder:
+  - The view model types should include the following \#region, \#endregion blocks (more blocks can be added as needed):
+    - `#region Display Properties` for properties that are directly displayed as-is on the UI.
+    - `#region Computed Properties` for properties that are not directly stored, but are computed based on other properties and displayed on the UI.
+    - `#region Hidden Properties` for properties that are not directly displayed on the UI, but are necessary for internal logic or computations.
   - Input models go into a `InputModels` sub-folder.
   - Result models go into a `ResultModels` sub-folder.
     - Result models include computed display properties (for example, currency-formatted strings) to keep display formatting out of core math logic.
@@ -71,6 +85,13 @@ description: Guidelines and best practices for development with .NET.
 
 - Custom exception types are centralized under `src\{AppName}\Exceptions\` or `src\{AppName}.Core\Exceptions\`.
 - To the greatest extent possible, the custom exceptions should inherit from base exception classes defined in the Nucleus nuget package. This allows the custom exception to define its own conversion to an ActionResult or HTTP response.
+
+## Miscellaneous Helpers
+
+- Any other helper classes, extension classes, utilities, or miscellaneous code can be centralized under `src\{AppName}\Misc\` or `src\{AppName}.Core\Misc\`.
+- Here is the general pattern for organizing code in the `Misc` folder:
+  - `ExtensionMethods` sub-folder for any extension classes/methods.
+  - `Utilities` sub-folder for any other helper utilities that don't fit into the above categories.
 
 ## Global Constants / Routing / Config Keys
 
