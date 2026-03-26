@@ -2,14 +2,8 @@ name: desk-quotes-deploy-template
 
 on:
   workflow_call:
-    inputs:
-      runProvisioning:
-        type: boolean
-        required: true
-        default: false
 
 env:
-  APP_NAME: desk-quotes
   DOTNET_VERSION_10: "10.0.x"
 
 jobs:
