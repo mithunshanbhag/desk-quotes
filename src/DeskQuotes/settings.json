@@ -148,11 +148,6 @@
       "tags": ["growth", "relationships"]
     },
     {
-      "text": "If you want to go fast, go alone. If you want to go far, go together",
-      "author": "Unknown",
-      "tags": ["relationships", "leadership"]
-    },
-    {
       "text": "The pain of inaction stings longer than the pain of an incorrect action.",
       "author": "Unknown",
       "tags": ["action", "courage"]
@@ -1013,11 +1008,6 @@
       "tags": ["action", "growth"]
     },
     {
-      "text": "A journey of a thousand miles begins with a single step.",
-      "author": "Chinese Proverb",
-      "tags": ["action", "courage"]
-    },
-    {
       "text": "If you want to go fast, go alone. If you want to go far, go together.",
       "author": "African Proverb",
       "tags": ["relationships", "leadership"]
@@ -1066,6 +1056,256 @@
       "text": "Fortune favors the bold.",
       "author": "Latin Proverb",
       "tags": ["courage", "action"]
+    },
+    {
+      "text": "Measure seven times, cut once.",
+      "author": "Russian Proverb",
+      "tags": ["focus", "discipline"]
+    },
+    {
+      "text": "Dig the well before you are thirsty.",
+      "author": "Chinese Proverb",
+      "tags": ["discipline", "focus"]
+    },
+    {
+      "text": "Teachers open the door, but you must enter by yourself.",
+      "author": "Chinese Proverb",
+      "tags": ["growth", "action"]
+    },
+    {
+      "text": "To know the road ahead, ask those coming back.",
+      "author": "Chinese Proverb",
+      "tags": ["growth", "focus"]
+    },
+    {
+      "text": "The gem cannot be polished without friction, nor a person perfected without trials.",
+      "author": "Chinese Proverb",
+      "tags": ["growth", "resilience"]
+    },
+    {
+      "text": "Be not afraid of growing slowly; be afraid only of standing still.",
+      "author": "Chinese Proverb",
+      "tags": ["growth", "discipline"]
+    },
+    {
+      "text": "Learning is a treasure that will follow its owner everywhere.",
+      "author": "Chinese Proverb",
+      "tags": ["growth", "purpose"]
+    },
+    {
+      "text": "Better to light a candle than curse the darkness.",
+      "author": "Chinese Proverb",
+      "tags": ["action", "courage"]
+    },
+    {
+      "text": "The bamboo that bends is stronger than the oak that resists.",
+      "author": "Japanese Proverb",
+      "tags": ["resilience", "wellbeing"]
+    },
+    {
+      "text": "One kind word can warm three winter months.",
+      "author": "Japanese Proverb",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "Vision without action is a daydream. Action without vision is a nightmare.",
+      "author": "Japanese Proverb",
+      "tags": ["action", "purpose"]
+    },
+    {
+      "text": "Even dust, when piled up, can become a mountain.",
+      "author": "Japanese Proverb",
+      "tags": ["discipline", "growth"]
+    },
+    {
+      "text": "When character is lost, all is lost.",
+      "author": "Indian Proverb",
+      "tags": ["purpose", "discipline"]
+    },
+    {
+      "text": "All flowers do not bloom at the same time.",
+      "author": "Indian Proverb",
+      "tags": ["growth", "wellbeing"]
+    },
+    {
+      "text": "The whole world is one family.",
+      "author": "Sanskrit Proverb",
+      "tags": ["relationships", "purpose"]
+    },
+    {
+      "text": "Learning is a friend on the journey.",
+      "author": "Sanskrit Proverb",
+      "tags": ["growth", "purpose"]
+    },
+    {
+      "text": "One, one cocoa fills the basket.",
+      "author": "Jamaican Proverb",
+      "tags": ["discipline", "growth"]
+    },
+    {
+      "text": "Behind mountains are more mountains.",
+      "author": "Haitian Proverb",
+      "tags": ["resilience", "purpose"]
+    },
+    {
+      "text": "The axe forgets, but the tree remembers.",
+      "author": "African Proverb",
+      "tags": ["relationships", "growth"]
+    },
+    {
+      "text": "Rain does not fall on one roof alone.",
+      "author": "African Proverb",
+      "tags": ["resilience", "relationships"]
+    },
+    {
+      "text": "A child who is not embraced by the village will burn it down to feel its warmth.",
+      "author": "African Proverb",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "When there is no enemy within, the enemies outside cannot hurt you.",
+      "author": "African Proverb",
+      "tags": ["resilience", "focus"]
+    },
+    {
+      "text": "Do not call the forest that shelters you a jungle.",
+      "author": "African Proverb",
+      "tags": ["relationships", "purpose"]
+    },
+    {
+      "text": "If you close your eyes to facts, you will learn through accidents.",
+      "author": "African Proverb",
+      "tags": ["focus", "growth"]
+    },
+    {
+      "text": "Even the lion protects himself against flies.",
+      "author": "Ghanaian Proverb",
+      "tags": ["discipline", "action"]
+    },
+    {
+      "text": "One head does not hold all wisdom.",
+      "author": "Akan Proverb",
+      "tags": ["growth", "leadership"]
+    },
+    {
+      "text": "A single bracelet does not jingle.",
+      "author": "Congolese Proverb",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "Sticks in a bundle are unbreakable.",
+      "author": "Kenyan Proverb",
+      "tags": ["relationships", "resilience"]
+    },
+    {
+      "text": "When the roots are deep, there is no reason to fear the wind.",
+      "author": "African Proverb",
+      "tags": ["resilience", "purpose"]
+    },
+    {
+      "text": "No road is long with good company.",
+      "author": "Turkish Proverb",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "Drop by drop, a lake is formed.",
+      "author": "Turkish Proverb",
+      "tags": ["discipline", "growth"]
+    },
+    {
+      "text": "Pray to God, but keep rowing to shore.",
+      "author": "Russian Proverb",
+      "tags": ["action", "discipline"]
+    },
+    {
+      "text": "After the game, the king and the pawn go into the same box.",
+      "author": "Italian Proverb",
+      "tags": ["purpose", "wellbeing"]
+    },
+    {
+      "text": "He who goes slowly goes safely and goes far.",
+      "author": "Italian Proverb",
+      "tags": ["discipline", "resilience"]
+    },
+    {
+      "text": "A good start is half the work.",
+      "author": "Irish Proverb",
+      "tags": ["action", "focus"]
+    },
+    {
+      "text": "It is in the shelter of each other that the people live.",
+      "author": "Irish Proverb",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "Shared joy is double joy; shared sorrow is half sorrow.",
+      "author": "Swedish Proverb",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "The road to a friend's house is never long.",
+      "author": "Danish Proverb",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "Trust arrives on foot and leaves on horseback.",
+      "author": "Dutch Proverb",
+      "tags": ["relationships", "leadership"]
+    },
+    {
+      "text": "He who rests grows rusty.",
+      "author": "German Proverb",
+      "tags": ["discipline", "action"]
+    },
+    {
+      "text": "Begin to weave and God will give the thread.",
+      "author": "German Proverb",
+      "tags": ["action", "courage"]
+    },
+    {
+      "text": "Without work, there is no cake.",
+      "author": "Polish Proverb",
+      "tags": ["discipline", "action"]
+    },
+    {
+      "text": "With patience, the mulberry leaf becomes silk.",
+      "author": "Romanian Proverb",
+      "tags": ["discipline", "growth"]
+    },
+    {
+      "text": "The tongue has no bones, but it can break a heart.",
+      "author": "Basque Proverb",
+      "tags": ["relationships", "focus"]
+    },
+    {
+      "text": "Who is wise? One who learns from every person.",
+      "author": "Hebrew Proverb",
+      "tags": ["growth", "relationships"]
+    },
+    {
+      "text": "Who is strong? One who controls oneself.",
+      "author": "Hebrew Proverb",
+      "tags": ["discipline", "resilience"]
+    },
+    {
+      "text": "Say little and do much.",
+      "author": "Hebrew Proverb",
+      "tags": ["action", "discipline"]
+    },
+    {
+      "text": "A person plans, and God laughs.",
+      "author": "Yiddish Proverb",
+      "tags": ["resilience", "wellbeing"]
+    },
+    {
+      "text": "The water you do not drink, let it flow.",
+      "author": "Armenian Proverb",
+      "tags": ["relationships", "wellbeing"]
+    },
+    {
+      "text": "Turn your face to the sun and the shadows fall behind you.",
+      "author": "Maori Proverb",
+      "tags": ["wellbeing", "resilience"]
     }
   ]
 }
