@@ -8,6 +8,7 @@ internal sealed class TrayContextMenuActions
     public required EventHandler LightenWallpaperBackgroundColor { get; init; }
     public required EventHandler RandomizeWallpaperBackgroundColor { get; init; }
     public required EventHandler RandomizeWallpaperFont { get; init; }
+    public required EventHandler ToggleRunAtSignIn { get; init; }
     public required EventHandler EditSettings { get; init; }
     public required EventHandler Exit { get; init; }
 }

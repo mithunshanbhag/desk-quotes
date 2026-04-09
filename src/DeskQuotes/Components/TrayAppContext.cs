@@ -1,4 +1,5 @@
-﻿using Timer = System.Windows.Forms.Timer;
+using System.Security;
+using Timer = System.Windows.Forms.Timer;
 
 namespace DeskQuotes.Components;
 
@@ -11,6 +12,7 @@ public class TrayAppContext : ApplicationContext
     private readonly List<ToolStripMenuItem> _setMoodMenuItems = [];
     private readonly Timer _refreshTimer = new();
     private readonly ComponentResourceManager _resources = new(typeof(TrayAppContext));
+    private readonly StartupLaunchService _startupLaunchService;
     private readonly NotifyIcon _trayIcon;
     private readonly WallpaperBackgroundColorService _wallpaperBackgroundColorService;
     private readonly WallpaperRefreshSchedulerService _wallpaperRefreshSchedulerService;
@@ -21,12 +23,14 @@ public class TrayAppContext : ApplicationContext
         IConfiguration configuration,
         GlobalHotkeyService globalHotkeyService,
         SelectedMoodService selectedMoodService,
+        StartupLaunchService startupLaunchService,
         WallpaperBackgroundColorService wallpaperBackgroundColorService,
         WallpaperUpdateService wallpaperUpdateService,
         WallpaperRefreshSchedulerService wallpaperRefreshSchedulerService)
     {
         _globalHotkeyService = globalHotkeyService;
         _selectedMoodService = selectedMoodService;
+        _startupLaunchService = startupLaunchService;
         _wallpaperBackgroundColorService = wallpaperBackgroundColorService;
         _wallpaperUpdateService = wallpaperUpdateService;
         _wallpaperRefreshSchedulerService = wallpaperRefreshSchedulerService;
@@ -120,6 +124,40 @@ public class TrayAppContext : ApplicationContext
     private void EditSettingsFromHotkey()
     {
         EditSettings(this, EventArgs.Empty);
+    }
+
+    private void ToggleRunAtSignIn(object? sender, EventArgs e)
+    {
+        if (sender is not ToolStripMenuItem runAtSignInMenuItem)
+            return;
+
+        try
+        {
+            if (runAtSignInMenuItem.Checked)
+            {
+                _startupLaunchService.Disable();
+                runAtSignInMenuItem.Checked = false;
+            }
+            else
+            {
+                _startupLaunchService.Enable();
+                runAtSignInMenuItem.Checked = true;
+            }
+
+            UpdateTopLevelMenuCheckMargin();
+        }
+        catch (IOException)
+        {
+            _trayIcon.ShowBalloonTip(1000, "Startup Preference Failed", "Unable to update the Run at Logon setting.", ToolTipIcon.Warning);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _trayIcon.ShowBalloonTip(1000, "Startup Preference Failed", "Unable to update the Run at Logon setting.", ToolTipIcon.Warning);
+        }
+        catch (SecurityException)
+        {
+            _trayIcon.ShowBalloonTip(1000, "Startup Preference Failed", "Unable to update the Run at Logon setting.", ToolTipIcon.Warning);
+        }
     }
 
     private void RefreshWallpaperOnStartup(object? sender, EventArgs e)
@@ -220,6 +258,7 @@ public class TrayAppContext : ApplicationContext
         return new TrayContextMenuFactory(
             _tagCatalog,
             _selectedMoodService.GetSelectedMood(),
+            _startupLaunchService.IsEnabled(),
             _setMoodMenuItems,
             new TrayContextMenuActions
             {
@@ -229,9 +268,20 @@ public class TrayAppContext : ApplicationContext
                 LightenWallpaperBackgroundColor = LightenWallpaperBackgroundColor,
                 RandomizeWallpaperBackgroundColor = RandomizeWallpaperBackgroundColor,
                 RandomizeWallpaperFont = RandomizeWallpaperFont,
+                ToggleRunAtSignIn = ToggleRunAtSignIn,
                 EditSettings = EditSettings,
                 Exit = Exit
             }).Build();
+    }
+
+    private void UpdateTopLevelMenuCheckMargin()
+    {
+        if (_trayIcon.ContextMenuStrip is not { } contextMenuStrip)
+            return;
+
+        contextMenuStrip.ShowCheckMargin = contextMenuStrip.Items
+            .OfType<ToolStripMenuItem>()
+            .Any(item => item.Checked);
     }
 
     private void BindConfiguration(IConfiguration configuration)

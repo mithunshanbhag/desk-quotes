@@ -10,7 +10,7 @@ public class TrayContextMenuFactoryTests
     public void Build_WhenCreated_AppliesSubtleNativeStylingAndSeparators()
     {
         var trackedMoodMenuItems = new List<ToolStripMenuItem>();
-        var sut = CreateSut(trackedMoodMenuItems, "focus", "focus", "action");
+        var sut = CreateSut(trackedMoodMenuItems, "focus", false, "focus", "action");
 
         using var menu = sut.Build();
 
@@ -19,15 +19,16 @@ public class TrayContextMenuFactoryTests
         Assert.Equal(ToolStripRenderMode.System, menu.RenderMode);
         Assert.False(menu.ShowCheckMargin);
         Assert.False(menu.ShowImageMargin);
-        Assert.Equal(8, menu.Items.Count);
+        Assert.Equal(9, menu.Items.Count);
         Assert.Equal(AppConstants.RefreshWallpaperMenuLabel, menu.Items[0].Text);
         Assert.Equal(AppConstants.SetMoodMenuLabel, menu.Items[1].Text);
         Assert.Equal(AppConstants.WallpaperBackgroundColorMenuLabel, menu.Items[2].Text);
         Assert.Equal(AppConstants.ChangeWallpaperFontMenuLabel, menu.Items[3].Text);
         Assert.IsType<ToolStripSeparator>(menu.Items[4]);
-        Assert.Equal(AppConstants.EditSettingsMenuLabel, menu.Items[5].Text);
-        Assert.IsType<ToolStripSeparator>(menu.Items[6]);
-        Assert.Equal(AppConstants.ExitMenuLabel, menu.Items[7].Text);
+        Assert.Equal(AppConstants.RunAtSignInMenuLabel, menu.Items[5].Text);
+        Assert.Equal(AppConstants.EditSettingsMenuLabel, menu.Items[6].Text);
+        Assert.IsType<ToolStripSeparator>(menu.Items[7]);
+        Assert.Equal(AppConstants.ExitMenuLabel, menu.Items[8].Text);
 
         var refreshMenuItem = Assert.IsType<ToolStripMenuItem>(menu.Items[0]);
         Assert.Equal(new Padding(12, 6, 12, 6), refreshMenuItem.Padding);
@@ -40,7 +41,7 @@ public class TrayContextMenuFactoryTests
     public void Build_WhenSelectedMoodAndTagsProvided_BuildsCheckedSetMoodSubmenu()
     {
         var trackedMoodMenuItems = new List<ToolStripMenuItem>();
-        var sut = CreateSut(trackedMoodMenuItems, "focus", "focus", "action");
+        var sut = CreateSut(trackedMoodMenuItems, "focus", false, "focus", "action");
 
         using var menu = sut.Build();
 
@@ -74,6 +75,21 @@ public class TrayContextMenuFactoryTests
         Assert.False(setMoodDropDown.ShowImageMargin);
     }
 
+    [Fact]
+    public void Build_WhenRunAtSignInIsEnabled_ShowsCheckedTopLevelMenuItem()
+    {
+        var trackedMoodMenuItems = new List<ToolStripMenuItem>();
+        var sut = CreateSut(trackedMoodMenuItems, null, true);
+
+        using var menu = sut.Build();
+
+        var runAtSignInMenuItem = Assert.IsType<ToolStripMenuItem>(menu.Items[5]);
+
+        Assert.Equal(AppConstants.RunAtSignInMenuLabel, runAtSignInMenuItem.Text);
+        Assert.True(runAtSignInMenuItem.Checked);
+        Assert.True(menu.ShowCheckMargin);
+    }
+
     #endregion
 
     #region Boundary cases
@@ -99,11 +115,13 @@ public class TrayContextMenuFactoryTests
     private static TrayContextMenuFactory CreateSut(
         ICollection<ToolStripMenuItem> trackedMoodMenuItems,
         string? selectedMood = null,
+        bool isRunAtSignInEnabled = false,
         params string[] tagCatalog)
     {
         return new TrayContextMenuFactory(
             tagCatalog,
             selectedMood,
+            isRunAtSignInEnabled,
             trackedMoodMenuItems,
             new TrayContextMenuActions
             {
@@ -113,6 +131,7 @@ public class TrayContextMenuFactoryTests
                 LightenWallpaperBackgroundColor = NoOpHandler,
                 RandomizeWallpaperBackgroundColor = NoOpHandler,
                 RandomizeWallpaperFont = NoOpHandler,
+                ToggleRunAtSignIn = NoOpHandler,
                 EditSettings = NoOpHandler,
                 Exit = NoOpHandler
             });

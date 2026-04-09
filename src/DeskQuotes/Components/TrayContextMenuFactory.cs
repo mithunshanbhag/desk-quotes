@@ -3,6 +3,7 @@ namespace DeskQuotes.Components;
 internal sealed class TrayContextMenuFactory(
     IReadOnlyList<string> tagCatalog,
     string? selectedMood,
+    bool isRunAtSignInEnabled,
     ICollection<ToolStripMenuItem> setMoodMenuItems,
     TrayContextMenuActions actions)
 {
@@ -28,6 +29,7 @@ internal sealed class TrayContextMenuFactory(
             CreateWallpaperBackgroundColorMenuItem(),
             CreateChangeWallpaperFontMenuItem(),
             new ToolStripSeparator(),
+            CreateRunAtSignInMenuItem(),
             CreateMenuItem(AppConstants.EditSettingsMenuLabel, actions.EditSettings, AppConstants.EditSettingsHotkeyDisplay),
             new ToolStripSeparator(),
             CreateMenuItem(AppConstants.ExitMenuLabel, actions.Exit)
@@ -77,9 +79,19 @@ internal sealed class TrayContextMenuFactory(
     private ToolStripMenuItem CreateChangeWallpaperFontMenuItem()
     {
         var changeWallpaperFontMenuItem = new ToolStripMenuItem(AppConstants.ChangeWallpaperFontMenuLabel);
-        changeWallpaperFontMenuItem.DropDownItems.Add(CreateMenuItem(AppConstants.RandomWallpaperFontMenuLabel, actions.RandomizeWallpaperFont,
+        changeWallpaperFontMenuItem.DropDownItems.Add(CreateMenuItem(
+            AppConstants.RandomWallpaperFontMenuLabel,
+            actions.RandomizeWallpaperFont,
             AppConstants.RandomWallpaperFontHotkeyDisplay));
         return changeWallpaperFontMenuItem;
+    }
+
+    private ToolStripMenuItem CreateRunAtSignInMenuItem()
+    {
+        return new ToolStripMenuItem(AppConstants.RunAtSignInMenuLabel, null, actions.ToggleRunAtSignIn)
+        {
+            Checked = isRunAtSignInEnabled
+        };
     }
 
     private static ToolStripMenuItem CreateMenuItem(string text, EventHandler onClick, string? shortcutKeyDisplayString = null)

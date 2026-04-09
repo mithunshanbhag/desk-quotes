@@ -14,6 +14,9 @@ public static class AppConstants
     public const int RefreshWallpaperHotkeyId = 1;
     public const uint RefreshWallpaperHotkeyModifiers = HotkeyModifierAlt | HotkeyModifierControl | HotkeyModifierNoRepeat;
     public const uint RefreshWallpaperHotkeyVirtualKey = 0x55; // 'U' key
+    public const string RunAtSignInMenuLabel = "Run at Logon";
+    public const string RunAtSignInRegistryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
+    public const string RunAtSignInRegistryValueName = AppName;
     public const string SetMoodMenuLabel = "Set Mood";
     public const string AllQuotesMoodMenuLabel = "All Quotes";
     public const string SelectedMoodStateFileName = "selected-mood.txt";
