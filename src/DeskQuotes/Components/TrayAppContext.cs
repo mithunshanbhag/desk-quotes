@@ -6,6 +6,7 @@ namespace DeskQuotes.Components;
 public class TrayAppContext : ApplicationContext
 {
     private readonly GlobalHotkeyService _globalHotkeyService;
+    private readonly HotkeyHudOverlayService _hotkeyHudOverlayService;
     private readonly List<Quote> _quotes = [];
     private readonly SelectedMoodService _selectedMoodService;
     private readonly List<string> _tagCatalog = [];
@@ -21,6 +22,7 @@ public class TrayAppContext : ApplicationContext
     public TrayAppContext(
         IConfiguration configuration,
         GlobalHotkeyService globalHotkeyService,
+        HotkeyHudOverlayService hotkeyHudOverlayService,
         SelectedMoodService selectedMoodService,
         StartupLaunchService startupLaunchService,
         WallpaperBackgroundColorService wallpaperBackgroundColorService,
@@ -28,6 +30,7 @@ public class TrayAppContext : ApplicationContext
         WallpaperRefreshSchedulerService wallpaperRefreshSchedulerService)
     {
         _globalHotkeyService = globalHotkeyService;
+        _hotkeyHudOverlayService = hotkeyHudOverlayService;
         _selectedMoodService = selectedMoodService;
         _startupLaunchService = startupLaunchService;
         _wallpaperBackgroundColorService = wallpaperBackgroundColorService;
@@ -45,6 +48,7 @@ public class TrayAppContext : ApplicationContext
             Text = AppConstants.AppName
         };
         ShowSelectedMoodStartupWarningIfNeeded();
+        _hotkeyHudOverlayService.WarmUp();
 
         _refreshTimer.Tick += RefreshWallpaperOnSchedule;
 
@@ -56,22 +60,27 @@ public class TrayAppContext : ApplicationContext
 
     private void RefreshWallpaper(object? sender, EventArgs e)
     {
-        RefreshWallpaperCore();
+        _hotkeyHudOverlayService.ShowWallpaperRefreshed();
+        _ = RefreshWallpaperCore();
     }
 
-    private void RefreshWallpaperCore(Color? backgroundColor = null)
+    private WallpaperUpdateResult RefreshWallpaperCore(Color? backgroundColor = null, bool showProgressBalloonTip = true)
     {
         var selectedMood = _selectedMoodService.GetSelectedMood();
-        RefreshWallpaperCore(() => _wallpaperUpdateService.UpdateWallpaper(_quotes, selectedMood, backgroundColor), selectedMood);
+        return RefreshWallpaperCore(() => _wallpaperUpdateService.UpdateWallpaper(_quotes, selectedMood, backgroundColor), selectedMood, showProgressBalloonTip);
     }
 
-    private void RefreshWallpaperCore(Func<WallpaperUpdateResult> refreshWallpaper, string? selectedMood = null)
+    private WallpaperUpdateResult RefreshWallpaperCore(
+        Func<WallpaperUpdateResult> refreshWallpaper,
+        string? selectedMood = null,
+        bool showProgressBalloonTip = true)
     {
         if (_isRefreshing)
-            return;
+            return WallpaperUpdateResult.Failed;
 
         _isRefreshing = true;
-        _trayIcon.ShowBalloonTip(1000, "Refreshing Wallpaper", "Your wallpaper is being refreshed.", ToolTipIcon.Info);
+        if (showProgressBalloonTip)
+            _trayIcon.ShowBalloonTip(1000, "Refreshing Wallpaper", "Your wallpaper is being refreshed.", ToolTipIcon.Info);
 
         try
         {
@@ -90,6 +99,8 @@ public class TrayAppContext : ApplicationContext
             {
                 _trayIcon.ShowBalloonTip(1000, "Refresh Failed", "Unable to refresh wallpaper from settings.", ToolTipIcon.Warning);
             }
+
+            return wallpaperUpdateResult;
         }
         finally
         {
@@ -100,7 +111,7 @@ public class TrayAppContext : ApplicationContext
     private void RefreshWallpaperOnSchedule(object? sender, EventArgs e)
     {
         _refreshTimer.Stop();
-        RefreshWallpaper(sender, e);
+        _ = RefreshWallpaperCore();
         ScheduleNextRefresh();
     }
 
@@ -116,12 +127,14 @@ public class TrayAppContext : ApplicationContext
 
     private void RefreshWallpaperFromHotkey()
     {
-        RefreshWallpaperCore();
+        _hotkeyHudOverlayService.ShowWallpaperRefreshed();
+        _ = RefreshWallpaperCore(showProgressBalloonTip: false);
     }
 
     private void EditSettingsFromHotkey()
     {
-        EditSettings(this, EventArgs.Empty);
+        _hotkeyHudOverlayService.ShowOpeningSettings();
+        _ = EditSettingsCore(showProgressBalloonTip: false);
     }
 
     private void ToggleRunAtSignIn(object? sender, EventArgs e)
@@ -161,61 +174,96 @@ public class TrayAppContext : ApplicationContext
     private void RefreshWallpaperOnStartup(object? sender, EventArgs e)
     {
         Application.Idle -= RefreshWallpaperOnStartup;
-        RefreshWallpaperCore();
+        _ = RefreshWallpaperCore();
     }
 
     private void DarkenWallpaperBackgroundColor(object? sender, EventArgs e)
     {
+        _hotkeyHudOverlayService.ShowBackgroundDarkened();
+        _ = DarkenWallpaperBackgroundColorCore();
+    }
+
+    private WallpaperUpdateResult DarkenWallpaperBackgroundColorCore(bool showProgressBalloonTip = true)
+    {
         var currentBackgroundColor = _wallpaperBackgroundColorService.GetCurrentBackgroundColor();
-        RefreshWallpaperCore(_wallpaperBackgroundColorService.Darken(currentBackgroundColor));
+        return RefreshWallpaperCore(_wallpaperBackgroundColorService.Darken(currentBackgroundColor), showProgressBalloonTip);
     }
 
     private void LightenWallpaperBackgroundColor(object? sender, EventArgs e)
     {
+        _hotkeyHudOverlayService.ShowBackgroundLightened();
+        _ = LightenWallpaperBackgroundColorCore();
+    }
+
+    private WallpaperUpdateResult LightenWallpaperBackgroundColorCore(bool showProgressBalloonTip = true)
+    {
         var currentBackgroundColor = _wallpaperBackgroundColorService.GetCurrentBackgroundColor();
-        RefreshWallpaperCore(_wallpaperBackgroundColorService.Lighten(currentBackgroundColor));
+        return RefreshWallpaperCore(_wallpaperBackgroundColorService.Lighten(currentBackgroundColor), showProgressBalloonTip);
     }
 
     private void RandomizeWallpaperBackgroundColor(object? sender, EventArgs e)
     {
-        RefreshWallpaperCore(_wallpaperBackgroundColorService.GetRandomDarkColor());
+        _hotkeyHudOverlayService.ShowRandomBackground();
+        _ = RandomizeWallpaperBackgroundColorCore();
+    }
+
+    private WallpaperUpdateResult RandomizeWallpaperBackgroundColorCore(bool showProgressBalloonTip = true)
+    {
+        return RefreshWallpaperCore(_wallpaperBackgroundColorService.GetRandomDarkColor(), showProgressBalloonTip);
     }
 
     private void DarkenWallpaperBackgroundColorFromHotkey()
     {
-        DarkenWallpaperBackgroundColor(this, EventArgs.Empty);
+        _hotkeyHudOverlayService.ShowBackgroundDarkened();
+        _ = DarkenWallpaperBackgroundColorCore(showProgressBalloonTip: false);
     }
 
     private void LightenWallpaperBackgroundColorFromHotkey()
     {
-        LightenWallpaperBackgroundColor(this, EventArgs.Empty);
+        _hotkeyHudOverlayService.ShowBackgroundLightened();
+        _ = LightenWallpaperBackgroundColorCore(showProgressBalloonTip: false);
     }
 
     private void RandomizeWallpaperBackgroundColorFromHotkey()
     {
-        RandomizeWallpaperBackgroundColor(this, EventArgs.Empty);
+        _hotkeyHudOverlayService.ShowRandomBackground();
+        _ = RandomizeWallpaperBackgroundColorCore(showProgressBalloonTip: false);
     }
 
     private void RandomizeWallpaperFont(object? sender, EventArgs e)
     {
+        _hotkeyHudOverlayService.ShowFontChanged(_wallpaperUpdateService.GetCurrentFontFamilyName());
+        _ = RandomizeWallpaperFontCore();
+    }
+
+    private WallpaperUpdateResult RandomizeWallpaperFontCore(bool showProgressBalloonTip = true)
+    {
         var selectedMood = _selectedMoodService.GetSelectedMood();
-        RefreshWallpaperCore(() => _wallpaperUpdateService.UpdateWallpaperWithRandomFont(_quotes, selectedMood), selectedMood);
+        return RefreshWallpaperCore(() => _wallpaperUpdateService.UpdateWallpaperWithRandomFont(_quotes, selectedMood), selectedMood, showProgressBalloonTip);
     }
 
     private void RandomizeWallpaperFontFromHotkey()
     {
-        RandomizeWallpaperFont(this, EventArgs.Empty);
+        _hotkeyHudOverlayService.ShowFontChanged(_wallpaperUpdateService.GetCurrentFontFamilyName());
+        _ = RandomizeWallpaperFontCore(showProgressBalloonTip: false);
     }
 
     private void EditSettings(object? sender, EventArgs e)
     {
-        _trayIcon.ShowBalloonTip(1000, "Opening Settings", "The settings window is opening.", ToolTipIcon.Info);
+        _hotkeyHudOverlayService.ShowOpeningSettings();
+        _ = EditSettingsCore();
+    }
+
+    private bool EditSettingsCore(bool showProgressBalloonTip = true)
+    {
+        if (showProgressBalloonTip)
+            _trayIcon.ShowBalloonTip(1000, "Opening Settings", "The settings window is opening.", ToolTipIcon.Info);
 
         var settingsPath = Path.Combine(AppContext.BaseDirectory, "settings.json");
         if (!File.Exists(settingsPath))
         {
             _trayIcon.ShowBalloonTip(1000, "Settings Missing", "Could not find settings.json.", ToolTipIcon.Error);
-            return;
+            return false;
         }
 
         try
@@ -226,6 +274,7 @@ public class TrayAppContext : ApplicationContext
                 UseShellExecute = true,
                 Verb = "open"
             });
+            return true;
         }
         catch (InvalidOperationException)
         {
@@ -235,12 +284,15 @@ public class TrayAppContext : ApplicationContext
         {
             _trayIcon.ShowBalloonTip(1000, "Open Failed", "Could not open settings.json in the default editor.", ToolTipIcon.Error);
         }
+
+        return false;
     }
 
     private void Exit(object? sender, EventArgs e)
     {
         Application.Idle -= RefreshWallpaperOnStartup;
         _globalHotkeyService.Dispose();
+        _hotkeyHudOverlayService.Dispose();
         _refreshTimer.Stop();
         _refreshTimer.Dispose();
         _trayIcon.Visible = false;
@@ -343,7 +395,7 @@ public class TrayAppContext : ApplicationContext
         }
 
         UpdateSetMoodChecks(selectedMood);
-        RefreshWallpaperCore();
+        _ = RefreshWallpaperCore();
     }
 
     private void UpdateSetMoodChecks(string? selectedMood)

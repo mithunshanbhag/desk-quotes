@@ -29,13 +29,17 @@ dotnet restore .\DeskQuotes.slnx
       - **Darken Color (Ctrl + Alt + -)**
       - **Lighten Color (Ctrl + Alt + =)**
       - **Random Color (Ctrl + Alt + 0)**
+    - **Change Wallpaper Font**
+      - **Random Font (Ctrl + Alt + F)**
     - **Edit Settings (Ctrl + Alt + E)** (opens `settings.json`)
     - **Exit**
 3. Press `Ctrl + Alt + U` from anywhere, or use the tray menu, to trigger an immediate wallpaper refresh.
 4. Standard wallpaper refreshes rotate the quote font among `Segoe UI`, `Georgia`, `Palatino Linotype`, `Trebuchet MS`, and `Constantia`.
 5. Use the background color submenu or its hotkeys to immediately darken, lighten, or randomize the wallpaper background color while keeping the current quote font unchanged.
-6. Use **Set Mood** to persist a mood selection across restarts. With **All Quotes** selected, every configured quote remains eligible. When a mood is selected, only quotes whose `tags` contain that mood are eligible for refreshes, background-color changes, and random-font updates. If no configured quote matches the selected mood, DeskQuotes keeps the current wallpaper and shows a warning instead of falling back to all quotes.
-7. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
+6. Use `Ctrl + Alt + F`, or the tray menu, to switch to a different curated font while keeping the current quote and background.
+7. Successful wallpaper, background-color, font, and settings actions triggered from either the tray menu or the global hotkeys show a compact on-screen HUD overlay near the bottom-center of the primary display so the action is visible immediately without opening a full notification.
+8. Use **Set Mood** to persist a mood selection across restarts. With **All Quotes** selected, every configured quote remains eligible. When a mood is selected, only quotes whose `tags` contain that mood are eligible for refreshes, background-color changes, and random-font updates. If no configured quote matches the selected mood, DeskQuotes keeps the current wallpaper and shows a warning instead of falling back to all quotes.
+9. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
 
 ## Build and run locally
 

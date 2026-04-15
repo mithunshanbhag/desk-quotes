@@ -22,6 +22,11 @@ public class WallpaperUpdateService(
     private string? _currentFontFamilyName;
     private Quote? _currentQuote;
 
+    public string? GetCurrentFontFamilyName()
+    {
+        return _currentFontFamilyName;
+    }
+
     public bool TryUpdateWallpaper(IEnumerable<Quote>? configuredQuotes, Color? backgroundColor = null)
     {
         return UpdateWallpaper(configuredQuotes, null, backgroundColor) == WallpaperUpdateResult.Success;

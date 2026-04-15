@@ -71,6 +71,8 @@ In its current iteration:
 
 - **Edit settings on demand**: The app will have an option to open the settings file for editing through the tray context menu (`Edit Settings (Ctrl + Alt + E)`) and a fixed global hotkey (`Ctrl + Alt + E`).
 
+- **Hotkey HUD overlays**: Whenever a supported global hotkey is pressed and handled successfully, the app should briefly show a compact on-screen HUD/overlay so the user gets immediate visual feedback without needing to look at the tray icon. The overlay should summarize the action that just happened, such as wallpaper refreshed, background darkened/lightened/randomized, font changed, or settings opening.
+
 - **Tray context menu presentation**: The menu should keep a native Windows look while using slightly larger `Segoe UI` typography, roomier item spacing, and horizontal separators above and below `Edit Settings` so the settings action is visually grouped apart from wallpaper actions and `Exit`.
 
 ## User Interactions

@@ -41,6 +41,7 @@ public static class HostApplicationBuilderExtensions
                 .AddSingleton<WallpaperRenderService>()
                 .AddSingleton<WindowsWallpaperService>()
                 .AddSingleton<GlobalHotkeyService>()
+                .AddSingleton<HotkeyHudOverlayService>()
                 .AddSingleton<StartupLaunchService>()
                 .AddSingleton<WallpaperUpdateService>()
                 .AddSingleton<WallpaperRefreshSchedulerService>();
