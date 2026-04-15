@@ -13,6 +13,7 @@
     <MediaTemplate EmbedCab="yes" />
 
     <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" />
+    <Property Id="ARPPRODUCTICON" Value="DeskQuotesAppIcon" />
 
     <Feature Id="MainFeature" Title="$(var.ProductName)" Level="1">
       <ComponentGroupRef Id="ApplicationFiles" />
@@ -32,6 +33,10 @@
   </Fragment>
 
   <Fragment>
+    <Icon Id="DeskQuotesAppIcon" SourceFile="..\DeskQuotes\Assets\AppIcon.ico" />
+  </Fragment>
+
+  <Fragment>
     <ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
       <Component Guid="5d041d5c-47db-44c0-ac16-42ce7c8f389b">
         <File Id="DeskQuotesExecutable" Source="$(var.DeskQuotesPublishDir)DeskQuotes.exe" KeyPath="yes">
@@ -39,11 +44,13 @@
             Id="DeskQuotesStartMenuShortcut"
             Directory="DeskQuotesProgramMenuFolder"
             Name="$(var.ProductName)"
+            Icon="DeskQuotesAppIcon"
             WorkingDirectory="INSTALLFOLDER" />
           <Shortcut
             Id="DeskQuotesDesktopShortcut"
             Directory="DesktopFolder"
             Name="$(var.ProductName)"
+            Icon="DeskQuotesAppIcon"
             WorkingDirectory="INSTALLFOLDER" />
         </File>
         <RemoveFolder Id="RemoveDeskQuotesProgramMenuFolder" Directory="DeskQuotesProgramMenuFolder" On="uninstall" />

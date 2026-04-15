@@ -15,3 +15,4 @@
 - The WiX project sets `OutputName=DeskQuotes`, so Release builds produce `src\DeskQuotes.MSI\bin\Release\DeskQuotes.msi`.
 - The WiX `PublishDeskQuotes` target must run `BeforeTargets="CoreCompile"`; otherwise MSI builds can silently reuse stale `obj\Release\publish` output and ship an older DeskQuotes executable than the current source tree.
 - Startup now enforces a single running DeskQuotes instance via `SingleInstanceGate` and a named mutex from `AppConstants`; duplicate launches exit silently before the host, tray icon, timers, or hotkeys are created.
+- App branding now lives in `src\DeskQuotes\Assets\AppIcon.ico`; the EXE embeds it via `ApplicationIcon`, the tray icon clones the embedded executable icon at runtime, and the WiX package reuses the same asset for shortcuts and Add/Remove Programs metadata.

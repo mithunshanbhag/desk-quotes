@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#102638" />
+      <stop offset="100%" stop-color="#06131d" />
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#5bc5eb" stop-opacity=".28" />
+      <stop offset="100%" stop-color="#5bc5eb" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="screen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#52b2f1" />
+      <stop offset="100%" stop-color="#15476c" />
+    </linearGradient>
+    <linearGradient id="base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8be74" />
+      <stop offset="100%" stop-color="#a56633" />
+    </linearGradient>
+  </defs>
+
+  <rect x="20" y="20" width="472" height="472" rx="96" fill="url(#bg)" />
+  <rect x="62" y="70" width="388" height="388" rx="160" fill="url(#halo)" />
+
+  <rect x="62" y="110" width="390" height="244" rx="42" fill="#ecf3f6" />
+  <rect x="84" y="130" width="348" height="204" rx="30" fill="url(#screen)" />
+
+  <g fill="#ffffff">
+    <path d="M180 160c-12 0-22 10-22 22 0 10 6 18 14 21l-16 30h28l17-29c1-2 2-5 2-8 0-17-15-36-23-36z" />
+    <path d="M262 160c-12 0-22 10-22 22 0 10 6 18 14 21l-16 30h28l17-29c1-2 2-5 2-8 0-17-15-36-23-36z" />
+  </g>
+
+  <rect x="128" y="368" width="256" height="20" rx="10" fill="#e7b25e" />
+  <rect x="236" y="344" width="40" height="56" rx="10" fill="#d1dce2" />
+  <rect x="154" y="404" width="204" height="42" rx="18" fill="url(#base)" />
+
+  <g fill="none" stroke="#ecf7ff" stroke-linecap="round" stroke-width="11">
+    <path d="M82 360v86" />
+    <path d="M82 446l36-40" />
+  </g>
+</svg>

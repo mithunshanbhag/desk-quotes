@@ -11,7 +11,6 @@ public class TrayAppContext : ApplicationContext
     private readonly List<string> _tagCatalog = [];
     private readonly List<ToolStripMenuItem> _setMoodMenuItems = [];
     private readonly Timer _refreshTimer = new();
-    private readonly ComponentResourceManager _resources = new(typeof(TrayAppContext));
     private readonly StartupLaunchService _startupLaunchService;
     private readonly NotifyIcon _trayIcon;
     private readonly WallpaperBackgroundColorService _wallpaperBackgroundColorService;
@@ -40,8 +39,7 @@ public class TrayAppContext : ApplicationContext
 
         _trayIcon = new NotifyIcon
         {
-            //Icon = (Icon?)_resources.GetObject("notifyIcon.Icon"),
-            Icon = SystemIcons.Application,
+            Icon = LoadTrayIcon(),
             ContextMenuStrip = CreateContextMenuStrip(),
             Visible = true,
             Text = AppConstants.AppName
@@ -388,5 +386,40 @@ public class TrayAppContext : ApplicationContext
         if (!_globalHotkeyService.TryRegisterHotkey(id, modifiers, virtualKey, hotkeyPressedHandler))
             _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {hotkeyDisplay}. The app will keep running without the hotkey.",
                 ToolTipIcon.Warning);
+    }
+
+    private static Icon LoadTrayIcon()
+    {
+        var iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.ico");
+
+        try
+        {
+            if (File.Exists(iconPath))
+                return new Icon(iconPath);
+        }
+        catch (ArgumentException)
+        {
+        }
+        catch (IOException)
+        {
+        }
+
+        try
+        {
+            using var extractedIcon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            if (extractedIcon is not null)
+                return (Icon)extractedIcon.Clone();
+        }
+        catch (ArgumentException)
+        {
+        }
+        catch (FileNotFoundException)
+        {
+        }
+        catch (Win32Exception)
+        {
+        }
+
+        return (Icon)SystemIcons.Application.Clone();
     }
 }
