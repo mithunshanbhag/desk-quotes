@@ -79,6 +79,42 @@ In its current iteration:
 
 See [ui.md](./ui.md).
 
+## Local run and MSI installer
+
+For the current Windows desktop implementation:
+
+- **Quick local run**: Start the tray app directly with:
+
+```powershell
+dotnet run --project .\src\DeskQuotes\DeskQuotes.csproj
+```
+
+- **Convenience script**: The repository also exposes the equivalent shortcut:
+
+```powershell
+.\run-local.ps1 -target app
+```
+
+- **Build the MSI installer**:
+
+```powershell
+dotnet build .\src\DeskQuotes.MSI\DeskQuotes.MSI.wixproj -c Release --nologo
+```
+
+- **Installer output**: The built package is written to:
+
+```text
+src\DeskQuotes.MSI\bin\Release\DeskQuotes.msi
+```
+
+- **Install the MSI**: Install it by double-clicking the generated MSI in File Explorer or by running:
+
+```powershell
+msiexec /i .\src\DeskQuotes.MSI\bin\Release\DeskQuotes.msi
+```
+
+- **Install behavior**: The MSI performs a per-user install under `%LocalAppData%\DeskQuotes`, does not require administrator rights, and should preserve user-edited `settings.json` content across upgrades.
+
 ## Open Questions
 
 - What should be the behavior of the app when the machine is in different states, such as:
