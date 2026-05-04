@@ -1,6 +1,8 @@
 namespace DeskQuotes.Services.Implementations;
 
-public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null)
+public class WallpaperRenderService(
+    IValidator<Size>? resolutionValidator = null,
+    ILogger<WallpaperRenderService>? logger = null)
 {
     private const int FallbackWidth = 1920;
     private const int FallbackHeight = 1080;
@@ -10,6 +12,8 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
     private const float AuthorSpacingRatio = 0.024f;
     private const float MinimumAuthorSpacing = 12f;
     private const float MaximumAuthorSpacing = 28f;
+
+    private readonly ILogger<WallpaperRenderService> _logger = logger ?? NullLogger<WallpaperRenderService>.Instance;
 
     public virtual string RenderQuoteWallpaper(Quote quote, Size resolution, Color backgroundColor, string fontFamilyName)
     {
@@ -25,6 +29,10 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
         var width = isWidthValid ? resolution.Width : FallbackWidth;
         var height = isHeightValid ? resolution.Height : FallbackHeight;
 
+        if (!isWidthValid || !isHeightValid)
+            _logger.LogWarning("Wallpaper render received invalid resolution {Width}x{Height}. Falling back to {FallbackWidth}x{FallbackHeight}.",
+                resolution.Width, resolution.Height, FallbackWidth, FallbackHeight);
+
         var outputDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             AppConstants.AppName);
@@ -32,6 +40,8 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
 
         var outputPath = Path.Combine(outputDirectory, "deskquotes-wallpaper.bmp");
         if (File.Exists(outputPath)) File.Delete(outputPath);
+
+        _logger.LogDebug("Rendering wallpaper at {Width}x{Height} to {OutputPath} using font {FontFamilyName}.", width, height, outputPath, fontFamilyName);
 
         using var bitmap = new Bitmap(width, height);
         using var graphics = Graphics.FromImage(bitmap);
@@ -61,20 +71,25 @@ public class WallpaperRenderService(IValidator<Size>? resolutionValidator = null
         if (authorBounds.HasValue) graphics.DrawString(authorText, authorFont, authorBrush, authorBounds.Value, format);
 
         bitmap.Save(outputPath, ImageFormat.Bmp);
+        _logger.LogInformation("Rendered quote wallpaper to {OutputPath}.", outputPath);
         return outputPath;
     }
 
-    private static Font CreateFont(string fontFamilyName, float size, FontStyle style)
+    private Font CreateFont(string fontFamilyName, float size, FontStyle style)
     {
         if (string.IsNullOrWhiteSpace(fontFamilyName))
+        {
+            _logger.LogWarning("No font family name was provided. Falling back to the generic sans-serif font.");
             return new Font(FontFamily.GenericSansSerif, size, style, GraphicsUnit.Pixel);
+        }
 
         try
         {
             return new Font(fontFamilyName, size, style, GraphicsUnit.Pixel);
         }
-        catch (ArgumentException)
+        catch (ArgumentException exception)
         {
+            _logger.LogWarning(exception, "Unable to create font {FontFamilyName}. Falling back to the generic sans-serif font.", fontFamilyName);
             return new Font(FontFamily.GenericSansSerif, size, style, GraphicsUnit.Pixel);
         }
     }

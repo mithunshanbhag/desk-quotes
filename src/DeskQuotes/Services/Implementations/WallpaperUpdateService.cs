@@ -6,10 +6,12 @@ public class WallpaperUpdateService(
     WallpaperBackgroundColorService wallpaperBackgroundColorService,
     WallpaperFontSelectionService wallpaperFontSelectionService,
     WallpaperRenderService wallpaperRenderService,
-    WindowsWallpaperService windowsWallpaperService)
+    WindowsWallpaperService windowsWallpaperService,
+    ILogger<WallpaperUpdateService>? logger = null)
 {
     private readonly MonitorResolutionService _monitorResolutionService = monitorResolutionService ?? throw new ArgumentNullException(nameof(monitorResolutionService));
     private readonly QuoteSelectionService _quoteSelectionService = quoteSelectionService ?? throw new ArgumentNullException(nameof(quoteSelectionService));
+    private readonly ILogger<WallpaperUpdateService> _logger = logger ?? NullLogger<WallpaperUpdateService>.Instance;
 
     private readonly WallpaperBackgroundColorService _wallpaperBackgroundColorService =
         wallpaperBackgroundColorService ?? throw new ArgumentNullException(nameof(wallpaperBackgroundColorService));
@@ -69,6 +71,8 @@ public class WallpaperUpdateService(
     {
         var normalizedSelectedMood = NormalizeMood(selectedMood);
         var filteredQuotes = FilterQuotesByMood(configuredQuotes, normalizedSelectedMood);
+        _logger.LogInformation("Starting wallpaper update. SelectedMood: {SelectedMood}. FilteredQuoteCount: {FilteredQuoteCount}. ReuseCurrentQuote: {ReuseCurrentQuote}. ReuseCurrentFont: {ReuseCurrentFont}.",
+            normalizedSelectedMood ?? AppConstants.AllQuotesMoodMenuLabel, filteredQuotes.Length, reuseCurrentQuote, reuseCurrentFont);
         var selectedQuote = reuseCurrentQuote && QuoteMatchesMood(_currentQuote, normalizedSelectedMood)
             ? _currentQuote
             : null;
@@ -79,10 +83,16 @@ public class WallpaperUpdateService(
         if (selectedQuote is null)
         {
             if (normalizedSelectedMood is not null && filteredQuotes.Length == 0)
+            {
+                _logger.LogWarning("No configured quotes matched the selected mood {SelectedMood}.", normalizedSelectedMood);
                 return WallpaperUpdateResult.NoMatchingQuotesForSelectedMood;
+            }
 
             if (!_quoteSelectionService.TrySelectQuote(filteredQuotes, out selectedQuote) || selectedQuote is null)
+            {
+                _logger.LogWarning("Wallpaper update could not select a quote from the available configuration.");
                 return WallpaperUpdateResult.Failed;
+            }
         }
 
         selectedFontFamilyName ??= _wallpaperFontSelectionService.GetRandomFontFamilyName();
@@ -99,30 +109,40 @@ public class WallpaperUpdateService(
                 _currentQuote = selectedQuote;
                 _currentFontFamilyName = selectedFontFamilyName;
                 _wallpaperBackgroundColorService.SetCurrentBackgroundColor(selectedBackgroundColor);
+                _logger.LogInformation("Wallpaper update succeeded using font {FontFamilyName}.", selectedFontFamilyName);
+            }
+            else
+            {
+                _logger.LogWarning("Wallpaper update rendered successfully but Windows did not apply the wallpaper.");
             }
 
             return wallpaperApplied
                 ? WallpaperUpdateResult.Success
                 : WallpaperUpdateResult.Failed;
         }
-        catch (ArgumentException)
+        catch (ArgumentException exception)
         {
+            _logger.LogError(exception, "Wallpaper update failed due to invalid input.");
             return WallpaperUpdateResult.Failed;
         }
-        catch (IOException)
+        catch (IOException exception)
         {
+            _logger.LogError(exception, "Wallpaper update failed due to an I/O error.");
             return WallpaperUpdateResult.Failed;
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException exception)
         {
+            _logger.LogError(exception, "Wallpaper update failed due to an access-denied error.");
             return WallpaperUpdateResult.Failed;
         }
-        catch (ExternalException)
+        catch (ExternalException exception)
         {
+            _logger.LogError(exception, "Wallpaper update failed due to an external Windows error.");
             return WallpaperUpdateResult.Failed;
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException exception)
         {
+            _logger.LogError(exception, "Wallpaper update failed due to an invalid operation.");
             return WallpaperUpdateResult.Failed;
         }
     }

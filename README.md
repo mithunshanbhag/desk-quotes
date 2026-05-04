@@ -5,7 +5,7 @@
 
 ![DeskQuotes Demo](./docs/assets/reference-screenshot.png)
 
-DeskQuotes is a Windows tray app that rotates your desktop wallpaper using quotes from a local `settings.json` file and a curated set of readable quote fonts.
+DeskQuotes is a Windows tray app that rotates your desktop wallpaper using quotes from a local `settings.json` file, logs diagnostics through `ILogger<T>`, and can forward logs/traces to Azure Application Insights through the same settings file.
 
 ## Installation
 
@@ -39,7 +39,28 @@ dotnet restore .\DeskQuotes.slnx
 6. Use `Ctrl + Alt + F`, or the tray menu, to switch to a different curated font while keeping the current quote and background.
 7. Successful wallpaper, background-color, font, and settings actions triggered from either the tray menu or the global hotkeys show a compact on-screen HUD overlay near the bottom-center of the primary display so the action is visible immediately without opening a full notification.
 8. Use **Set Mood** to persist a mood selection across restarts. With **All Quotes** selected, every configured quote remains eligible. When a mood is selected, only quotes whose `tags` contain that mood are eligible for refreshes, background-color changes, and random-font updates. If no configured quote matches the selected mood, DeskQuotes keeps the current wallpaper and shows a warning instead of falling back to all quotes.
-9. Edit quotes in `src\DeskQuotes\settings.json` and refresh from the tray menu.
+9. Edit quotes and optional diagnostics settings in `src\DeskQuotes\settings.json`, then refresh from the tray menu.
+
+## Configuration
+
+`src\DeskQuotes\settings.json` now contains both the quote catalog and optional diagnostics settings. To forward application logs and traces to Azure Application Insights, set `applicationInsights.connectionString`:
+
+```json
+{
+  "applicationInsights": {
+    "connectionString": "InstrumentationKey=...;IngestionEndpoint=https://..."
+  },
+  "logging": {
+    "logLevel": {
+      "default": "Information",
+      "DeskQuotes": "Information",
+      "Microsoft": "Warning"
+    }
+  }
+}
+```
+
+Leave the connection string blank to keep telemetry disabled. When the connection string is present, DeskQuotes sends its `ILogger<T>`-based application logs and traces to the configured Application Insights instance.
 
 ## Build and run locally
 

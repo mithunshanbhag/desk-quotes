@@ -1,4 +1,14 @@
 {
+  "applicationInsights": {
+    "connectionString": "InstrumentationKey=1b7186ba-14b5-4fa3-be85-74fba958391d;IngestionEndpoint=https://southindia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://southindia.livediagnostics.monitor.azure.com/;ApplicationId=1d36b936-3b57-4549-9ef2-2559e37f0510"
+  },
+  "logging": {
+    "logLevel": {
+      "default": "Information",
+      "DeskQuotes": "Information",
+      "Microsoft": "Warning"
+    }
+  },
   "tagCatalog": [
     "focus",
     "action",

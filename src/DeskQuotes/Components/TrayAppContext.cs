@@ -7,6 +7,7 @@ public class TrayAppContext : ApplicationContext
 {
     private readonly GlobalHotkeyService _globalHotkeyService;
     private readonly HotkeyHudOverlayService _hotkeyHudOverlayService;
+    private readonly ILogger<TrayAppContext> _logger;
     private readonly List<Quote> _quotes = [];
     private readonly SelectedMoodService _selectedMoodService;
     private readonly List<string> _tagCatalog = [];
@@ -23,6 +24,7 @@ public class TrayAppContext : ApplicationContext
         IConfiguration configuration,
         GlobalHotkeyService globalHotkeyService,
         HotkeyHudOverlayService hotkeyHudOverlayService,
+        ILogger<TrayAppContext> logger,
         SelectedMoodService selectedMoodService,
         StartupLaunchService startupLaunchService,
         WallpaperBackgroundColorService wallpaperBackgroundColorService,
@@ -31,6 +33,7 @@ public class TrayAppContext : ApplicationContext
     {
         _globalHotkeyService = globalHotkeyService;
         _hotkeyHudOverlayService = hotkeyHudOverlayService;
+        _logger = logger;
         _selectedMoodService = selectedMoodService;
         _startupLaunchService = startupLaunchService;
         _wallpaperBackgroundColorService = wallpaperBackgroundColorService;
@@ -39,6 +42,7 @@ public class TrayAppContext : ApplicationContext
 
         BindConfiguration(configuration);
         NormalizeSelectedMood();
+        _logger.LogInformation("Tray application context initialized with {QuoteCount} quotes and {MoodCount} configured moods.", _quotes.Count, _tagCatalog.Count);
 
         _trayIcon = new NotifyIcon
         {
@@ -67,6 +71,8 @@ public class TrayAppContext : ApplicationContext
     private WallpaperUpdateResult RefreshWallpaperCore(Color? backgroundColor = null, bool showProgressBalloonTip = true)
     {
         var selectedMood = _selectedMoodService.GetSelectedMood();
+        _logger.LogInformation("Refreshing wallpaper. SelectedMood: {SelectedMood}. HasExplicitBackgroundColor: {HasExplicitBackgroundColor}.",
+            selectedMood ?? AppConstants.AllQuotesMoodMenuLabel, backgroundColor.HasValue);
         return RefreshWallpaperCore(() => _wallpaperUpdateService.UpdateWallpaper(_quotes, selectedMood, backgroundColor), selectedMood, showProgressBalloonTip);
     }
 
@@ -89,6 +95,7 @@ public class TrayAppContext : ApplicationContext
             if (wallpaperUpdateResult == WallpaperUpdateResult.NoMatchingQuotesForSelectedMood)
             {
                 var selectedMoodLabel = selectedMood ?? "the selected mood";
+                _logger.LogWarning("Wallpaper refresh found no matching quotes for selected mood {SelectedMood}.", selectedMoodLabel);
                 _trayIcon.ShowBalloonTip(
                     1000,
                     "No Quotes For Mood",
@@ -97,7 +104,12 @@ public class TrayAppContext : ApplicationContext
             }
             else if (wallpaperUpdateResult != WallpaperUpdateResult.Success)
             {
+                _logger.LogWarning("Wallpaper refresh failed for selected mood {SelectedMood}.", selectedMood ?? AppConstants.AllQuotesMoodMenuLabel);
                 _trayIcon.ShowBalloonTip(1000, "Refresh Failed", "Unable to refresh wallpaper from settings.", ToolTipIcon.Warning);
+            }
+            else
+            {
+                _logger.LogInformation("Wallpaper refresh completed successfully.");
             }
 
             return wallpaperUpdateResult;
@@ -119,10 +131,12 @@ public class TrayAppContext : ApplicationContext
     {
         var delay = WallpaperRefreshSchedulerService.GetDelayUntilNextLocalTopOfHourRefresh(DateTimeOffset.Now);
         var interval = (int)Math.Clamp(Math.Ceiling(delay.TotalMilliseconds), 1, int.MaxValue);
+        var nextRefreshAt = DateTimeOffset.Now.Add(delay);
 
         _refreshTimer.Stop();
         _refreshTimer.Interval = interval;
         _refreshTimer.Start();
+        _logger.LogDebug("Scheduled the next wallpaper refresh for {NextRefreshAt} in {Delay}.", nextRefreshAt, delay);
     }
 
     private void RefreshWallpaperFromHotkey()
@@ -148,25 +162,30 @@ public class TrayAppContext : ApplicationContext
             {
                 _startupLaunchService.Disable();
                 runAtSignInMenuItem.Checked = false;
+                _logger.LogInformation("Disabled run-at-logon from the tray menu.");
             }
             else
             {
                 _startupLaunchService.Enable();
                 runAtSignInMenuItem.Checked = true;
+                _logger.LogInformation("Enabled run-at-logon from the tray menu.");
             }
 
             UpdateTopLevelMenuCheckMargin();
         }
-        catch (IOException)
+        catch (IOException exception)
         {
+            _logger.LogWarning(exception, "Unable to update the Run at Logon setting due to an I/O error.");
             _trayIcon.ShowBalloonTip(1000, "Startup Preference Failed", "Unable to update the Run at Logon setting.", ToolTipIcon.Warning);
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException exception)
         {
+            _logger.LogWarning(exception, "Unable to update the Run at Logon setting due to an access-denied error.");
             _trayIcon.ShowBalloonTip(1000, "Startup Preference Failed", "Unable to update the Run at Logon setting.", ToolTipIcon.Warning);
         }
-        catch (SecurityException)
+        catch (SecurityException exception)
         {
+            _logger.LogWarning(exception, "Unable to update the Run at Logon setting due to a security error.");
             _trayIcon.ShowBalloonTip(1000, "Startup Preference Failed", "Unable to update the Run at Logon setting.", ToolTipIcon.Warning);
         }
     }
@@ -259,10 +278,11 @@ public class TrayAppContext : ApplicationContext
         if (showProgressBalloonTip)
             _trayIcon.ShowBalloonTip(1000, "Opening Settings", "The settings window is opening.", ToolTipIcon.Info);
 
-        var settingsPath = Path.Combine(AppContext.BaseDirectory, "settings.json");
+        var settingsPath = Path.Combine(AppContext.BaseDirectory, AppConstants.SettingsFileName);
         if (!File.Exists(settingsPath))
         {
-            _trayIcon.ShowBalloonTip(1000, "Settings Missing", "Could not find settings.json.", ToolTipIcon.Error);
+            _logger.LogWarning("Unable to open settings because {SettingsPath} does not exist.", settingsPath);
+            _trayIcon.ShowBalloonTip(1000, "Settings Missing", $"Could not find {AppConstants.SettingsFileName}.", ToolTipIcon.Error);
             return false;
         }
 
@@ -274,15 +294,18 @@ public class TrayAppContext : ApplicationContext
                 UseShellExecute = true,
                 Verb = "open"
             });
+            _logger.LogInformation("Opened settings file at {SettingsPath}.", settingsPath);
             return true;
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException exception)
         {
-            _trayIcon.ShowBalloonTip(1000, "Open Failed", "Could not open settings.json in the default editor.", ToolTipIcon.Error);
+            _logger.LogError(exception, "Could not open the settings file at {SettingsPath}.", settingsPath);
+            _trayIcon.ShowBalloonTip(1000, "Open Failed", $"Could not open {AppConstants.SettingsFileName} in the default editor.", ToolTipIcon.Error);
         }
-        catch (Win32Exception)
+        catch (Win32Exception exception)
         {
-            _trayIcon.ShowBalloonTip(1000, "Open Failed", "Could not open settings.json in the default editor.", ToolTipIcon.Error);
+            _logger.LogError(exception, "Could not open the settings file at {SettingsPath}.", settingsPath);
+            _trayIcon.ShowBalloonTip(1000, "Open Failed", $"Could not open {AppConstants.SettingsFileName} in the default editor.", ToolTipIcon.Error);
         }
 
         return false;
@@ -298,6 +321,7 @@ public class TrayAppContext : ApplicationContext
         _trayIcon.Visible = false;
         _trayIcon.ContextMenuStrip?.Dispose();
         _trayIcon.Dispose();
+        _logger.LogInformation("Tray application context is exiting.");
         Application.Exit();
     }
 
@@ -341,11 +365,12 @@ public class TrayAppContext : ApplicationContext
             configuration.GetSection("quotes").Bind(_quotes);
             configuration.GetSection("tagCatalog").Bind(_tagCatalog);
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
+            _logger.LogError(exception, "Failed to bind quotes and tag catalog from {SettingsFileName}.", AppConstants.SettingsFileName);
             throw new Exception(
-                "Failed to read quotes and tagCatalog from configuration. Ensure that the settings.json file is properly formatted.",
-                e);
+                $"Failed to read quotes and tagCatalog from configuration. Ensure that the {AppConstants.SettingsFileName} file is properly formatted.",
+                exception);
         }
 
         var configuredMoods = _tagCatalog
@@ -355,6 +380,7 @@ public class TrayAppContext : ApplicationContext
             .ToArray();
         _tagCatalog.Clear();
         _tagCatalog.AddRange(configuredMoods);
+        _logger.LogDebug("Bound {QuoteCount} quotes and {MoodCount} unique moods from configuration.", _quotes.Count, _tagCatalog.Count);
     }
 
     private static bool IsSameMood(string? left, string? right)
@@ -370,6 +396,7 @@ public class TrayAppContext : ApplicationContext
         if (selectedMood is null || _tagCatalog.Any(mood => IsSameMood(mood, selectedMood)))
             return;
 
+        _logger.LogWarning("Persisted mood {SelectedMood} is no longer present in configuration. Resetting to All Quotes.", selectedMood);
         _selectedMoodService.SetSelectedMood(null);
     }
 
@@ -383,18 +410,21 @@ public class TrayAppContext : ApplicationContext
         {
             _selectedMoodService.SetSelectedMood(selectedMood);
         }
-        catch (IOException)
+        catch (IOException exception)
         {
+            _logger.LogWarning(exception, "Unable to persist selected mood {SelectedMood}.", selectedMood ?? AppConstants.AllQuotesMoodMenuLabel);
             _trayIcon.ShowBalloonTip(1000, "Set Mood Failed", "Unable to save the selected mood.", ToolTipIcon.Warning);
             return;
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException exception)
         {
+            _logger.LogWarning(exception, "Unable to persist selected mood {SelectedMood}.", selectedMood ?? AppConstants.AllQuotesMoodMenuLabel);
             _trayIcon.ShowBalloonTip(1000, "Set Mood Failed", "Unable to save the selected mood.", ToolTipIcon.Warning);
             return;
         }
 
         UpdateSetMoodChecks(selectedMood);
+        _logger.LogInformation("Selected mood changed to {SelectedMood}.", selectedMood ?? AppConstants.AllQuotesMoodMenuLabel);
         _ = RefreshWallpaperCore();
     }
 
@@ -410,6 +440,7 @@ public class TrayAppContext : ApplicationContext
         if (string.IsNullOrWhiteSpace(startupWarningMessage))
             return;
 
+        _logger.LogWarning("Startup warning encountered while loading persisted mood state: {StartupWarningMessage}.", startupWarningMessage);
         _trayIcon.ShowBalloonTip(1000, "Mood State Unavailable", startupWarningMessage, ToolTipIcon.Warning);
     }
 
@@ -436,42 +467,60 @@ public class TrayAppContext : ApplicationContext
     private void TryRegisterHotkey(int id, uint modifiers, uint virtualKey, Action hotkeyPressedHandler, string hotkeyDisplay)
     {
         if (!_globalHotkeyService.TryRegisterHotkey(id, modifiers, virtualKey, hotkeyPressedHandler))
+        {
+            _logger.LogWarning("Unable to register hotkey {HotkeyDisplay}.", hotkeyDisplay);
             _trayIcon.ShowBalloonTip(1000, "Hotkey Unavailable", $"Unable to register {hotkeyDisplay}. The app will keep running without the hotkey.",
                 ToolTipIcon.Warning);
+            return;
+        }
+
+        _logger.LogInformation("Registered hotkey {HotkeyDisplay}.", hotkeyDisplay);
     }
 
-    private static Icon LoadTrayIcon()
+    private Icon LoadTrayIcon()
     {
         var iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.ico");
 
         try
         {
             if (File.Exists(iconPath))
+            {
+                _logger.LogDebug("Loaded tray icon from {IconPath}.", iconPath);
                 return new Icon(iconPath);
+            }
         }
-        catch (ArgumentException)
+        catch (ArgumentException exception)
         {
+            _logger.LogWarning(exception, "Tray icon file at {IconPath} is invalid. Falling back to the executable icon.", iconPath);
         }
-        catch (IOException)
+        catch (IOException exception)
         {
+            _logger.LogWarning(exception, "Unable to read tray icon file at {IconPath}. Falling back to the executable icon.", iconPath);
         }
 
         try
         {
             using var extractedIcon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             if (extractedIcon is not null)
+            {
+                _logger.LogDebug("Loaded tray icon from executable metadata.");
                 return (Icon)extractedIcon.Clone();
+            }
         }
-        catch (ArgumentException)
+        catch (ArgumentException exception)
         {
+            _logger.LogWarning(exception, "Executable icon extraction failed.");
         }
-        catch (FileNotFoundException)
+        catch (FileNotFoundException exception)
         {
+            _logger.LogWarning(exception, "Executable icon extraction failed because the executable was not found.");
         }
-        catch (Win32Exception)
+        catch (Win32Exception exception)
         {
+            _logger.LogWarning(exception, "Executable icon extraction failed due to a Win32 error.");
         }
 
+        _logger.LogWarning("Falling back to the default system application icon.");
         return (Icon)SystemIcons.Application.Clone();
     }
 }

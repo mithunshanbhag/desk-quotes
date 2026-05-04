@@ -10,6 +10,16 @@ In its first iteration, the app will be completely configured through a `setting
 
 ```json
 {
+  "applicationInsights": {
+    "connectionString": "InstrumentationKey=...;IngestionEndpoint=https://..."
+  },
+  "logging": {
+    "logLevel": {
+      "default": "Information",
+      "DeskQuotes": "Information",
+      "Microsoft": "Warning"
+    }
+  },
   "tagCatalog": [
     "focus",
     "action",
@@ -41,6 +51,11 @@ In its first iteration, the app will be completely configured through a `setting
   ]
 }
 ```
+
+Notes on diagnostics configuration:
+
+- `applicationInsights.connectionString` is optional. When present, DeskQuotes forwards application logs and traces to the configured Azure Application Insights instance.
+- `logging.logLevel` controls the minimum verbosity for application and framework categories.
 
 Notes on tags:
 

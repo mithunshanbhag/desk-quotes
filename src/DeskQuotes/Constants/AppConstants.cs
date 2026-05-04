@@ -3,6 +3,7 @@
 public static class AppConstants
 {
     public const string AppName = "DeskQuotes";
+    public const string SettingsFileName = "settings.json";
     public const string SingleInstanceMutexName = @"Local\DeskQuotes.SingleInstance";
     public const int WmHotkey = 0x0312;
     public const uint HotkeyModifierAlt = 0x0001;

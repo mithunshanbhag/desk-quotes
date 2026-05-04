@@ -1,8 +1,9 @@
 namespace DeskQuotes.Services.Implementations;
 
-public partial class GlobalHotkeyService : IMessageFilter, IDisposable
+public partial class GlobalHotkeyService(ILogger<GlobalHotkeyService>? logger = null) : IMessageFilter, IDisposable
 {
     private readonly Dictionary<int, Action> _handlers = new();
+    private readonly ILogger<GlobalHotkeyService> _logger = logger ?? NullLogger<GlobalHotkeyService>.Instance;
     private readonly HashSet<int> _registeredIds = [];
     private bool _isDisposed;
     private bool _messageFilterAdded;
@@ -13,7 +14,10 @@ public partial class GlobalHotkeyService : IMessageFilter, IDisposable
             return;
 
         foreach (var id in _registeredIds)
+        {
             TryUnregisterHotkeyCore(IntPtr.Zero, id);
+            _logger.LogDebug("Unregistered global hotkey {HotkeyId} during disposal.", id);
+        }
 
         _registeredIds.Clear();
 
@@ -25,6 +29,7 @@ public partial class GlobalHotkeyService : IMessageFilter, IDisposable
 
         _handlers.Clear();
         _isDisposed = true;
+        _logger.LogInformation("Disposed the global hotkey service.");
         GC.SuppressFinalize(this);
     }
 
@@ -37,6 +42,7 @@ public partial class GlobalHotkeyService : IMessageFilter, IDisposable
         if (!_handlers.TryGetValue(hotkeyId, out var handler))
             return false;
 
+        _logger.LogDebug("Dispatching registered global hotkey {HotkeyId}.", hotkeyId);
         handler.Invoke();
         return true;
     }
@@ -60,6 +66,7 @@ public partial class GlobalHotkeyService : IMessageFilter, IDisposable
         if (TryRegisterHotkeyCore(IntPtr.Zero, id, modifiers, virtualKey))
         {
             _registeredIds.Add(id);
+            _logger.LogInformation("Registered global hotkey {HotkeyId} with modifiers {Modifiers} and virtual key {VirtualKey}.", id, modifiers, virtualKey);
             return true;
         }
 
@@ -71,6 +78,7 @@ public partial class GlobalHotkeyService : IMessageFilter, IDisposable
             _messageFilterAdded = false;
         }
 
+        _logger.LogWarning("Unable to register global hotkey {HotkeyId} with modifiers {Modifiers} and virtual key {VirtualKey}.", id, modifiers, virtualKey);
         return false;
     }
 

@@ -13,6 +13,7 @@
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.1.1" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+		<PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.23.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
 		<PackageReference Include="MithunShanbhag.Nucleus" Version="1.0.0-alpha.10" />
 	</ItemGroup>

@@ -5,6 +5,28 @@ public class QuoteConfigurationBindingTests
     #region Positive cases
 
     [Fact]
+    public void Bind_WhenApplicationInsightsConnectionStringIsConfigured_BindsSuccessfully()
+    {
+        using var jsonStream = new MemoryStream("""
+                                                {
+                                                  "applicationInsights": {
+                                                    "connectionString": "InstrumentationKey=abc123;IngestionEndpoint=https://westeurope-0.in.applicationinsights.azure.com/"
+                                                  }
+                                                }
+                                                """u8.ToArray());
+        var configuration = new ConfigurationBuilder()
+            .AddJsonStream(jsonStream)
+            .Build();
+        var applicationInsightsConfiguration = new ApplicationInsightsConfiguration();
+
+        configuration.GetSection(ConfigKeys.ApplicationInsightsSectionName).Bind(applicationInsightsConfiguration);
+
+        Assert.Equal(
+            "InstrumentationKey=abc123;IngestionEndpoint=https://westeurope-0.in.applicationinsights.azure.com/",
+            applicationInsightsConfiguration.ConnectionString);
+    }
+
+    [Fact]
     public void Bind_WhenQuoteIncludesTags_BindsTagsSuccessfully()
     {
         using var jsonStream = new MemoryStream("""
