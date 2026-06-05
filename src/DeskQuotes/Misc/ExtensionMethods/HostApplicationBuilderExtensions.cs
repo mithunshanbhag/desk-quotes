@@ -14,8 +14,10 @@ public static class HostApplicationBuilderExtensions
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
+            var settingsPath = Path.Combine(AppContext.BaseDirectory, AppConstants.SettingsFileName);
+
             builder.Configuration
-                .AddJsonFile(AppConstants.SettingsFileName, false, true);
+                .AddJsonFile(settingsPath, false, true);
 
             return builder;
         }
