@@ -1,6 +1,6 @@
 {
   "applicationInsights": {
-    "connectionString": "InstrumentationKey=1b7186ba-14b5-4fa3-be85-74fba958391d;IngestionEndpoint=https://southindia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://southindia.livediagnostics.monitor.azure.com/;ApplicationId=1d36b936-3b57-4549-9ef2-2559e37f0510"
+    "connectionString": "InstrumentationKey=4b2c66f4-7f13-4c86-ac8f-bbb9beae5deb;IngestionEndpoint=https://southindia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://southindia.livediagnostics.monitor.azure.com/;ApplicationId=aa5b08b0-f990-4b6f-a40b-bfff548531c7"
   },
   "logging": {
     "logLevel": {
